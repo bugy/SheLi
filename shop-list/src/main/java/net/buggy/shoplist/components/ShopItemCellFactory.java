@@ -33,7 +33,7 @@ public class ShopItemCellFactory implements CellFactory<ShopItem, ViewGroup> {
 
     private List<BigDecimal> getPossibleQuantities() {
         List<BigDecimal> quantityValues = new ArrayList<>(15);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i < 10; i++) {
             quantityValues.add(new BigDecimal("0." + i));
         }
         for (int i = 0; i < 5; i++) {
