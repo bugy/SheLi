@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="5dp"
+    android:layout_marginStart="5dp"
+    android:orientation="horizontal"
+    tools:background="?attr/colorPrimary"
+    tools:layout_height="?attr/actionBarSize">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/unit_shop_item_list_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp"
+        android:gravity="center"
+        android:text="@string/unit_shot_items_title"
+        android:textSize="18sp">
+    </TextView>
+
+    <net.buggy.shoplist.components.CategoriesSpinner
+        android:id="@+id/unit_shop_items_categories_spinner"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:spinnerMode="dropdown"
+        android:layout_marginLeft="12dp"/>
+</LinearLayout>

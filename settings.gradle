@@ -1,0 +1,2 @@
+include ':shop-list', ':components'
+project(':components').projectDir = new File(settingsDir, '../components')

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="7dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/cell_category_name_field"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center_vertical|left"
+            android:imeOptions="actionDone"
+            android:inputType="textAutoComplete"
+            android:maxLines="1"
+            tools:text="Fruits" />
+
+        <View
+            android:id="@+id/cell_category_color_field"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/color_chooser" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/cell_category_color_slider"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:splitTrack="false"
+        android:thumb="@android:color/transparent"
+        android:visibility="gone"/>
+
+</LinearLayout>

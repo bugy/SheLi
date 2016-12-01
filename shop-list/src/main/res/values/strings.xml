@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">ShopList</string>
+    <string name="menu_add_shop_item">Add</string>
+    <string name="menu_add_product">Add</string>
+    <string name="edit_product_name_field_label">Name</string>
+    <string name="edit_product_categories_label">Categories</string>
+    <string name="edit_product_save_button_label">Save</string>
+    <string name="edit_product_delete_button_description">Delete product</string>
+    <string name="unit_shot_items_title">To buy</string>
+    <string name="title_create_shop_item_title">Create item for</string>
+    <string name="title_edit_product_add">Add product</string>
+    <string name="title_edit_product_edit">Edit product</string>
+    <string name="fast_creation_name_hint">New</string>
+    <string name="unit_select_products_search_hint">Search</string>
+    <string name="unit_categories_list_title">%s categories</string>
+    <string name="unit_edit_product_title">Edit %s</string>
+    <string name="unit_categories_unlink_confirmation">"Unlink %d products?"</string>
+    <string name="categories_unit_already_exists">%s already exists</string>
+    <string name="products_unit_already_exists">%s already exists</string>
+    <string name="fast_creation_add_button_hint">Add</string>
+    <string name="unit_products_title">Products</string>
+    <string name="unit_categories_title">Categories</string>
+</resources>

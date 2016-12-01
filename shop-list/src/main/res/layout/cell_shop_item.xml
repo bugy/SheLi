@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingRight="8dp">
+
+    <TextView
+        android:layout_width="45dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:id="@+id/cell_shop_item_quantity_field"
+        tools:text="99"/>
+
+    <TextView
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/cell_shop_item_name_field"
+        tools:text="Hamburger"/>
+
+    <net.buggy.components.TagFlagContainer
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/cell_shop_item_categories"
+        android:paddingBottom="5dp">
+
+    </net.buggy.components.TagFlagContainer>
+
+
+</LinearLayout>

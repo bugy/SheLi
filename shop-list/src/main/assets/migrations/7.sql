@@ -1,0 +1,1 @@
+ALTER TABLE Categories ADD Color INTEGER;

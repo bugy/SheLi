@@ -1,0 +1,387 @@
+package net.buggy.shoplist.data;
+
+
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+
+import net.buggy.shoplist.model.Category;
+import net.buggy.shoplist.model.Entity;
+import net.buggy.shoplist.model.Product;
+import net.buggy.shoplist.model.ShopItem;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.google.common.base.Objects.equal;
+
+public class DataStorage implements Serializable {
+
+    private final Map<Long, ShopItem> cachedShopItems = new ConcurrentHashMap<>();
+    private final Map<Long, Product> cachedProducts = new ConcurrentHashMap<>();
+    private final Map<Long, Category> cachedCategories = new ConcurrentHashMap<>();
+
+    public DataStorage() {
+        cleanDb();
+        fillCache();
+    }
+
+    private void cleanDb() {
+        final List<StoredShopItem> items = new Select().from(StoredShopItem.class).execute();
+        for (StoredShopItem item : items) {
+            if (item.product == null) {
+                StoredShopItem.delete(StoredShopItem.class, item.getId());
+            }
+        }
+    }
+
+    private void fillCache() {
+        final List<StoredCategory> storedCategories = new Select().from(StoredCategory.class).execute();
+        for (StoredCategory storedCategory : storedCategories) {
+            final Category category = new Category();
+            category.setName(storedCategory.name);
+            category.setId(storedCategory.getId());
+            category.setColor(storedCategory.color);
+
+            cachedCategories.put(category.getId(), category);
+        }
+
+        final List<StoredProduct> storedProducts = new Select().from(StoredProduct.class).execute();
+        for (StoredProduct storedProduct : storedProducts) {
+            final Product product = new Product();
+            product.setName(storedProduct.name);
+            product.setId(storedProduct.getId());
+
+            Set<Category> productCategories = new LinkedHashSet<>();
+            for (StoredCategory storedCategory : storedProduct.getCategories()) {
+                final Category category = cachedCategories.get(storedCategory.getId());
+                productCategories.add(category);
+            }
+            product.setCategories(productCategories);
+
+            cachedProducts.put(product.getId(), product);
+        }
+
+        final List<StoredShopItem> storedItems = new Select().from(StoredShopItem.class).execute();
+        for (StoredShopItem storedItem : storedItems) {
+            final Product product = cachedProducts.get(storedItem.product.getId());
+
+            final ShopItem shopItem = new ShopItem();
+            shopItem.setId(storedItem.getId());
+            shopItem.setProduct(product);
+            shopItem.setQuantity(storedItem.quantity);
+
+            cachedShopItems.put(shopItem.getId(), shopItem);
+        }
+    }
+
+    public void addShopItem(ShopItem shopItem) {
+        final StoredShopItem storedShopItem = StoredShopItem.create(shopItem);
+        final Long id = storedShopItem.save();
+        shopItem.setId(id);
+
+        cachedShopItems.put(shopItem.getId(), shopItem);
+    }
+
+    public void addProduct(Product product) {
+        for (Product cachedProduct : cachedProducts.values()) {
+            if (equal(product.getName(), cachedProduct.getName())) {
+                throw new IllegalStateException(
+                        "Product with the name " + product.getName() + " already exists");
+            }
+        }
+
+        final StoredProduct storedProduct = StoredProduct.create(product);
+        final Long id = storedProduct.customSave();
+        product.setId(id);
+
+        cachedProducts.put(product.getId(), product);
+    }
+
+    public List<ShopItem> getShopItems() {
+        final ArrayList<ShopItem> result = new ArrayList<>(cachedShopItems.values());
+        Collections.sort(result, new IdComparator<ShopItem>());
+
+        return result;
+    }
+
+    public List<Product> getProducts() {
+        return ImmutableList.copyOf(cachedProducts.values());
+    }
+
+    public static List<Class<? extends Model>> getModelClasses() {
+        return Arrays.asList(
+                StoredProduct.class,
+                StoredShopItem.class,
+                StoredCategory.class,
+                StoredProductCategoryLink.class);
+    }
+
+    public void saveProduct(Product product) {
+        if (!cachedProducts.containsKey(product.getId())) {
+            throw new IllegalStateException("Trying to save unexisting product");
+        }
+
+        final StoredProduct storedProduct = StoredProduct.load(StoredProduct.class, product.getId());
+        storedProduct.fillFrom(product);
+        storedProduct.customSave();
+
+        cachedProducts.put(product.getId(), product);
+    }
+
+    public void removeShopItem(ShopItem shopItem) {
+        StoredShopItem.delete(StoredShopItem.class, shopItem.getId());
+
+        cachedShopItems.remove(shopItem.getId());
+    }
+
+    public void removeProduct(Product product) {
+        new Delete()
+                .from(StoredProductCategoryLink.class)
+                .where("product = ? ", product.getId())
+                .execute();
+
+        StoredProduct.delete(StoredProduct.class, product.getId());
+
+        cachedProducts.remove(product.getId());
+    }
+
+    public void saveShopItem(ShopItem shopItem) {
+        if (!cachedShopItems.containsKey(shopItem.getId())) {
+            throw new IllegalStateException("Trying to save unexisting shopItem");
+        }
+
+        final StoredShopItem storedShopItem = StoredShopItem.load(StoredShopItem.class, shopItem.getId());
+        storedShopItem.fillFrom(shopItem);
+        storedShopItem.save();
+
+        cachedShopItems.put(shopItem.getId(), shopItem);
+    }
+
+    public void addCategory(Category category) {
+        for (Category existingCategory : cachedCategories.values()) {
+            if (Objects.equal(existingCategory.getName(), category.getName())) {
+                throw new IllegalStateException("Category with name " + category.getName() + " already exists");
+            }
+        }
+
+        final StoredCategory storedCategory = StoredCategory.create(category);
+        final Long id = storedCategory.save();
+
+        category.setId(id);
+        cachedCategories.put(id, category);
+    }
+
+    public List<Category> getCategories() {
+        return ImmutableList.copyOf(cachedCategories.values());
+    }
+
+    public void removeCategory(Category category) {
+        new Delete()
+                .from(StoredProductCategoryLink.class)
+                .where("category = ? ", category.getId())
+                .execute();
+
+        StoredCategory.delete(StoredCategory.class, category.getId());
+
+        cachedCategories.remove(category.getId());
+    }
+
+    public void saveCategory(Category category) {
+        if (!cachedCategories.containsKey(category.getId())) {
+            throw new IllegalStateException("Trying to save unexisting category");
+        }
+
+        final StoredCategory storedCategory = StoredCategory.load(StoredCategory.class, category.getId());
+        storedCategory.fillFrom(category);
+        storedCategory.save();
+
+        cachedCategories.put(category.getId(), category);
+    }
+
+    @Table(name = "Categories")
+    private static class StoredCategory extends Model {
+        @Column(name = "Name")
+        private String name;
+
+        @Column(name = "Color")
+        private Integer color;
+
+        public StoredCategory() {
+            super();
+        }
+
+        private static StoredCategory create(Category category) {
+            final StoredCategory storedCategory = new StoredCategory();
+            storedCategory.fillFrom(category);
+
+            return storedCategory;
+        }
+
+        public void fillFrom(Category category) {
+            this.name = category.getName();
+            this.color = category.getColor();
+        }
+    }
+
+    @Table(name = "ProductCategoryLinks")
+    private static class StoredProductCategoryLink extends Model {
+
+        @Column(name = "product")
+        private StoredProduct product;
+
+        @Column(name = "category")
+        private StoredCategory category;
+
+        public StoredProductCategoryLink() {
+        }
+
+        public void setProduct(StoredProduct product) {
+            this.product = product;
+        }
+
+        public void setCategory(StoredCategory category) {
+            this.category = category;
+        }
+
+        public StoredProduct getProduct() {
+            return product;
+        }
+
+        public StoredCategory getCategory() {
+            return category;
+        }
+    }
+
+    @Table(name = "Products")
+    private static class StoredProduct extends Model {
+        @Column(name = "Name")
+        private String name;
+
+        private List<StoredProductCategoryLink> deletedLinks = new ArrayList<>();
+        private List<StoredProductCategoryLink> newLinks = new ArrayList<>();
+
+
+        public StoredProduct() {
+            super();
+        }
+
+        private static StoredProduct create(Product product) {
+            final StoredProduct storedProduct = new StoredProduct();
+            storedProduct.fillFrom(product);
+
+            return storedProduct;
+        }
+
+        public void fillFrom(Product product) {
+            this.name = product.getName();
+
+            Set<Long> categoryIds = new LinkedHashSet<>();
+            for (Category category : product.getCategories()) {
+                categoryIds.add(category.getId());
+            }
+            Set<Long> newIds = new LinkedHashSet<>(categoryIds);
+
+            if (product.getId() != null) {
+                final List<StoredProductCategoryLink> links = getMany(StoredProductCategoryLink.class, "product");
+                for (StoredProductCategoryLink link : links) {
+                    final Long categoryId = link.getCategory().getId();
+
+                    if (!categoryIds.contains(categoryId)) {
+                        deletedLinks.add(link);
+                    } else {
+                        newIds.remove(categoryId);
+                    }
+                }
+            }
+
+            final String idsString = Joiner.on(",").join(newIds);
+            final List<StoredCategory> storedCategories = new Select()
+                    .from(StoredCategory.class)
+                    .where("Id IN (" + idsString + ")")
+                    .execute();
+            if (storedCategories.size() != newIds.size()) {
+                throw new IllegalStateException("Not all categories were loaded");
+            }
+            for (StoredCategory storedCategory : storedCategories) {
+                final StoredProductCategoryLink link = new StoredProductCategoryLink();
+                link.setProduct(this);
+                link.setCategory(storedCategory);
+                newLinks.add(link);
+            }
+        }
+
+        public Long customSave() {
+            for (StoredProductCategoryLink newLink : newLinks) {
+                newLink.save();
+            }
+            for (StoredProductCategoryLink deletedLink : deletedLinks) {
+                deletedLink.delete();
+            }
+
+            return save();
+        }
+
+        public Set<StoredCategory> getCategories() {
+            final List<StoredProductCategoryLink> links = getMany(StoredProductCategoryLink.class, "product");
+
+            Set<StoredCategory> result = new LinkedHashSet<>();
+            for (StoredProductCategoryLink link : links) {
+                result.add(link.getCategory());
+            }
+
+            return result;
+        }
+    }
+
+    @Table(name = "ShopItems")
+    private static class StoredShopItem extends Model {
+        @Column(name = "Product")
+        private StoredProduct product;
+
+        @Column(name = "Quantity")
+        private BigDecimal quantity;
+
+        public StoredShopItem() {
+            super();
+        }
+
+        private static StoredShopItem create(ShopItem shopItem) {
+            final StoredShopItem storedShopItem = new StoredShopItem();
+            storedShopItem.fillFrom(shopItem);
+
+            return storedShopItem;
+        }
+
+        public void fillFrom(ShopItem shopItem) {
+            quantity = shopItem.getQuantity();
+
+            final StoredProduct storedProduct = new Select()
+                    .from(StoredProduct.class)
+                    .where("Id = ?", shopItem.getProduct().getId())
+                    .executeSingle();
+            product = storedProduct;
+        }
+    }
+
+    private static class IdComparator<T extends Entity> implements Comparator<T> {
+        @Override
+        public int compare(T o1, T o2) {
+            return o1.getId().compareTo(o2.getId());
+        }
+    }
+}
