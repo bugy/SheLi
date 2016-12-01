@@ -12,7 +12,8 @@
 
         <!-- Pre-lolipop -->
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:textSize">@dimen/abc_text_size_medium_material</item>
+
+        <item name="android:textSize">18sp</item>
 
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="android:buttonStyle">@style/RobotoButtonStyle</item>

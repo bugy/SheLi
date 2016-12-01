@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="10dp"
+    android:paddingStart="10dp"
     android:paddingBottom="10dp"
     android:paddingTop="10dp">
 
@@ -18,7 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
-        android:singleLine="true"
         android:textAlignment="inherit"
-        android:layout_marginLeft="9dp"/>
+        android:layout_marginLeft="9dp"
+        android:layout_marginStart="9dp"
+        android:maxLines="1" />
 </LinearLayout>

@@ -44,7 +44,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     public static final int MAIN_VIEW_ID = R.id.main_activity_view;
     public static final int TOOLBAR_VIEW_ID = R.id.toolbar_container;
 
-    public final List<UnitNavigator<ShopListActivity>> navigators;
+    private final List<UnitNavigator<ShopListActivity>> navigators;
 
     private DataStorage dataStorage;
 
@@ -262,7 +262,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         return handleReturn;
     }
 
-    protected Rect getLocationOnScreen(View view) {
+    private Rect getLocationOnScreen(View view) {
         Rect mRect = new Rect();
         int[] location = new int[2];
 
@@ -322,7 +322,6 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     }
 
     private DataStorage initDataStorage() {
-        //TODO save to instance state
         return new DataStorage();
     }
 
@@ -382,7 +381,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         }
     }
 
-    public void stopUnit(UnitDescriptor descriptor) {
+    private void stopUnit(UnitDescriptor descriptor) {
         activeUnits.remove(descriptor);
 
         final Unit stoppingUnit = descriptor.getUnit();

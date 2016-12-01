@@ -29,7 +29,7 @@ import java.util.Random;
 
 public class CategoryCellFactory implements CellFactory<Category, LinearLayout> {
 
-    public static final int[] COLORS = new int[]{
+    private static final int[] COLORS = new int[]{
             Color.RED,
             Color.argb(255, 255, 255, 0),
             Color.GREEN,

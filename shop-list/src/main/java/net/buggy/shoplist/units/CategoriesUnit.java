@@ -92,10 +92,9 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                         callback.delete();
 
                     } else {
-                        final String confirmationPattern =
-                                activity.getString(R.string.unit_categories_unlink_confirmation);
-                        callback.askConfirmation(
-                                String.format(confirmationPattern, matchingProducts.size()));
+                        final String confirmation = activity.getResources().getQuantityString(
+                                R.plurals.unit_categories_unlink_confirmation, matchingProducts.size());
+                        callback.askConfirmation(confirmation);
                     }
                 }
             });

@@ -24,7 +24,7 @@ import java.util.TreeMap;
 
 public class CategoriesSpinner extends Spinner {
 
-    public static final String ALL_CATEGORIES = "All";
+    private static final String ALL_CATEGORIES = "All";
 
     private Listener listener;
 

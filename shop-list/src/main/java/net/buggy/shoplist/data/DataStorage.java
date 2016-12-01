@@ -272,8 +272,8 @@ public class DataStorage implements Serializable {
         @Column(name = "Name")
         private String name;
 
-        private List<StoredProductCategoryLink> deletedLinks = new ArrayList<>();
-        private List<StoredProductCategoryLink> newLinks = new ArrayList<>();
+        private final List<StoredProductCategoryLink> deletedLinks = new ArrayList<>();
+        private final List<StoredProductCategoryLink> newLinks = new ArrayList<>();
 
 
         public StoredProduct() {
