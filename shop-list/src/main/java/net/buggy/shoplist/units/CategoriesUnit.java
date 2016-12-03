@@ -30,6 +30,7 @@ import java.util.Set;
 
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
+import static net.buggy.shoplist.utils.StringUtils.equalIgnoreCase;
 
 public class CategoriesUnit extends Unit<ShopListActivity> {
 
@@ -54,7 +55,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
             initAddCategory(parentView, activity);
         }
 
-        private void initList(ViewGroup parentView, final ShopListActivity activity) {
+        private void initList(final ViewGroup parentView, final ShopListActivity activity) {
             final CategoryCellFactory cellFactory = new CategoryCellFactory();
 
             adapter = new FactoryBasedAdapter<>(cellFactory);
@@ -111,6 +112,24 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
 
                 @Override
                 public void changed(Category changedItem) {
+                    final List<Category> categories = dataStorage.getCategories();
+                    for (Category category : categories) {
+                        if (Objects.equal(category, changedItem)) {
+                            continue;
+                        }
+
+                        if (equalIgnoreCase(changedItem.getName(), category.getName())) {
+                            final Toast toast = Toast.makeText(
+                                    parentView.getContext(),
+                                    getHostingActivity().getString(
+                                            R.string.categories_unit_already_exists_on_edit,
+                                            category.getName()),
+                                    Toast.LENGTH_LONG);
+                            toast.show();
+                            return;
+                        }
+                    }
+
                     dataStorage.saveCategory(changedItem);
                 }
             });
@@ -148,10 +167,12 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
         private void addCategory(String name, Context context, DataStorage dataStorage) {
             final List<Category> categories = adapter.getAllItems();
             for (Category category : categories) {
-                if (Objects.equal(name, category.getName())) {
+                if (equalIgnoreCase(name, category.getName())) {
                     final Toast toast = Toast.makeText(
                             context,
-                            getHostingActivity().getString(R.string.categories_unit_already_exists, name),
+                            getHostingActivity().getString(
+                                    R.string.categories_unit_already_exists,
+                                    category.getName()),
                             Toast.LENGTH_LONG);
                     toast.show();
                     return;

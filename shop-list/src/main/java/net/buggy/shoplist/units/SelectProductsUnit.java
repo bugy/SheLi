@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
@@ -24,6 +23,7 @@ import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.units.views.ViewRenderer;
+import net.buggy.shoplist.utils.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -78,7 +78,7 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
 
     private class MainViewRenderer extends ViewRenderer<ShopListActivity, RelativeLayout> {
         @Override
-        public void renderTo(final RelativeLayout parentView, ShopListActivity activity) {
+        public void renderTo(final RelativeLayout parentView, final ShopListActivity activity) {
             final DataStorage dataStorage = activity.getDataStorage();
 
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
@@ -118,10 +118,12 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                 public void onCreate(String name) {
                     final List<Product> products = adapter.getAllItems();
                     for (Product product : products) {
-                        if (Objects.equal(name, product.getName())) {
+                        if (StringUtils.equalIgnoreCase(name, product.getName())) {
                             final Toast toast = Toast.makeText(
                                     parentView.getContext(),
-                                    getHostingActivity().getString(R.string.products_unit_already_exists, name),
+                                    activity.getString(
+                                            R.string.products_unit_already_exists,
+                                            product.getName()),
                                     Toast.LENGTH_LONG);
                             toast.show();
                             adapter.selectItem(product);

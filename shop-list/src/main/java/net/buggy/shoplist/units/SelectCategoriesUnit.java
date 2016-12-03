@@ -9,8 +9,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.base.Objects;
-
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.TextCellFactory;
@@ -28,6 +26,7 @@ import java.util.List;
 import static net.buggy.components.list.TextCellFactory.HorizontalAlignment.LEFT;
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
+import static net.buggy.shoplist.utils.StringUtils.equalIgnoreCase;
 
 public class SelectCategoriesUnit extends Unit<ShopListActivity> {
 
@@ -121,10 +120,12 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
         private void addCategory(String name, Context context, DataStorage dataStorage) {
             final List<Category> categories = adapter.getAllItems();
             for (Category category : categories) {
-                if (Objects.equal(name, category.getName())) {
+                if (equalIgnoreCase(name, category.getName())) {
                     final Toast toast = Toast.makeText(
                             context,
-                            getHostingActivity().getString(R.string.categories_unit_already_exists, name),
+                            getHostingActivity().getString(
+                                    R.string.categories_unit_already_exists,
+                                    category.getName()),
                             Toast.LENGTH_LONG);
                     toast.show();
                     adapter.selectItem(category);

@@ -7,7 +7,6 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 import net.buggy.shoplist.model.Category;
@@ -21,23 +20,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.google.common.base.Objects.equal;
-
 public class DataStorage implements Serializable {
-
-    private final Map<Long, ShopItem> cachedShopItems = new ConcurrentHashMap<>();
-    private final Map<Long, Product> cachedProducts = new ConcurrentHashMap<>();
-    private final Map<Long, Category> cachedCategories = new ConcurrentHashMap<>();
 
     public DataStorage() {
         cleanDb();
-        fillCache();
     }
 
     private void cleanDb() {
@@ -49,16 +42,30 @@ public class DataStorage implements Serializable {
         }
     }
 
-    private void fillCache() {
-        final List<StoredCategory> storedCategories = new Select().from(StoredCategory.class).execute();
-        for (StoredCategory storedCategory : storedCategories) {
-            final Category category = new Category();
-            category.setName(storedCategory.name);
-            category.setId(storedCategory.getId());
-            category.setColor(storedCategory.color);
+    private Map<Long, ShopItem> loadShopItems() {
+        final Map<Long, Product> products = loadProducts();
 
-            cachedCategories.put(category.getId(), category);
+        final Map<Long, ShopItem> result = new LinkedHashMap<>();
+
+        final List<StoredShopItem> storedItems = new Select().from(StoredShopItem.class).execute();
+        for (StoredShopItem storedItem : storedItems) {
+            final Product product = products.get(storedItem.product.getId());
+
+            final ShopItem shopItem = new ShopItem();
+            shopItem.setId(storedItem.getId());
+            shopItem.setProduct(product);
+            shopItem.setQuantity(storedItem.quantity);
+
+            result.put(shopItem.getId(), shopItem);
         }
+
+        return result;
+    }
+
+    private Map<Long, Product> loadProducts() {
+        final Map<Long, Category> categoryMap = loadCategories();
+
+        final Map<Long, Product> result = new LinkedHashMap<>();
 
         final List<StoredProduct> storedProducts = new Select().from(StoredProduct.class).execute();
         for (StoredProduct storedProduct : storedProducts) {
@@ -68,59 +75,66 @@ public class DataStorage implements Serializable {
 
             Set<Category> productCategories = new LinkedHashSet<>();
             for (StoredCategory storedCategory : storedProduct.getCategories()) {
-                final Category category = cachedCategories.get(storedCategory.getId());
+                final Category category = categoryMap.get(storedCategory.getId());
                 productCategories.add(category);
             }
             product.setCategories(productCategories);
 
-            cachedProducts.put(product.getId(), product);
+            result.put(product.getId(), product);
         }
 
-        final List<StoredShopItem> storedItems = new Select().from(StoredShopItem.class).execute();
-        for (StoredShopItem storedItem : storedItems) {
-            final Product product = cachedProducts.get(storedItem.product.getId());
+        return result;
+    }
 
-            final ShopItem shopItem = new ShopItem();
-            shopItem.setId(storedItem.getId());
-            shopItem.setProduct(product);
-            shopItem.setQuantity(storedItem.quantity);
+    private Map<Long, Category> loadCategories() {
+        Map<Long, Category> result = new ConcurrentHashMap<>();
 
-            cachedShopItems.put(shopItem.getId(), shopItem);
+        final List<StoredCategory> storedCategories = new Select().from(StoredCategory.class).execute();
+        for (StoredCategory storedCategory : storedCategories) {
+            final Category category = new Category();
+            category.setName(storedCategory.name);
+            category.setId(storedCategory.getId());
+            category.setColor(storedCategory.color);
+
+            result.put(category.getId(), category);
         }
+
+        return result;
     }
 
     public void addShopItem(ShopItem shopItem) {
         final StoredShopItem storedShopItem = StoredShopItem.create(shopItem);
         final Long id = storedShopItem.save();
         shopItem.setId(id);
-
-        cachedShopItems.put(shopItem.getId(), shopItem);
     }
 
     public void addProduct(Product product) {
-        for (Product cachedProduct : cachedProducts.values()) {
-            if (equal(product.getName(), cachedProduct.getName())) {
-                throw new IllegalStateException(
-                        "Product with the name " + product.getName() + " already exists");
-            }
+        final List<Model> existingProducts = new Select()
+                .from(StoredProduct.class)
+                .where("name = ?  COLLATE NOCASE", product.getName())
+                .execute();
+        if (!existingProducts.isEmpty()) {
+            throw new IllegalStateException(
+                    "Product with the name " + product.getName() + " already exists");
         }
+
 
         final StoredProduct storedProduct = StoredProduct.create(product);
         final Long id = storedProduct.customSave();
         product.setId(id);
-
-        cachedProducts.put(product.getId(), product);
     }
 
     public List<ShopItem> getShopItems() {
-        final ArrayList<ShopItem> result = new ArrayList<>(cachedShopItems.values());
+        final Map<Long, ShopItem> shopItems = loadShopItems();
+        final ArrayList<ShopItem> result = new ArrayList<>(shopItems.values());
         Collections.sort(result, new IdComparator<ShopItem>());
 
         return result;
     }
 
     public List<Product> getProducts() {
-        return ImmutableList.copyOf(cachedProducts.values());
+        final Map<Long, Product> products = loadProducts();
+        return ImmutableList.copyOf(products.values());
     }
 
     public static List<Class<? extends Model>> getModelClasses() {
@@ -132,21 +146,17 @@ public class DataStorage implements Serializable {
     }
 
     public void saveProduct(Product product) {
-        if (!cachedProducts.containsKey(product.getId())) {
+        final StoredProduct storedProduct = StoredProduct.load(StoredProduct.class, product.getId());
+        if (storedProduct == null) {
             throw new IllegalStateException("Trying to save unexisting product");
         }
 
-        final StoredProduct storedProduct = StoredProduct.load(StoredProduct.class, product.getId());
         storedProduct.fillFrom(product);
         storedProduct.customSave();
-
-        cachedProducts.put(product.getId(), product);
     }
 
     public void removeShopItem(ShopItem shopItem) {
         StoredShopItem.delete(StoredShopItem.class, shopItem.getId());
-
-        cachedShopItems.remove(shopItem.getId());
     }
 
     public void removeProduct(Product product) {
@@ -156,38 +166,37 @@ public class DataStorage implements Serializable {
                 .execute();
 
         StoredProduct.delete(StoredProduct.class, product.getId());
-
-        cachedProducts.remove(product.getId());
     }
 
     public void saveShopItem(ShopItem shopItem) {
-        if (!cachedShopItems.containsKey(shopItem.getId())) {
+        final StoredShopItem storedShopItem = StoredShopItem.load(StoredShopItem.class, shopItem.getId());
+
+        if (storedShopItem == null) {
             throw new IllegalStateException("Trying to save unexisting shopItem");
         }
 
-        final StoredShopItem storedShopItem = StoredShopItem.load(StoredShopItem.class, shopItem.getId());
         storedShopItem.fillFrom(shopItem);
         storedShopItem.save();
-
-        cachedShopItems.put(shopItem.getId(), shopItem);
     }
 
     public void addCategory(Category category) {
-        for (Category existingCategory : cachedCategories.values()) {
-            if (Objects.equal(existingCategory.getName(), category.getName())) {
-                throw new IllegalStateException("Category with name " + category.getName() + " already exists");
-            }
+        final List<Model> existingCategories = new Select()
+                .from(StoredCategory.class)
+                .where("name = ?  COLLATE NOCASE", category.getName())
+                .execute();
+        if (!existingCategories.isEmpty()) {
+            throw new IllegalStateException("Category with name " + category.getName() + " already exists");
         }
 
         final StoredCategory storedCategory = StoredCategory.create(category);
         final Long id = storedCategory.save();
 
         category.setId(id);
-        cachedCategories.put(id, category);
     }
 
     public List<Category> getCategories() {
-        return ImmutableList.copyOf(cachedCategories.values());
+        final Map<Long, Category> categories = loadCategories();
+        return ImmutableList.copyOf(categories.values());
     }
 
     public void removeCategory(Category category) {
@@ -197,20 +206,17 @@ public class DataStorage implements Serializable {
                 .execute();
 
         StoredCategory.delete(StoredCategory.class, category.getId());
-
-        cachedCategories.remove(category.getId());
     }
 
     public void saveCategory(Category category) {
-        if (!cachedCategories.containsKey(category.getId())) {
+        final StoredCategory storedCategory = StoredCategory.load(StoredCategory.class, category.getId());
+
+        if (storedCategory == null) {
             throw new IllegalStateException("Trying to save unexisting category");
         }
 
-        final StoredCategory storedCategory = StoredCategory.load(StoredCategory.class, category.getId());
         storedCategory.fillFrom(category);
         storedCategory.save();
-
-        cachedCategories.put(category.getId(), category);
     }
 
     @Table(name = "Categories")

@@ -21,12 +21,11 @@ import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.units.views.ViewRenderer;
+import net.buggy.shoplist.utils.StringUtils;
 
 import org.apmem.tools.layouts.FlowLayout;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
@@ -100,7 +99,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
     private class MainViewRenderer extends ViewRenderer<ShopListActivity, ViewGroup> {
 
         private FlowLayout categoryChips;
-        private boolean firstRender;
+        private boolean firstRender = true;
 
         @Override
         public void renderTo(final ViewGroup parentView, final ShopListActivity activity) {
@@ -111,14 +110,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             final EditText nameField = (EditText) parentView.findViewById(R.id.edit_product_name_field);
             nameField.setText(product.getName());
 
-            final Set<String> usedNames = new LinkedHashSet<>();
-            for (Product anotherProduct : activity.getDataStorage().getProducts()) {
-                if (Objects.equal(anotherProduct, product)) {
-                    continue;
-                }
-
-                usedNames.add(anotherProduct.getName());
-            }
 
             final Button saveButton = (Button) parentView.findViewById(R.id.edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
@@ -132,11 +123,21 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                         return;
                     }
 
-                    if (usedNames.contains(name)) {
-                        final Toast toast = Toast.makeText(parentView.getContext(),
-                                "Product with the same name already exist ", Toast.LENGTH_LONG);
-                        toast.show();
-                        return;
+                    final List<Product> products = activity.getDataStorage().getProducts();
+                    for (Product anotherProduct : products) {
+                        if (Objects.equal(anotherProduct, product)) {
+                            continue;
+                        }
+
+                        if (StringUtils.equalIgnoreCase(anotherProduct.getName(), name)) {
+                            final Toast toast = Toast.makeText(parentView.getContext(),
+                                    activity.getString(
+                                            R.string.products_unit_already_exists,
+                                            anotherProduct.getName()),
+                                    Toast.LENGTH_LONG);
+                            toast.show();
+                            return;
+                        }
                     }
 
                     product.setName(name);

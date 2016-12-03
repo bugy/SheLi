@@ -14,6 +14,7 @@
         <item quantity="other">Unlink %1$d products?</item>
     </plurals>
     <string name="categories_unit_already_exists">%s already exists</string>
+    <string name="categories_unit_already_exists_on_edit">%s already exists, won\'t save</string>
     <string name="products_unit_already_exists">%s already exists</string>
     <string name="fast_creation_add_button_hint">Add</string>
     <string name="unit_products_title">Products</string>

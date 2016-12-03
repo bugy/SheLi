@@ -7,9 +7,9 @@ import java.util.Comparator;
 public class ShopItemComparator implements Comparator<ShopItem> {
     @Override
     public int compare(ShopItem i1, ShopItem i2) {
-        final Integer productCompare = CompareUtils.compareNulls(i1.getProduct(), i2.getProduct());
-        if (productCompare != null) {
-            return productCompare;
+        final Integer productNullCompare = CompareUtils.compareNulls(i1.getProduct(), i2.getProduct());
+        if (productNullCompare != null) {
+            return productNullCompare;
         }
 
         final String name1 = i1.getProduct().getName();
