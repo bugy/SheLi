@@ -3,7 +3,6 @@ package net.buggy.shoplist.components;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.view.KeyEvent;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Objects;
 
+import net.buggy.components.TagFlag;
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
@@ -77,15 +77,15 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
 
         final SeekBar colorSlider = (SeekBar) view.findViewById(R.id.cell_category_editable_color_slider);
 
-        final View colorView = view.findViewById(R.id.cell_category_editable_color_field);
+        final TagFlag colorFlag = (TagFlag) view.findViewById(R.id.cell_category_editable_color_field);
 
-        initColorSlider(colorSlider, colorView);
+        initColorSlider(colorSlider, colorFlag);
 
-        setColorViewColor(colorView, ModelHelper.getColor(category));
+        colorFlag.setColor(ModelHelper.getColor(category));
 
         final ColorChooserHandler colorChooserHandler =
                 new ColorChooserHandler(view, colorSlider, category, listener, activity);
-        colorChooserHandler.activateOn(colorView);
+        colorChooserHandler.activateOn(colorFlag);
     }
 
     private void saveNameChange(EditText nameField, Category category, ChangeListener<Category> listener) {
@@ -133,7 +133,7 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
         return bestProgress;
     }
 
-    private void initColorSlider(SeekBar colorSlider, final View colorView) {
+    private void initColorSlider(SeekBar colorSlider, final TagFlag colorFlag) {
         final Drawable progressDrawable = ViewUtils.createGradientDrawable(COLORS);
         colorSlider.setProgressDrawable(progressDrawable);
 
@@ -142,7 +142,7 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int selectedColor = getColorFromProgress(progress);
 
-                setColorViewColor(colorView, selectedColor);
+                colorFlag.setColor(selectedColor);
             }
 
             @Override
@@ -180,10 +180,6 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
             selectedColor = Color.argb(255, Math.min(red, 255), Math.min(green, 255), Math.min(blue, 255));
         }
         return selectedColor;
-    }
-
-    private void setColorViewColor(View colorView, int color) {
-        colorView.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     }
 
     private static class ColorChooserHandler implements ShopListActivity.OutsideClickListener {
