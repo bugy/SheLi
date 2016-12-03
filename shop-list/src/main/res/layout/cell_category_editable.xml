@@ -19,7 +19,7 @@
             android:background="@android:color/transparent"
             android:gravity="center_vertical|start"
             android:imeOptions="actionDone"
-            android:inputType="textAutoComplete"
+            android:inputType="text"
             android:maxLines="1"
             tools:text="Fruits" />
 
