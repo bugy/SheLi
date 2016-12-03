@@ -25,7 +25,6 @@ import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.views.ViewRenderer;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,13 +43,14 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
     @Override
     protected void onEvent(Object event) {
         if (event instanceof SelectProductsUnit.ProductsSelectedEvent) {
-            final Collection<Product> products = ((SelectProductsUnit.ProductsSelectedEvent) event).getProducts();
+            final Collection<SelectProductsUnit.RawShopItem> rawShopItems =
+                    ((SelectProductsUnit.ProductsSelectedEvent) event).getRawItems();
 
             final DataStorage dataStorage = getHostingActivity().getDataStorage();
-            for (Product product : products) {
+            for (SelectProductsUnit.RawShopItem rawShopItem : rawShopItems) {
                 final ShopItem shopItem = new ShopItem();
-                shopItem.setProduct(product);
-                shopItem.setQuantity(BigDecimal.ONE);
+                shopItem.setProduct(rawShopItem.getProduct());
+                shopItem.setQuantity(rawShopItem.getQuantity());
 
                 dataStorage.addShopItem(shopItem);
 

@@ -25,7 +25,9 @@ import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.units.views.ViewRenderer;
 import net.buggy.shoplist.utils.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +38,7 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
     private static final int ACTIVITY_VIEW_ID = R.id.main_activity_view;
     private static final int TOOLBAR_VIEW_ID = R.id.toolbar_container;
 
-    private transient FactoryBasedAdapter<Product> adapter;
+    private transient FactoryBasedAdapter<RawShopItem> adapter;
 
     private final Set<Product> disabledProducts;
     private Category selectedCategory;
@@ -56,23 +58,23 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
         addRenderer(TOOLBAR_VIEW_ID, new ToolbarRenderer());
     }
 
-    private void sendSelectionEventAndExit(Collection<Product> products) {
+    private void sendSelectionEventAndExit(Collection<RawShopItem> rawShopItems) {
         ShopListActivity hostingActivity = getHostingActivity();
 
         hostingActivity.stopUnit(SelectProductsUnit.this);
 
-        fireEvent(new ProductsSelectedEvent(products));
+        fireEvent(new ProductsSelectedEvent(rawShopItems));
     }
 
     public static final class ProductsSelectedEvent {
-        private final Collection<Product> products;
+        private final Collection<RawShopItem> rawShopItems;
 
-        public ProductsSelectedEvent(Collection<Product> products) {
-            this.products = products;
+        public ProductsSelectedEvent(Collection<RawShopItem> rawShopItems) {
+            this.rawShopItems = rawShopItems;
         }
 
-        public Collection<Product> getProducts() {
-            return products;
+        public Collection<RawShopItem> getRawItems() {
+            return rawShopItems;
         }
     }
 
@@ -91,11 +93,31 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                     new ProductSelectCellFactory());
             adapter.setSelectionMode(MULTI);
             adapter.setSorter(createComparator());
-            adapter.addAll(dataStorage.getProducts());
 
-            for (Product product : disabledProducts) {
-                adapter.disableItem(product);
+            final List<Product> products = dataStorage.getProducts();
+            for (Product product : products) {
+                final RawShopItem shopItem = new RawShopItem(product);
+                adapter.add(shopItem);
+
+                if (disabledProducts.contains(product)) {
+                    adapter.disableItem(shopItem);
+                }
             }
+
+            adapter.addDataListener(new FactoryBasedAdapter.DataListener<RawShopItem>() {
+                @Override
+                public void added(RawShopItem item) {
+                }
+
+                @Override
+                public void removed(RawShopItem item) {
+                }
+
+                @Override
+                public void changed(RawShopItem changedItem) {
+                    adapter.selectItem(changedItem);
+                }
+            });
 
             productsList.setAdapter(adapter);
 
@@ -103,7 +125,7 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final List<Product> selectedItems = adapter.getSelectedItems();
+                    final List<RawShopItem> selectedItems = adapter.getSelectedItems();
 
                     sendSelectionEventAndExit(selectedItems);
                 }
@@ -116,8 +138,10 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
             creationPanel.setListener(new FastCreationPanel.Listener() {
                 @Override
                 public void onCreate(String name) {
-                    final List<Product> products = adapter.getAllItems();
-                    for (Product product : products) {
+                    final List<RawShopItem> rawShopItems = adapter.getAllItems();
+                    for (RawShopItem item : rawShopItems) {
+                        final Product product = item.getProduct();
+
                         if (StringUtils.equalIgnoreCase(name, product.getName())) {
                             final Toast toast = Toast.makeText(
                                     parentView.getContext(),
@@ -126,7 +150,7 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                                             product.getName()),
                                     Toast.LENGTH_LONG);
                             toast.show();
-                            adapter.selectItem(product);
+                            adapter.selectItem(item);
                             return;
                         }
                     }
@@ -136,8 +160,9 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
 
                     dataStorage.addProduct(product);
 
-                    adapter.add(product);
-                    adapter.selectItem(product);
+                    final RawShopItem newItem = new RawShopItem(product);
+                    adapter.add(newItem);
+                    adapter.selectItem(newItem);
                 }
 
                 @Override
@@ -176,10 +201,15 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
         }
     }
 
-    private ProductComparator createComparator() {
-        return new ProductComparator() {
+    private Comparator<RawShopItem> createComparator() {
+        final ProductComparator productComparator = new ProductComparator();
+
+        return new Comparator<RawShopItem>() {
             @Override
-            public int compare(Product p1, Product p2) {
+            public int compare(RawShopItem i1, RawShopItem i2) {
+                final Product p1 = i1.getProduct();
+                final Product p2 = i2.getProduct();
+
                 if (SelectProductsUnit.this.disabledProducts.contains(p1)) {
                     if (!SelectProductsUnit.this.disabledProducts.contains(p2)) {
                         return 1;
@@ -188,15 +218,17 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                     return -1;
                 }
 
-                return super.compare(p1, p2);
+                return productComparator.compare(p1, p2);
             }
         };
     }
 
     private void filterProducts(final Category category, final String newText) {
-        adapter.setFilter(new Predicate<Product>() {
+        adapter.setFilter(new Predicate<RawShopItem>() {
             @Override
-            public boolean apply(Product product) {
+            public boolean apply(RawShopItem shopItem) {
+                final Product product = shopItem.getProduct();
+
                 if (!Strings.isNullOrEmpty(newText)) {
                     final String name = product.getName().toLowerCase();
                     final String text = newText.toLowerCase();
@@ -213,5 +245,27 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                 return product.getCategories().contains(category);
             }
         });
+    }
+
+    public static final class RawShopItem {
+        private final Product product;
+
+        private BigDecimal quantity = BigDecimal.ONE;
+
+        public RawShopItem(Product product) {
+            this.product = product;
+        }
+
+        public Product getProduct() {
+            return product;
+        }
+
+        public BigDecimal getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(BigDecimal quantity) {
+            this.quantity = quantity;
+        }
     }
 }
