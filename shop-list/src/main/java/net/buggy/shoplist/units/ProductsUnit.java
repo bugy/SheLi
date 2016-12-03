@@ -1,7 +1,5 @@
 package net.buggy.shoplist.units;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -57,33 +55,6 @@ public class ProductsUnit extends Unit<ShopListActivity> {
             } else {
                 dataStorage.saveProduct(product);
                 adapter.update(product);
-            }
-
-            return;
-
-        } else if (event instanceof EditProductUnit.ProductDeletedEvent) {
-            final Product product = ((EditProductUnit.ProductDeletedEvent) event).getProduct();
-
-            if (product.getId() != null) {
-                final List<ShopItem> linkedItems = findLinkedItems(dataStorage, product);
-
-                if (linkedItems.isEmpty()) {
-                    adapter.remove(product);
-
-                } else {
-
-                    new AlertDialog.Builder(getHostingActivity())
-                            .setTitle("Delete " + product.getName())
-                            .setMessage("Deleting product and " + linkedItems.size() + " linked items")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    adapter.remove(product);
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .show();
-                }
             }
 
             return;

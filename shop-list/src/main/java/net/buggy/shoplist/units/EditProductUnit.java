@@ -2,10 +2,10 @@ package net.buggy.shoplist.units;
 
 
 import android.graphics.PorterDuff;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -68,18 +68,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
         }
     }
 
-    public static final class ProductDeletedEvent {
-        private final Product product;
-
-        public ProductDeletedEvent(Product product) {
-            this.product = product;
-        }
-
-        public Product getProduct() {
-            return product;
-        }
-    }
-
     @Override
     protected void onEvent(Object event) {
         if (event instanceof SelectCategoriesUnit.CategoriesSelectedEvent) {
@@ -111,7 +99,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             nameField.setText(product.getName());
 
 
-            final Button saveButton = (Button) parentView.findViewById(R.id.edit_product_save_button);
+            final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,17 +133,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                     activity.stopUnit(EditProductUnit.this);
 
                     fireEvent(new ProductEditedEvent(product));
-                }
-            });
-
-            final ImageButton deleteButton = (ImageButton) parentView.findViewById(R.id.edit_product_delete_button);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    activity.stopUnit(EditProductUnit.this);
-
-                    fireEvent(new ProductDeletedEvent(product));
                 }
             });
 
