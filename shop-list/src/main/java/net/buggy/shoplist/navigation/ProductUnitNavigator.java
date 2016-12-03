@@ -7,7 +7,7 @@ import net.buggy.shoplist.units.ProductsUnit;
 public class ProductUnitNavigator extends UnitNavigator<ShopListActivity> {
 
     public ProductUnitNavigator(ShopListActivity activity) {
-        super(R.string.unit_products_title, R.drawable.ic_toys_black_24dp, activity);
+        super(R.string.unit_products_title, R.drawable.ic_bubble_chart_black_24dp, activity);
     }
 
     @Override

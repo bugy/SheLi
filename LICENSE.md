@@ -46,14 +46,14 @@ Used icons:
 * ic_add_black_36dp
 * ic_add_shopping_cart_black_48dp (modified)
 * ic_add_white_48dp
-* ic_cancel_black_24dp.png
-* ic_check_black_36dp.png
+* ic_bookmark_border_black_24dp
+* ic_bubble_chart_black_24dp
+* ic_cancel_black_24dp
+* ic_check_black_36dp
 * ic_check_white_24dp
-* ic_check_white_48dp.png
-* ic_close_black_36dp.png
+* ic_check_white_48dp
+* ic_close_black_36dp
 * ic_delete_forever_black_48dp
 * ic_edit_black_24dp
-* ic_local_offer_black_24dp
 * ic_menu_white_48dp
 * ic_shopping_cart_black_24dp
-* ic_toys_black_24dp
