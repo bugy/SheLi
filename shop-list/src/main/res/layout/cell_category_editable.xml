@@ -12,19 +12,19 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/cell_category_name_field"
+            android:id="@+id/cell_category_editable_name_field"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:imeOptions="actionDone"
             android:inputType="textAutoComplete"
             android:maxLines="1"
             tools:text="Fruits" />
 
         <View
-            android:id="@+id/cell_category_color_field"
+            android:id="@+id/cell_category_editable_color_field"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@drawable/color_chooser" />
@@ -32,7 +32,7 @@
     </LinearLayout>
 
     <SeekBar
-        android:id="@+id/cell_category_color_slider"
+        android:id="@+id/cell_category_editable_color_slider"
         android:layout_width="match_parent"
         android:layout_height="34dp"
         android:paddingTop="8dp"

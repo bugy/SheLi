@@ -9,12 +9,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
-import net.buggy.components.list.TextCellFactory;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.CategoryComparator;
+import net.buggy.shoplist.components.CategoryCellFactory;
 import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
@@ -23,7 +22,6 @@ import net.buggy.shoplist.units.views.ViewRenderer;
 
 import java.util.List;
 
-import static net.buggy.components.list.TextCellFactory.HorizontalAlignment.LEFT;
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
 import static net.buggy.shoplist.utils.StringUtils.equalIgnoreCase;
@@ -80,11 +78,9 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
         }
 
         private void initList(ViewGroup parentView, final ShopListActivity activity) {
-            final TextCellFactory<Category> textCellFactory = new TextCellFactory<>(LEFT);
-            final int selectionColor = ViewUtils.resolveColor(R.color.color_secondary, parentView.getContext());
-            textCellFactory.setSelectedBackgroundColor(selectionColor);
+            final CategoryCellFactory cellFactory = new CategoryCellFactory();
 
-            adapter = new FactoryBasedAdapter<>(textCellFactory);
+            adapter = new FactoryBasedAdapter<>(cellFactory);
             adapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.MULTI);
             adapter.setSorter(new CategoryComparator());
 

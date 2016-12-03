@@ -15,7 +15,7 @@ import net.buggy.components.list.SwipeToRemoveHandler;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.CategoryComparator;
-import net.buggy.shoplist.components.CategoryCellFactory;
+import net.buggy.shoplist.components.EditableCategoryCellFactory;
 import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
@@ -56,7 +56,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
         }
 
         private void initList(final ViewGroup parentView, final ShopListActivity activity) {
-            final CategoryCellFactory cellFactory = new CategoryCellFactory();
+            final EditableCategoryCellFactory cellFactory = new EditableCategoryCellFactory();
 
             adapter = new FactoryBasedAdapter<>(cellFactory);
             adapter.setSorter(new CategoryComparator());
