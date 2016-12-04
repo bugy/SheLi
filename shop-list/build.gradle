@@ -18,8 +18,8 @@ android {
         }
     }
     compileOptions {
-        targetCompatibility 1.7
-        sourceCompatibility 1.7
+        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_7
     }
 }
 
@@ -28,10 +28,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
-
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
-    compile group: 'org.apmem.tools', name: 'layouts', version: '1.10'
-
-    compile project(":components")
+    compile 'org.apmem.tools:layouts:1.10'
+    compile project(':components')
 }

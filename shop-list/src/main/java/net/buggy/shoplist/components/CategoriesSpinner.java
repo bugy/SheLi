@@ -98,6 +98,14 @@ public class CategoriesSpinner extends Spinner {
             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                 final View view = super.getDropDownView(position, convertView, parent);
 
+                final LayoutParams layoutParams = view.getLayoutParams();
+                if (position == getSelectedItemPosition()) {
+                    //we cannot set height to 0, because it will be ignored
+                    layoutParams.height = 1;
+                } else {
+                    layoutParams.height = LayoutParams.WRAP_CONTENT;
+                }
+
                 updateColor(view, position);
 
                 return view;
@@ -129,6 +137,8 @@ public class CategoriesSpinner extends Spinner {
         };
         categoryAdapter.add(ALL_CATEGORIES);
         categoryAdapter.addAll(categoriesMap.keySet());
+
+        categoryAdapter.setDropDownViewResource(R.layout.category_spinner_dropdown_item);
 
         return categoryAdapter;
     }
