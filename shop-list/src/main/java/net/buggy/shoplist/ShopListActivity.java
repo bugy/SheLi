@@ -102,6 +102,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         menuList = (RecyclerView) findViewById(R.id.main_activity_menu_list);
         menuPanel = (ViewGroup) findViewById(R.id.main_activity_menu_panel);
 
+        menuLayout.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
         final MenuCellFactory menuCellFactory = new MenuCellFactory();
         final FactoryBasedAdapter<MenuCellFactory.Item> menuAdapter = new FactoryBasedAdapter<>(
