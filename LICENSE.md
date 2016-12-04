@@ -55,6 +55,7 @@ Used icons:
 * ic_close_black_36dp
 * ic_delete_forever_black_48dp
 * ic_edit_black_24dp
+* ic_help_outline_black_24dp
 * ic_menu_white_48dp
 * ic_shopping_cart_black_24dp
 

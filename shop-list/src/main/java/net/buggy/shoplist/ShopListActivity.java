@@ -23,6 +23,7 @@ import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.MenuCellFactory;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.navigation.AboutAppUnitNavigator;
 import net.buggy.shoplist.navigation.CategoriesListUnitNavigator;
 import net.buggy.shoplist.navigation.ProductUnitNavigator;
 import net.buggy.shoplist.navigation.ShopListUnitNavigator;
@@ -67,7 +68,8 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         navigators = ImmutableList.of(
                 new ShopListUnitNavigator(this),
                 new ProductUnitNavigator(this),
-                new CategoriesListUnitNavigator(this)
+                new CategoriesListUnitNavigator(this),
+                new AboutAppUnitNavigator(this)
         );
     }
 

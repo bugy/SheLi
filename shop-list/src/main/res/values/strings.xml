@@ -18,7 +18,11 @@
     <string name="products_unit_already_exists">%s already exists</string>
     <string name="fast_creation_add_button_hint">Add</string>
     <string name="unit_products_title">Products</string>
+    <string name="unit_about_title">About</string>
     <string name="unit_categories_title">Categories</string>
     <string name="quantity_editor_title">%s quantity</string>
-    <string name="menu_logo_image_description">Logo image</string>
+    <string name="logo_image_description">Logo image</string>
+    <string name="unit_about_us">We, Anna and Iaroslav, are always glad to get your feedback</string>
+    <string name="unit_about_app">The ShopList can help you in daily shopping</string>
+    <string name="version_pattern">v%s</string>
 </resources>
