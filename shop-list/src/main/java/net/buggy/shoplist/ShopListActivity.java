@@ -3,6 +3,7 @@ package net.buggy.shoplist;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -101,8 +102,6 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         menuLayout = (DrawerLayout) findViewById(R.id.main_activity_menu_layout);
         menuList = (RecyclerView) findViewById(R.id.main_activity_menu_list);
         menuPanel = (ViewGroup) findViewById(R.id.main_activity_menu_panel);
-
-        menuLayout.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
         final MenuCellFactory menuCellFactory = new MenuCellFactory();
         final FactoryBasedAdapter<MenuCellFactory.Item> menuAdapter = new FactoryBasedAdapter<>(
@@ -345,6 +344,11 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
     @Override
     public void onBackPressed() {
+        if (menuLayout.isDrawerOpen(GravityCompat.END)) {
+            menuLayout.closeDrawers();
+            return;
+        }
+
         if (activeUnits.size() > 1) {
             final UnitDescriptor active = activeUnits.getLast();
 
