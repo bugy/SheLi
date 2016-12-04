@@ -6,4 +6,4 @@
     android:layout_marginStart="17dp"
     android:id="@+id/unit_about_title"
     android:gravity="center"
-    android:text="@string/unit_products_title"></TextView>
+    android:text="@string/unit_about_title"></TextView>
