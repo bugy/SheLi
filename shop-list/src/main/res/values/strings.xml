@@ -20,4 +20,5 @@
     <string name="unit_products_title">Products</string>
     <string name="unit_categories_title">Categories</string>
     <string name="quantity_editor_title">%s quantity</string>
+    <string name="menu_logo_image_description">Logo image</string>
 </resources>

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -54,6 +55,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
     private DrawerLayout menuLayout;
     private RecyclerView menuList;
+    private ViewGroup menuPanel;
     private ImageButton menuButton;
 
     private volatile String currentNavigatorName;
@@ -96,6 +98,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         menuButton = (ImageButton) findViewById(R.id.toolbar_menu_button);
         menuLayout = (DrawerLayout) findViewById(R.id.main_activity_menu_layout);
         menuList = (RecyclerView) findViewById(R.id.main_activity_menu_list);
+        menuPanel = (ViewGroup) findViewById(R.id.main_activity_menu_panel);
 
 
         final MenuCellFactory menuCellFactory = new MenuCellFactory();
@@ -149,7 +152,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
             @Override
             public void onClick(View v) {
                 if (menuButton.isPressed()) {
-                    menuLayout.openDrawer(menuList);
+                    menuLayout.openDrawer(menuPanel);
                 } else {
                     menuLayout.closeDrawers();
                 }

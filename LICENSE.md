@@ -57,3 +57,7 @@ Used icons:
 * ic_edit_black_24dp
 * ic_menu_white_48dp
 * ic_shopping_cart_black_24dp
+
+### Menu image (modified)
+http://www.oxygenna.com/news/brand-new-set-of-40-material-design-background
+Free to use for any purpose
