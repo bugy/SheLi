@@ -42,7 +42,7 @@ public class ProductSelectCellFactory implements CellFactory<RawShopItem, ViewGr
         itemNameField.setText(product.getName());
 
         final TextView quantityView = (TextView) view.findViewById(R.id.cell_product_quantity);
-        quantityView.setText(String.valueOf(rawShopItem.getQuantity()));
+        quantityView.setText(StringUtils.toString(rawShopItem.getQuantity()));
         quantityView.setOnClickListener(new QuantityClickListener(rawShopItem, listener, quantityView));
 
         view.setSelected(selected);

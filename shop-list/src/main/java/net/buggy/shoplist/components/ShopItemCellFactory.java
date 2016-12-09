@@ -32,7 +32,7 @@ public class ShopItemCellFactory implements CellFactory<ShopItem, ViewGroup> {
         String itemInfo = shopItem.getProduct().getName();
 
         final TextView quantityField = (TextView) view.findViewById(R.id.cell_shop_item_quantity_field);
-        quantityField.setText(String.valueOf(shopItem.getQuantity()));
+        quantityField.setText(StringUtils.toString(shopItem.getQuantity()));
         quantityField.setOnClickListener(new QuantityClickListener(shopItem, listener, quantityField));
 
         final TextView itemNameField = (TextView) view.findViewById(R.id.cell_shop_item_name_field);
