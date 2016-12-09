@@ -153,23 +153,9 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (menuButton.isPressed()) {
+                if (!isMenuOpened()) {
                     menuLayout.openDrawer(menuPanel);
-                } else {
-                    menuLayout.closeDrawers();
                 }
-            }
-        });
-
-        menuLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                menuButton.setPressed(true);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                menuButton.setPressed(false);
             }
         });
     }
@@ -344,7 +330,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
     @Override
     public void onBackPressed() {
-        if (menuLayout.isDrawerOpen(GravityCompat.END)) {
+        if (isMenuOpened()) {
             menuLayout.closeDrawers();
             return;
         }
@@ -357,6 +343,10 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         }
 
         super.onBackPressed();
+    }
+
+    private boolean isMenuOpened() {
+        return menuLayout.isDrawerOpen(GravityCompat.END);
     }
 
     public void startUnit(Unit<ShopListActivity> unit) {
