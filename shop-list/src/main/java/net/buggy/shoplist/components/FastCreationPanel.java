@@ -153,10 +153,7 @@ public class FastCreationPanel extends LinearLayout {
 
         if (!enabled) {
             button.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_IN);
-            button.setBackgroundColor(Color.TRANSPARENT);
         } else {
-            final int color = ViewUtils.resolveColor(R.color.color_disabled_background, button.getContext());
-            button.setBackgroundColor(color);
             button.setColorFilter(null);
         }
     }
