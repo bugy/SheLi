@@ -332,14 +332,17 @@ public class DataStorage implements Serializable {
         }
 
         public Long customSave() {
-            for (StoredProductCategoryLink newLink : newLinks) {
-                newLink.save();
-            }
             for (StoredProductCategoryLink deletedLink : deletedLinks) {
                 deletedLink.delete();
             }
 
-            return save();
+            final Long id = save();
+
+            for (StoredProductCategoryLink newLink : newLinks) {
+                newLink.save();
+            }
+
+            return id;
         }
 
         public Set<StoredCategory> getCategories() {
