@@ -150,7 +150,11 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                                             product.getName()),
                                     Toast.LENGTH_LONG);
                             toast.show();
-                            adapter.selectItem(item);
+
+                            if (!disabledProducts.contains(product)) {
+                                adapter.selectItem(item);
+                            }
+
                             return;
                         }
                     }
