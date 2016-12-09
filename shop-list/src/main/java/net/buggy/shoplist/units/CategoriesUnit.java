@@ -93,8 +93,9 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                         callback.delete();
 
                     } else {
+                        final int count = matchingProducts.size();
                         final String confirmation = activity.getResources().getQuantityString(
-                                R.plurals.unit_categories_unlink_confirmation, matchingProducts.size());
+                                R.plurals.unit_categories_unlink_confirmation, count, count);
                         callback.askConfirmation(confirmation);
                     }
                 }
