@@ -43,6 +43,7 @@ Licensed under the Apache License, Version 2.0
 https://material.io/icons/
 The icons are available under the Apache License Version 2.0
 Used icons:
+* ic_adb_black_48dp (modified)
 * ic_add_black_36dp
 * ic_add_shopping_cart_black_48dp (modified)
 * ic_add_white_48dp

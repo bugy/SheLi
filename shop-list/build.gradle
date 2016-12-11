@@ -1,9 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+            storeFile file(properties.getProperty('storeFile'))
+            keyAlias properties.getProperty('keyAlias')
+            storePassword properties.getProperty('storePassword')
+            keyPassword properties.getProperty('keyPassword')
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.1"
-
     defaultConfig {
         applicationId "net.buggy.shoplist"
         minSdkVersion 14
@@ -15,6 +25,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            applicationIdSuffix ".test"
+            versionNameSuffix ".test"
         }
     }
     compileOptions {
