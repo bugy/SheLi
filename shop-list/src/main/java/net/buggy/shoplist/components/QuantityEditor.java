@@ -8,6 +8,7 @@ import com.aigestudio.wheelpicker.WheelPicker;
 
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.Product;
+import net.buggy.shoplist.utils.NumberUtils;
 import net.buggy.shoplist.utils.StringUtils;
 
 import java.math.BigDecimal;
@@ -44,7 +45,7 @@ public class QuantityEditor {
                 final int position = quantityEditor.getCurrentItemPosition();
                 final Object value = quantityEditor.getData().get(position);
 
-                listener.quantitySelected(new BigDecimal((String) value));
+                listener.quantitySelected(NumberUtils.toBigDecimal((String) value));
             }
         });
 
@@ -61,7 +62,7 @@ public class QuantityEditor {
     private int getQuantityIndex(BigDecimal quantity, List<String> possibleQuantities) {
         int selectedIndex = 0;
         for (int i = 0; i < possibleQuantities.size(); i++) {
-            final BigDecimal possibleQuantity = new BigDecimal(possibleQuantities.get(i));
+            final BigDecimal possibleQuantity = NumberUtils.toBigDecimal(possibleQuantities.get(i));
 
             if (possibleQuantity.compareTo(quantity) == 0) {
                 selectedIndex = i;
