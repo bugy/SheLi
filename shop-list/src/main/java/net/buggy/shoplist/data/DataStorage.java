@@ -220,7 +220,7 @@ public class DataStorage implements Serializable {
     }
 
     @Table(name = "Categories")
-    private static class StoredCategory extends Model {
+    public static class StoredCategory extends Model {
         @Column(name = "Name")
         private String name;
 
@@ -245,7 +245,7 @@ public class DataStorage implements Serializable {
     }
 
     @Table(name = "ProductCategoryLinks")
-    private static class StoredProductCategoryLink extends Model {
+    public static class StoredProductCategoryLink extends Model {
 
         @Column(name = "product")
         private StoredProduct product;
@@ -274,7 +274,7 @@ public class DataStorage implements Serializable {
     }
 
     @Table(name = "Products")
-    private static class StoredProduct extends Model {
+    public static class StoredProduct extends Model {
         @Column(name = "Name")
         private String name;
 
@@ -358,7 +358,7 @@ public class DataStorage implements Serializable {
     }
 
     @Table(name = "ShopItems")
-    private static class StoredShopItem extends Model {
+    public static class StoredShopItem extends Model {
         @Column(name = "Product")
         private StoredProduct product;
 
