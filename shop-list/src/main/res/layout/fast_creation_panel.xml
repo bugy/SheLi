@@ -6,18 +6,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
+        <net.buggy.shoplist.components.SearchTextField
             android:id="@+id/fast_creation_name_field"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="11dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:gravity="center_vertical"
-            android:hint="@string/fast_creation_name_hint"
-            android:imeOptions="actionDone"
-            android:inputType="textAutoComplete"
-            android:maxLines="1" />
+            android:hint="@string/fast_creation_name_hint" />
 
         <ImageButton
             android:id="@+id/fast_creation_add_button"
@@ -28,9 +24,9 @@
             android:layout_marginRight="7dp"
             android:layout_marginTop="6dp"
             android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/fast_creation_add_button_hint"
             android:src="@drawable/ic_add_black_36dp"
-            android:tint="@color/color_accent"
-            android:contentDescription="@string/fast_creation_add_button_hint" />
+            android:tint="@color/color_accent" />
     </LinearLayout>
 
     <View

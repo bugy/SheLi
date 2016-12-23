@@ -20,6 +20,7 @@ import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.components.ProductSelectCellFactory;
 import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.units.views.ViewRenderer;
@@ -228,25 +229,12 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
     }
 
     private void filterProducts(final Category category, final String newText) {
+        final ProductsFilter productsFilter = new ProductsFilter(newText, category);
+
         adapter.setFilter(new Predicate<RawShopItem>() {
             @Override
             public boolean apply(RawShopItem shopItem) {
-                final Product product = shopItem.getProduct();
-
-                if (!Strings.isNullOrEmpty(newText)) {
-                    final String name = product.getName().toLowerCase();
-                    final String text = newText.toLowerCase();
-
-                    if (!name.contains(text)) {
-                        return false;
-                    }
-                }
-
-                if (category == null) {
-                    return true;
-                }
-
-                return product.getCategories().contains(category);
+                return productsFilter.apply(shopItem.getProduct());
             }
         });
     }

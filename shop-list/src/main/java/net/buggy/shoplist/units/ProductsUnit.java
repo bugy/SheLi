@@ -16,9 +16,13 @@ import net.buggy.components.list.SwipeToRemoveHandler;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
+import net.buggy.shoplist.components.CategoriesSpinner;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.components.ProductCellFactory;
+import net.buggy.shoplist.components.SearchTextField;
 import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.filters.ProductsFilter;
+import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.views.InflatingViewRenderer;
@@ -33,12 +37,13 @@ import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
 public class ProductsUnit extends Unit<ShopListActivity> {
 
     private transient FactoryBasedAdapter<Product> adapter;
+    private transient Category selectedCategory;
+    private transient String searchedText;
 
     @Override
     public void start() {
         addRenderer(MAIN_VIEW_ID, new MainViewRenderer());
-        addRenderer(TOOLBAR_VIEW_ID,
-                new InflatingViewRenderer<ShopListActivity, ViewGroup>(R.layout.unit_products_toolbar));
+        addRenderer(TOOLBAR_VIEW_ID, new ToolbarRenderer());
     }
 
     @Override
@@ -85,6 +90,8 @@ public class ProductsUnit extends Unit<ShopListActivity> {
             setupAddButton(parentView, activity);
 
             setupSwipeToRefresh(parentView, activity);
+
+            setupSearchField(parentView);
         }
 
         private void setupList(RelativeLayout parentView, final ShopListActivity activity) {
@@ -183,5 +190,52 @@ public class ProductsUnit extends Unit<ShopListActivity> {
                 }
             });
         }
+
+        private void setupSearchField(RelativeLayout parentView) {
+            final SearchTextField searchTextField = (SearchTextField) parentView.findViewById(
+                    R.id.unit_products_search_field);
+
+            searchTextField.setListener(new SearchTextField.Listener() {
+                @Override
+                public void onTextChanged(String text) {
+                    searchedText = text;
+
+                    filterProducts(selectedCategory, searchedText);
+                }
+
+                @Override
+                public void onFinish(String text) {
+                }
+            });
+        }
+    }
+
+    private class ToolbarRenderer extends InflatingViewRenderer<ShopListActivity, ViewGroup> {
+        public ToolbarRenderer() {
+            super(R.layout.unit_products_toolbar);
+        }
+
+        @Override
+        public void renderTo(ViewGroup parentView, ShopListActivity activity) {
+            super.renderTo(parentView, activity);
+
+            final DataStorage dataStorage = activity.getDataStorage();
+
+            final CategoriesSpinner categorySpinner = (CategoriesSpinner) parentView.findViewById(
+                    R.id.unit_products_category_spinner);
+            categorySpinner.setCategories(dataStorage.getCategories());
+            categorySpinner.setListener(new CategoriesSpinner.Listener() {
+                @Override
+                public void categorySelected(Category category) {
+                    selectedCategory = category;
+
+                    filterProducts(selectedCategory, searchedText);
+                }
+            });
+        }
+    }
+
+    private void filterProducts(Category selectedCategory, String searchedText) {
+        adapter.setFilter(new ProductsFilter(searchedText, selectedCategory));
     }
 }

@@ -1,33 +1,24 @@
 package net.buggy.shoplist.components;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.os.Build;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.common.base.Strings;
 
-import net.buggy.components.ViewUtils;
 import net.buggy.shoplist.R;
 
 public class FastCreationPanel extends LinearLayout {
 
     private Listener listener;
-    private EditText nameField;
+    private SearchTextField nameField;
 
     public FastCreationPanel(Context context) {
         super(context);
@@ -62,52 +53,11 @@ public class FastCreationPanel extends LinearLayout {
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(R.layout.fast_creation_panel, this, true);
 
-        nameField = (EditText) findViewById(R.id.fast_creation_name_field);
-        final Typeface typeface =  nameField.getTypeface();
-        updateTextFieldStyle(nameField.getText(), typeface);
+        nameField = (SearchTextField) findViewById(R.id.fast_creation_name_field);
 
         final ImageButton addButton = (ImageButton) findViewById(R.id.fast_creation_add_button);
 
         setEnabled(addButton, false);
-        nameField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                updateTextFieldStyle(s, typeface);
-
-                String text = s.toString().trim();
-                setEnabled(addButton, !Strings.isNullOrEmpty(text));
-
-                fireOnNameChanged(s.toString().trim());
-            }
-        });
-        nameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    final String name = nameField.getText().toString().trim();
-                    nameField.setText("");
-                    if (!name.isEmpty()) {
-                        fireOnCreate(name);
-                    }
-
-                    nameField.clearFocus();
-                    ViewUtils.hideSoftKeyboard((Activity) getContext(), FastCreationPanel.this);
-
-                    return true;
-                }
-
-                return false;
-            }
-        });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,14 +68,24 @@ public class FastCreationPanel extends LinearLayout {
                 fireOnCreate(name);
             }
         });
-    }
 
-    private void updateTextFieldStyle(Editable text, Typeface originalTypeface) {
-        if (text.length() == 0) {
-            nameField.setTypeface(originalTypeface, Typeface.ITALIC);
-        } else {
-            nameField.setTypeface(originalTypeface, Typeface.NORMAL);
-        }
+        nameField.setListener(new SearchTextField.Listener() {
+            @Override
+            public void onTextChanged(String text) {
+                setEnabled(addButton, !Strings.isNullOrEmpty(text));
+
+                fireOnNameChanged(text);
+            }
+
+            @Override
+            public void onFinish(String text) {
+                nameField.setText("");
+
+                if (!text.isEmpty()) {
+                    fireOnCreate(text);
+                }
+            }
+        });
     }
 
     public void setHint(String hint) {
