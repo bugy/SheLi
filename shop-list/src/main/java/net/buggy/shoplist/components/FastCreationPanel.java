@@ -19,6 +19,8 @@ public class FastCreationPanel extends LinearLayout {
 
     private Listener listener;
     private SearchTextField nameField;
+    private boolean editAddEnabled = false;
+    private ImageButton editAddButton;
 
     public FastCreationPanel(Context context) {
         super(context);
@@ -49,6 +51,12 @@ public class FastCreationPanel extends LinearLayout {
         this.listener = listener;
     }
 
+    public void setEditAddEnabled(boolean editAddEnabled) {
+        this.editAddEnabled = editAddEnabled;
+
+        editAddButton.setVisibility(editAddEnabled ? VISIBLE : INVISIBLE);
+    }
+
     private void initView() {
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(R.layout.fast_creation_panel, this, true);
@@ -56,8 +64,11 @@ public class FastCreationPanel extends LinearLayout {
         nameField = (SearchTextField) findViewById(R.id.fast_creation_name_field);
 
         final ImageButton addButton = (ImageButton) findViewById(R.id.fast_creation_add_button);
+        editAddButton = (ImageButton) findViewById(R.id.fast_creation_add_and_edit_button);
+
 
         setEnabled(addButton, false);
+        setEnabled(editAddButton, false);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,10 +80,21 @@ public class FastCreationPanel extends LinearLayout {
             }
         });
 
+        editAddButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String name = nameField.getText().toString().trim();
+                nameField.setText("");
+
+                fireOnEditCreate(name);
+            }
+        });
+
         nameField.setListener(new SearchTextField.Listener() {
             @Override
             public void onTextChanged(String text) {
                 setEnabled(addButton, !Strings.isNullOrEmpty(text));
+                setEnabled(editAddButton, !Strings.isNullOrEmpty(text));
 
                 fireOnNameChanged(text);
             }
@@ -108,6 +130,14 @@ public class FastCreationPanel extends LinearLayout {
         listener.onCreate(name);
     }
 
+    private void fireOnEditCreate(String name) {
+        if (listener == null) {
+            throw new IllegalStateException("FastCreationPanel requires listener");
+        }
+
+        listener.onEditCreate(name);
+    }
+
     private void setEnabled(ImageButton button, boolean enabled) {
         button.setEnabled(enabled);
 
@@ -124,6 +154,8 @@ public class FastCreationPanel extends LinearLayout {
 
     public interface Listener {
         void onCreate(String name);
+
+        void onEditCreate(String name);
 
         void onNameChanged(String name);
     }

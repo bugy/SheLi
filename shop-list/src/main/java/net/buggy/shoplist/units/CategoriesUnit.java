@@ -159,6 +159,11 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                 }
 
                 @Override
+                public void onEditCreate(String name) {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
                 public void onNameChanged(String name) {
 
                 }

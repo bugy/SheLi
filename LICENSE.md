@@ -45,6 +45,7 @@ The icons are available under the Apache License Version 2.0
 Used icons:
 * ic_adb_black_48dp (modified)
 * ic_add_black_36dp
+* ic_add_black_36dp (modified)
 * ic_add_shopping_cart_black_48dp (modified)
 * ic_add_white_48dp
 * ic_bookmark_border_black_24dp
@@ -56,6 +57,7 @@ Used icons:
 * ic_close_black_36dp
 * ic_delete_forever_black_48dp
 * ic_edit_black_24dp
+* ic_edit_black_24dp (modified)
 * ic_help_outline_black_24dp
 * ic_menu_white_48dp
 * ic_shopping_cart_black_24dp

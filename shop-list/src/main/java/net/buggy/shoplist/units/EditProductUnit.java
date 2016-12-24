@@ -1,7 +1,6 @@
 package net.buggy.shoplist.units;
 
 
-import android.graphics.PorterDuff;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,9 +145,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
         }
 
         private void initCategoriesSection(ViewGroup parentView, final ShopListActivity activity) {
-            final TextView categoriesLabel = (TextView) parentView.findViewById(R.id.edit_product_categories_label);
             final ImageButton categoriesButton = (ImageButton) parentView.findViewById(R.id.edit_product_select_categories);
-            categoriesButton.setColorFilter(categoriesLabel.getCurrentTextColor(), PorterDuff.Mode.MULTIPLY);
 
             categoryChips = (FlowLayout) parentView.findViewById(R.id.edit_product_category_chips_container);
             refillCategories();

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp"
         android:orientation="horizontal">
 
         <net.buggy.shoplist.components.SearchTextField
@@ -11,18 +14,32 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="11dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginEnd="7dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:hint="@string/fast_creation_name_hint" />
 
-        <ImageButton
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/fast_creation_add_and_edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/fast_creation_add_and_edit"
+            android:src="@drawable/add_and_edit_36dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:visibility="gone"
+            android:tint="@color/color_accent"
+            tools:visibility="visible" />
+
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/fast_creation_add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginEnd="7dp"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/fast_creation_add_button_hint"
             android:src="@drawable/ic_add_black_36dp"

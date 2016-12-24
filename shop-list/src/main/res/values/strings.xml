@@ -7,6 +7,7 @@
     <string name="unit_shot_items_title">To buy</string>
     <string name="fast_creation_name_hint">New</string>
     <string name="unit_select_products_search_hint">Search</string>
+    <string name="fast_creation_add_and_edit">Add and edit</string>
     <string name="unit_products_search_hint">Search</string>
     <string name="unit_products_search_icon">Search icon</string>
     <string name="unit_categories_list_title">%s categories</string>

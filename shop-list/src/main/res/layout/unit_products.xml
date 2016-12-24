@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/unit_products_search_icon"
                     android:src="@drawable/ic_search_black_24dp"
-                    android:tint="@android:color/secondary_text_dark" />
+                    android:tint="@color/color_primary_icons" />
 
             </LinearLayout>
 
