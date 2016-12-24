@@ -338,7 +338,9 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         if (activeUnits.size() > 1) {
             final UnitDescriptor active = activeUnits.getLast();
 
+            active.getUnit().onBackPressed();
             stopUnit(active);
+
             return;
         }
 

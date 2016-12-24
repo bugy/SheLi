@@ -114,6 +114,13 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
         super.onEvent(event);
     }
 
+    @Override
+    public void onBackPressed() {
+        final List<RawShopItem> selectedItems = adapter.getSelectedItems();
+
+        fireEvent(new ProductsSelectedEvent(selectedItems));
+    }
+
     private void sendSelectionEventAndExit(Collection<RawShopItem> rawShopItems) {
         ShopListActivity hostingActivity = getHostingActivity();
 

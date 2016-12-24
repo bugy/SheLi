@@ -123,4 +123,7 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
         this.listeningUnit = listeningUnit;
     }
 
+    public void onBackPressed() {
+
+    }
 }
