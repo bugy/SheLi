@@ -1,22 +1,23 @@
 <resources>
     <string name="app_name">ShopList</string>
     <string name="edit_product_name_field_label">Name</string>
-    <string name="edit_product_categories_label">Categories</string>
+    <string name="edit_product_categories_label">Linked categories</string>
     <string name="edit_product_save_button_label">Save</string>
     <string name="edit_product_delete_button_description">Delete product</string>
     <string name="unit_shot_items_title">To buy</string>
     <string name="fast_creation_name_hint">New</string>
-    <string name="unit_select_products_search_hint">Search</string>
+    <string name="unit_select_shopitems_search_hint">Search</string>
     <string name="fast_creation_add_and_edit">Add and edit</string>
     <string name="unit_products_search_hint">Search</string>
     <string name="unit_products_search_icon">Search icon</string>
     <string name="unit_categories_list_title">%s categories</string>
     <string name="unit_edit_product_title">Edit %s</string>
+    <string name="unit_edit_product_new_product">new product</string>
     <plurals name="unit_categories_unlink_confirmation">
         <item quantity="one">Unlink linked product?</item>
         <item quantity="other">Unlink %1$d products?</item>
     </plurals>
-    <string name="categories_unit_already_exists">%s already exists</string>
+    <string name="category_already_exists">%s already exists</string>
     <string name="categories_unit_already_exists_on_edit">%s already exists, won\'t save</string>
     <string name="products_unit_already_exists">%s already exists</string>
     <string name="fast_creation_add_button_hint">Add</string>
@@ -28,4 +29,10 @@
     <string name="unit_about_us">We, Anna and Iaroslav, are always glad to get your feedback</string>
     <string name="unit_about_app">The ShopList can help you in daily shopping</string>
     <string name="version_pattern">v%s</string>
+    <string name="unit_edit_category_name_label">Name</string>
+    <string name="unit_edit_category_color_label">Color</string>
+    <string name="unit_edit_category_products_label">Linked products</string>
+    <string name="unit_edit_category_title">Edit %s</string>
+    <string name="unit_edit_category_new_category">new category</string>
+    <string name="unit_edit_category_empty_name_not_allowed">Empty name is not allowed</string>
 </resources>

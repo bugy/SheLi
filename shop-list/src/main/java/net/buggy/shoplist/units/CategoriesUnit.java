@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.common.base.Objects;
-
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.SwipeToRemoveHandler;
@@ -20,6 +18,7 @@ import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
+import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.units.views.InflatingViewRenderer;
 import net.buggy.shoplist.units.views.ViewRenderer;
@@ -30,7 +29,6 @@ import java.util.Set;
 
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
-import static net.buggy.shoplist.utils.StringUtils.equalIgnoreCase;
 
 public class CategoriesUnit extends Unit<ShopListActivity> {
 
@@ -42,6 +40,36 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                 R.layout.unit_categories_toolbar));
 
         addRenderer(MAIN_VIEW_ID, new MainRenderer());
+    }
+
+    @Override
+    protected void onEvent(final Object event) {
+        if (event instanceof EditCategoryUnit.CategoryEditedEvent) {
+            final EditCategoryUnit.CategoryEditedEvent categoryEvent =
+                    (EditCategoryUnit.CategoryEditedEvent) event;
+
+            final DataStorage dataStorage = getHostingActivity().getDataStorage();
+            final Category category = categoryEvent.getCategory();
+            dataStorage.saveCategory(category);
+
+            adapter.update(category);
+
+            final Runnable relinkRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    ModelHelper.saveCategoryLinkedProducts(
+                            categoryEvent.getCategory(),
+                            categoryEvent.getCategoryProducts(),
+                            dataStorage);
+                }
+            };
+
+            new Thread(relinkRunnable).start();
+
+            return;
+        }
+
+        super.onEvent(event);
     }
 
     private class MainRenderer extends ViewRenderer<ShopListActivity, ViewGroup> {
@@ -56,7 +84,14 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
         }
 
         private void initList(final ViewGroup parentView, final ShopListActivity activity) {
-            final EditableCategoryCellFactory cellFactory = new EditableCategoryCellFactory();
+            final EditableCategoryCellFactory cellFactory = new EditableCategoryCellFactory(new EditableCategoryCellFactory.Listener() {
+                @Override
+                public void onEdit(Category category) {
+                    final EditCategoryUnit unit = new EditCategoryUnit(category, false);
+                    unit.setListeningUnit(CategoriesUnit.this);
+                    activity.startUnit(unit);
+                }
+            });
 
             adapter = new FactoryBasedAdapter<>(cellFactory);
             adapter.setSorter(new CategoryComparator());
@@ -113,22 +148,17 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
 
                 @Override
                 public void changed(Category changedItem) {
-                    final List<Category> categories = dataStorage.getCategories();
-                    for (Category category : categories) {
-                        if (Objects.equal(category, changedItem)) {
-                            continue;
-                        }
+                    final String name = changedItem.getName();
 
-                        if (equalIgnoreCase(changedItem.getName(), category.getName())) {
-                            final Toast toast = Toast.makeText(
-                                    parentView.getContext(),
-                                    getHostingActivity().getString(
-                                            R.string.categories_unit_already_exists_on_edit,
-                                            category.getName()),
-                                    Toast.LENGTH_LONG);
-                            toast.show();
-                            return;
-                        }
+                    if (!ModelHelper.isUnique(changedItem, name, activity)) {
+                        final Toast toast = Toast.makeText(
+                                parentView.getContext(),
+                                getHostingActivity().getString(
+                                        R.string.categories_unit_already_exists_on_edit,
+                                        name),
+                                Toast.LENGTH_LONG);
+                        toast.show();
+                        return;
                     }
 
                     dataStorage.saveCategory(changedItem);
@@ -157,37 +187,19 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                 public void onCreate(String name) {
                     addCategory(name, parentView.getContext(), activity.getDataStorage());
                 }
-
-                @Override
-                public void onEditCreate(String name) {
-                    throw new UnsupportedOperationException();
-                }
-
-                @Override
-                public void onNameChanged(String name) {
-
-                }
             });
         }
 
         private void addCategory(String name, Context context, DataStorage dataStorage) {
-            final List<Category> categories = adapter.getAllItems();
-            for (Category category : categories) {
-                if (equalIgnoreCase(name, category.getName())) {
-                    final Toast toast = Toast.makeText(
-                            context,
-                            getHostingActivity().getString(
-                                    R.string.categories_unit_already_exists,
-                                    category.getName()),
-                            Toast.LENGTH_LONG);
-                    toast.show();
-                    return;
-                }
+            if (!ModelHelper.isUnique(null, name, (ShopListActivity) context)) {
+                final Toast toast = Toast.makeText(context,
+                        context.getResources().getString(R.string.category_already_exists),
+                        Toast.LENGTH_LONG);
+                toast.show();
+                return;
             }
 
-            final Category category = new Category();
-
-            category.setName(name);
+            final Category category = ModelHelper.createCategory(name);
 
             dataStorage.addCategory(category);
 

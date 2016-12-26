@@ -18,35 +18,42 @@ import net.buggy.shoplist.compare.ProductComparator;
 import net.buggy.shoplist.components.CategoriesSpinner;
 import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
-import net.buggy.shoplist.components.ProductSelectCellFactory;
+import net.buggy.shoplist.components.SelectShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
+import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.EditProductUnit.ProductEditedEvent;
 import net.buggy.shoplist.units.views.ViewRenderer;
 import net.buggy.shoplist.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.buggy.components.list.FactoryBasedAdapter.SelectionMode.MULTI;
 
-public class SelectProductsUnit extends Unit<ShopListActivity> {
+public class SelectShopItemsUnit extends Unit<ShopListActivity> {
 
     private static final int ACTIVITY_VIEW_ID = R.id.main_activity_view;
     private static final int TOOLBAR_VIEW_ID = R.id.toolbar_container;
 
-    private transient FactoryBasedAdapter<RawShopItem> adapter;
+    private transient FactoryBasedAdapter<ShopItem> adapter;
 
     private final Set<Product> disabledProducts;
     private Category selectedCategory;
     private String filterText;
 
-    public SelectProductsUnit(Collection<Product> disabledProducts) {
+    private final Map<Product, ShopItem> cachedItems = new ConcurrentHashMap<>();
+    private final Set<ShopItem> selectedItems = Collections.newSetFromMap(new ConcurrentHashMap<ShopItem, Boolean>());
+
+    public SelectShopItemsUnit(Collection<Product> disabledProducts) {
         if (disabledProducts != null) {
             this.disabledProducts = ImmutableSet.copyOf(disabledProducts);
         } else {
@@ -56,44 +63,22 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
 
     @Override
     public void start() {
-        initAdapter();
-
         addRenderer(ACTIVITY_VIEW_ID, new MainViewRenderer());
         addRenderer(TOOLBAR_VIEW_ID, new ToolbarRenderer());
     }
 
-    private void initAdapter() {
-        final DataStorage dataStorage = getHostingActivity().getDataStorage();
-
-        adapter = new FactoryBasedAdapter<>(
-                new ProductSelectCellFactory());
-        adapter.setSelectionMode(MULTI);
-        adapter.setSorter(createComparator());
-
-        final List<Product> products = dataStorage.getProducts();
-        for (Product product : products) {
-            final RawShopItem shopItem = new RawShopItem(product);
-            adapter.add(shopItem);
-
-            if (disabledProducts.contains(product)) {
-                adapter.disableItem(shopItem);
-            }
+    private ShopItem getOrCreateShopItem(Product product) {
+        if (cachedItems.containsKey(product)) {
+            return cachedItems.get(product);
         }
 
-        adapter.addDataListener(new FactoryBasedAdapter.DataListener<RawShopItem>() {
-            @Override
-            public void added(RawShopItem item) {
-            }
+        final ShopItem shopItem = new ShopItem();
+        shopItem.setQuantity(BigDecimal.ONE);
+        shopItem.setProduct(product);
 
-            @Override
-            public void removed(RawShopItem item) {
-            }
+        cachedItems.put(product, shopItem);
 
-            @Override
-            public void changed(RawShopItem changedItem) {
-                adapter.selectItem(changedItem);
-            }
-        });
+        return shopItem;
     }
 
     @Override
@@ -104,7 +89,7 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
 
             getHostingActivity().getDataStorage().addProduct(product);
 
-            final RawShopItem newItem = new RawShopItem(product);
+            final ShopItem newItem = getOrCreateShopItem(product);
             adapter.add(newItem);
             adapter.selectItem(newItem);
 
@@ -116,28 +101,28 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
 
     @Override
     public void onBackPressed() {
-        final List<RawShopItem> selectedItems = adapter.getSelectedItems();
+        final List<ShopItem> selectedItems = adapter.getSelectedItems();
 
-        fireEvent(new ProductsSelectedEvent(selectedItems));
+        fireEvent(new ShopItemsCreatedEvent(selectedItems));
     }
 
-    private void sendSelectionEventAndExit(Collection<RawShopItem> rawShopItems) {
+    private void sendSelectionEventAndExit(Collection<ShopItem> shopItems) {
         ShopListActivity hostingActivity = getHostingActivity();
 
-        hostingActivity.stopUnit(SelectProductsUnit.this);
+        hostingActivity.stopUnit(SelectShopItemsUnit.this);
 
-        fireEvent(new ProductsSelectedEvent(rawShopItems));
+        fireEvent(new ShopItemsCreatedEvent(shopItems));
     }
 
-    public static final class ProductsSelectedEvent {
-        private final Collection<RawShopItem> rawShopItems;
+    public static final class ShopItemsCreatedEvent {
+        private final Collection<ShopItem> shopItems;
 
-        public ProductsSelectedEvent(Collection<RawShopItem> rawShopItems) {
-            this.rawShopItems = rawShopItems;
+        public ShopItemsCreatedEvent(Collection<ShopItem> shopItems) {
+            this.shopItems = shopItems;
         }
 
-        public Collection<RawShopItem> getRawItems() {
-            return rawShopItems;
+        public Collection<ShopItem> getShopItems() {
+            return shopItems;
         }
     }
 
@@ -147,27 +132,29 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
             final DataStorage dataStorage = activity.getDataStorage();
 
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
-            inflater.inflate(R.layout.unit_select_products, parentView, true);
+            inflater.inflate(R.layout.unit_select_shopitems, parentView, true);
 
-            final RecyclerView productsList = (RecyclerView) parentView.findViewById(R.id.unit_select_products_list);
+            initAdapter();
+
+            final RecyclerView productsList = (RecyclerView) parentView.findViewById(R.id.unit_select_shopitems_list);
             ListDecorator.decorateList(productsList);
 
             productsList.setAdapter(adapter);
 
-            final View acceptButton = parentView.findViewById(R.id.unit_select_products_button_accept);
+            final View acceptButton = parentView.findViewById(R.id.unit_select_shopitems_button_accept);
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final List<RawShopItem> selectedItems = adapter.getSelectedItems();
+                    final List<ShopItem> selectedItems = adapter.getSelectedItems();
 
                     sendSelectionEventAndExit(selectedItems);
                 }
             });
 
             final FastCreationPanel creationPanel = (FastCreationPanel)
-                    parentView.findViewById(R.id.unit_select_products_creation_panel);
+                    parentView.findViewById(R.id.unit_select_shopitems_creation_panel);
             creationPanel.setEditAddEnabled(true);
-            final String searchHint = parentView.getResources().getString(R.string.unit_select_products_search_hint);
+            final String searchHint = parentView.getResources().getString(R.string.unit_select_shopitems_search_hint);
             creationPanel.setHint(searchHint);
             creationPanel.setListener(new FastCreationPanel.Listener() {
                 @Override
@@ -181,7 +168,7 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
 
                     dataStorage.addProduct(product);
 
-                    final RawShopItem newItem = new RawShopItem(product);
+                    final ShopItem newItem = getOrCreateShopItem(product);
                     adapter.add(newItem);
                     adapter.selectItem(newItem);
                 }
@@ -195,13 +182,13 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                     final Product product = new Product();
                     product.setName(name);
                     final EditProductUnit editProductUnit = new EditProductUnit(product, true);
-                    editProductUnit.setListeningUnit(SelectProductsUnit.this);
+                    editProductUnit.setListeningUnit(SelectShopItemsUnit.this);
                     activity.startUnit(editProductUnit);
                 }
 
                 private boolean checkIfExists(String name) {
-                    final List<RawShopItem> rawShopItems = adapter.getAllItems();
-                    for (RawShopItem item : rawShopItems) {
+                    final List<ShopItem> shopItems = adapter.getAllItems();
+                    for (ShopItem item : shopItems) {
                         final Product product = item.getProduct();
 
                         if (StringUtils.equalIgnoreCase(name, product.getName())) {
@@ -235,6 +222,56 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
                 creationPanel.setText(filterText);
             }
         }
+
+        private void initAdapter() {
+            final DataStorage dataStorage = getHostingActivity().getDataStorage();
+
+            adapter = new FactoryBasedAdapter<>(
+                    new SelectShopItemCellFactory());
+            adapter.setSelectionMode(MULTI);
+            adapter.setSorter(createComparator());
+
+            final List<Product> products = dataStorage.getProducts();
+            for (Product product : products) {
+                ShopItem shopItem = getOrCreateShopItem(product);
+
+                adapter.add(shopItem);
+
+                if (disabledProducts.contains(product)) {
+                    adapter.disableItem(shopItem);
+                }
+            }
+
+            for (ShopItem selectedItem : selectedItems) {
+                adapter.selectItem(selectedItem);
+            }
+
+            adapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<ShopItem>() {
+                @Override
+                public void selectionChanged(ShopItem item, boolean selected) {
+                    if (selected) {
+                        selectedItems.add(item);
+                    } else {
+                        selectedItems.remove(item);
+                    }
+                }
+            });
+
+            adapter.addDataListener(new FactoryBasedAdapter.DataListener<ShopItem>() {
+                @Override
+                public void added(ShopItem item) {
+                }
+
+                @Override
+                public void removed(ShopItem item) {
+                }
+
+                @Override
+                public void changed(ShopItem changedItem) {
+                    adapter.selectItem(changedItem);
+                }
+            });
+        }
     }
 
     private class ToolbarRenderer extends ViewRenderer<ShopListActivity, RelativeLayout> {
@@ -243,10 +280,10 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
             final DataStorage dataStorage = activity.getDataStorage();
 
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
-            inflater.inflate(R.layout.unit_select_products_toolbar, parentView, true);
+            inflater.inflate(R.layout.unit_create_shopitems_toolbar, parentView, true);
 
             final CategoriesSpinner categorySpinner = (CategoriesSpinner) parentView.findViewById(
-                    R.id.unit_select_products_category_spinner);
+                    R.id.unit_select_shopitems_category_spinner);
             categorySpinner.setCategories(dataStorage.getCategories());
             categorySpinner.setListener(new CategoriesSpinner.Listener() {
                 @Override
@@ -259,20 +296,20 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
         }
     }
 
-    private Comparator<RawShopItem> createComparator() {
+    private Comparator<ShopItem> createComparator() {
         final ProductComparator productComparator = new ProductComparator();
 
-        return new Comparator<RawShopItem>() {
+        return new Comparator<ShopItem>() {
             @Override
-            public int compare(RawShopItem i1, RawShopItem i2) {
+            public int compare(ShopItem i1, ShopItem i2) {
                 final Product p1 = i1.getProduct();
                 final Product p2 = i2.getProduct();
 
-                if (SelectProductsUnit.this.disabledProducts.contains(p1)) {
-                    if (!SelectProductsUnit.this.disabledProducts.contains(p2)) {
+                if (SelectShopItemsUnit.this.disabledProducts.contains(p1)) {
+                    if (!SelectShopItemsUnit.this.disabledProducts.contains(p2)) {
                         return 1;
                     }
-                } else if (SelectProductsUnit.this.disabledProducts.contains(p2)) {
+                } else if (SelectShopItemsUnit.this.disabledProducts.contains(p2)) {
                     return -1;
                 }
 
@@ -284,33 +321,12 @@ public class SelectProductsUnit extends Unit<ShopListActivity> {
     private void filterProducts(final Category category, final String newText) {
         final ProductsFilter productsFilter = new ProductsFilter(newText, category);
 
-        adapter.setFilter(new Predicate<RawShopItem>() {
+        adapter.setFilter(new Predicate<ShopItem>() {
             @Override
-            public boolean apply(RawShopItem shopItem) {
+            public boolean apply(ShopItem shopItem) {
                 return productsFilter.apply(shopItem.getProduct());
             }
         });
     }
 
-    public static final class RawShopItem {
-        private final Product product;
-
-        private BigDecimal quantity = BigDecimal.ONE;
-
-        public RawShopItem(Product product) {
-            this.product = product;
-        }
-
-        public Product getProduct() {
-            return product;
-        }
-
-        public BigDecimal getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(BigDecimal quantity) {
-            this.quantity = quantity;
-        }
-    }
 }

@@ -1,30 +1,37 @@
 package net.buggy.shoplist.units;
 
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 
-import net.buggy.components.Chip;
 import net.buggy.components.ViewUtils;
+import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
+import net.buggy.shoplist.compare.CategoryComparator;
+import net.buggy.shoplist.components.CategoryCellFactory;
+import net.buggy.shoplist.components.ListDecorator;
+import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.units.views.ViewRenderer;
 import net.buggy.shoplist.utils.StringUtils;
 
-import org.apmem.tools.layouts.FlowLayout;
-
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
@@ -35,6 +42,12 @@ public class EditProductUnit extends Unit<ShopListActivity> {
     private final boolean newProduct;
 
     private transient MainViewRenderer mainViewRenderer;
+    private ToolbarRenderer toolbarRenderer;
+
+    private final Set<Category> selectedCategories = Collections.newSetFromMap(
+            new ConcurrentHashMap<Category, Boolean>());
+
+    private transient FactoryBasedAdapter<Category> categoriesAdapter;
 
     public EditProductUnit(Product product, boolean newProduct) {
         this.newProduct = newProduct;
@@ -43,16 +56,21 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
     @Override
     public void start() {
+        String productName;
+        if (newProduct) {
+            productName = getHostingActivity().getString(R.string.unit_edit_product_new_product);
+
+        } else {
+            productName = product.getName();
+            selectedCategories.addAll(product.getCategories());
+        }
+
+
         mainViewRenderer = new MainViewRenderer();
         addRenderer(MAIN_VIEW_ID, mainViewRenderer);
 
-        String productName;
-        if (newProduct) {
-            productName = "new product";
-        } else {
-            productName = product.getName();
-        }
-        addRenderer(TOOLBAR_VIEW_ID, new ToolbarRenderer(productName));
+        toolbarRenderer = new ToolbarRenderer(productName);
+        addRenderer(TOOLBAR_VIEW_ID, toolbarRenderer);
     }
 
     public static final class ProductEditedEvent {
@@ -67,25 +85,8 @@ public class EditProductUnit extends Unit<ShopListActivity> {
         }
     }
 
-    @Override
-    protected void onEvent(Object event) {
-        if (event instanceof SelectCategoriesUnit.CategoriesSelectedEvent) {
-            final List<Category> categories =
-                    ((SelectCategoriesUnit.CategoriesSelectedEvent) event).getSelectedCategories();
-
-            product.setCategories(categories);
-
-            mainViewRenderer.refillCategories();
-
-            return;
-        }
-
-        super.onEvent(event);
-    }
-
     private class MainViewRenderer extends ViewRenderer<ShopListActivity, ViewGroup> {
 
-        private FlowLayout categoryChips;
         private boolean firstRender = true;
 
         @Override
@@ -96,13 +97,30 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
             final EditText nameField = (EditText) parentView.findViewById(R.id.edit_product_name_field);
             nameField.setText(product.getName());
+            nameField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (!newProduct) {
+                        final String name = toName(s);
+                        toolbarRenderer.setProductName(name);
+                    }
+                }
+            });
 
 
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final String name = nameField.getText().toString().trim();
+                    final String name = toName(nameField.getText());
                     if (name.isEmpty()) {
                         final Toast toast = Toast.makeText(parentView.getContext(),
                                 "Empty name is not allowed", Toast.LENGTH_LONG);
@@ -127,6 +145,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                         }
                     }
 
+                    product.setCategories(categoriesAdapter.getSelectedItems());
                     product.setName(name);
 
                     activity.stopUnit(EditProductUnit.this);
@@ -144,58 +163,44 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             firstRender = false;
         }
 
+        @NonNull
+        private String toName(Editable editable) {
+            return editable.toString().trim();
+        }
+
         private void initCategoriesSection(ViewGroup parentView, final ShopListActivity activity) {
-            final ImageButton categoriesButton = (ImageButton) parentView.findViewById(R.id.edit_product_select_categories);
+            final DataStorage dataStorage = activity.getDataStorage();
 
-            categoryChips = (FlowLayout) parentView.findViewById(R.id.edit_product_category_chips_container);
-            refillCategories();
-
-            categoriesButton.setOnClickListener(new View.OnClickListener() {
+            categoriesAdapter = new FactoryBasedAdapter<>(new CategoryCellFactory());
+            categoriesAdapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.MULTI);
+            categoriesAdapter.setSorter(new CategoryComparator());
+            categoriesAdapter.addAll(dataStorage.getCategories());
+            for (Category selectedCategory : selectedCategories) {
+                categoriesAdapter.selectItem(selectedCategory);
+            }
+            categoriesAdapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<Category>() {
                 @Override
-                public void onClick(View v) {
-                    String productName = newProduct ? "New product" : product.getName();
-
-                    final SelectCategoriesUnit unit = new SelectCategoriesUnit(
-                            productName,
-                            ImmutableList.copyOf(product.getCategories()));
-
-                    activity.startUnit(unit);
-                    unit.setListeningUnit(EditProductUnit.this);
+                public void selectionChanged(Category item, boolean selected) {
+                    if (selected) {
+                        selectedCategories.add(item);
+                    } else {
+                        selectedCategories.remove(item);
+                    }
                 }
             });
-        }
 
-        public void refillCategories() {
-            categoryChips.removeAllViews();
-            for (final Category category : product.getCategories()) {
-                final Chip chip = createChip(category.getName(), categoryChips);
-                categoryChips.addView(chip);
-
-                chip.addListener(new Chip.Listener() {
-                    @Override
-                    public void closeClicked() {
-                        categoryChips.removeView(chip);
-                        product.getCategories().remove(category);
-                    }
-                });
-            }
-        }
-
-        private Chip createChip(String text, FlowLayout parentView) {
-            final FlowLayout.LayoutParams layoutParams = new FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, 0, ViewUtils.dpToPx(7, parentView.getContext()), 0);
-
-            final Chip chip = new Chip(parentView.getContext());
-            chip.setText(text);
-            chip.setLayoutParams(layoutParams);
-
-            return chip;
+            final RecyclerView categoriesList = (RecyclerView) parentView.findViewById(
+                    R.id.unit_edit_product_categories_list);
+            ListDecorator.decorateList(categoriesList);
+            categoriesList.setAdapter(categoriesAdapter);
         }
     }
 
     private static class ToolbarRenderer extends ViewRenderer<ShopListActivity, ViewGroup> {
 
-        private final String productName;
+        private transient String productName;
+        private transient TextView titleField;
+        private transient ShopListActivity activity;
 
         private ToolbarRenderer(String productName) {
             this.productName = productName;
@@ -203,12 +208,25 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
         @Override
         public void renderTo(ViewGroup parentView, ShopListActivity activity) {
+            this.activity = activity;
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_edit_product_toolbar, parentView, true);
 
-            final TextView titleField = (TextView) parentView.findViewById(R.id.unit_edit_product_title);
-            final String titlePattern = activity.getString(R.string.unit_edit_product_title);
-            titleField.setText(String.format(titlePattern, productName));
+            titleField = (TextView) parentView.findViewById(R.id.unit_edit_product_title);
+            updateTitle();
+        }
+
+        private void updateTitle() {
+            final String title = activity.getString(R.string.unit_edit_product_title, productName);
+            titleField.setText(title);
+        }
+
+        public void setProductName(String productName) {
+            this.productName = productName;
+
+            if (titleField != null) {
+                updateTitle();
+            }
         }
     }
 

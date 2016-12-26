@@ -33,5 +33,7 @@ public class ProductCellFactory implements CellFactory<Product, ViewGroup> {
                 R.id.cell_product_categories);
         final Multiset<Integer> colors = ModelHelper.getColors(product.getCategories());
         categoriesContainer.setColors(colors);
+
+        view.setSelected(selected);
     }
 }

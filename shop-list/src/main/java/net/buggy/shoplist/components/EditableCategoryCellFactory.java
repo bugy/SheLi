@@ -2,8 +2,6 @@ package net.buggy.shoplist.components;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -11,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.common.base.Objects;
@@ -25,18 +23,15 @@ import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 
-import java.util.Random;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class EditableCategoryCellFactory implements CellFactory<Category, LinearLayout> {
 
-    private static final int[] COLORS = new int[]{
-            Color.RED,
-            Color.argb(255, 255, 255, 0),
-            Color.GREEN,
-            Color.argb(255, 0, 255, 255),
-            Color.BLUE,
-            Color.argb(255, 255, 0, 255),
-            Color.RED};
+    private final Listener listener;
+
+    public EditableCategoryCellFactory(Listener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public LinearLayout createEmptyCell(Context context, ViewGroup parent) {
@@ -75,17 +70,41 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
             }
         });
 
-        final SeekBar colorSlider = (SeekBar) view.findViewById(R.id.cell_category_editable_color_slider);
-
         final TagFlag colorFlag = (TagFlag) view.findViewById(R.id.cell_category_editable_color_field);
-
-        initColorSlider(colorSlider, colorFlag);
-
         colorFlag.setColor(ModelHelper.getColor(category));
+        colorFlag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbilWarnaDialog dialog = new AmbilWarnaDialog(
+                        colorFlag.getContext(),
+                        colorFlag.getColor(),
+                        new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                            @Override
+                            public void onCancel(AmbilWarnaDialog dialog) {
+                            }
 
-        final ColorChooserHandler colorChooserHandler =
-                new ColorChooserHandler(view, colorSlider, category, listener, activity);
-        colorChooserHandler.activateOn(colorFlag);
+                            @Override
+                            public void onOk(AmbilWarnaDialog dialog, int color) {
+                                colorFlag.setColor(color);
+                                category.setColor(color);
+
+                                listener.onChange(category);
+                            }
+                        });
+
+                ViewUtils.showStyled(dialog.getDialog());
+            }
+        });
+
+
+        final ImageButton editButton = (ImageButton) view.findViewById(
+                R.id.cell_category_editable_edit_button);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditableCategoryCellFactory.this.listener.onEdit(category);
+            }
+        });
     }
 
     private void saveNameChange(EditText nameField, Category category, ChangeListener<Category> listener) {
@@ -101,159 +120,7 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
         listener.onChange(category);
     }
 
-    private static int getProgressFromColor(int color) {
-        if (color == Color.WHITE) {
-            final Random random = new Random();
-            return random.nextInt(101);
-        }
-
-        final int red = Color.red(color);
-        final int green = Color.green(color);
-        final int blue = Color.blue(color);
-
-        int bestProgress = 0;
-        int bestDiff = Integer.MAX_VALUE;
-
-        for (int i = 0; i <= 100; i++) {
-            final int colorFromProgress = getColorFromProgress(i);
-            int progressRed = Color.red(colorFromProgress);
-            int progressGreen = Color.green(colorFromProgress);
-            int progressBlue = Color.blue(colorFromProgress);
-
-            int sumDiff = Math.abs(red - progressRed)
-                    + Math.abs(green - progressGreen)
-                    + Math.abs(blue - progressBlue);
-
-            if (sumDiff < bestDiff) {
-                bestDiff = sumDiff;
-                bestProgress = i;
-            }
-        }
-
-        return bestProgress;
-    }
-
-    private void initColorSlider(SeekBar colorSlider, final TagFlag colorFlag) {
-        final Drawable progressDrawable = ViewUtils.createGradientDrawable(COLORS);
-        colorSlider.setProgressDrawable(progressDrawable);
-
-        colorSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int selectedColor = getColorFromProgress(progress);
-
-                colorFlag.setColor(selectedColor);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-    }
-
-    private static int getColorFromProgress(int progress) {
-        float progressPerPosition = 100f / (COLORS.length - 1);
-        final int position = (int) Math.floor(progress / (progressPerPosition));
-        int positionProgress = progress - (int) (position * progressPerPosition);
-        float weight2 = positionProgress / progressPerPosition;
-        float weight1 = 1 - weight2;
-
-
-        int selectedColor;
-        if (position >= (COLORS.length - 1)) {
-            selectedColor = COLORS[COLORS.length - 1];
-
-        } else {
-            final int color1 = COLORS[position];
-            final int color2 = COLORS[position + 1];
-
-            final int red = (int) (Color.red(color1) * weight1 + Color.red(color2) * weight2);
-            final int green = (int) (Color.green(color1) * weight1 + Color.green(color2) * weight2);
-            final int blue = (int) (Color.blue(color1) * weight1 + Color.blue(color2) * weight2);
-
-            selectedColor = Color.argb(255, Math.min(red, 255), Math.min(green, 255), Math.min(blue, 255));
-        }
-        return selectedColor;
-    }
-
-    private static class ColorChooserHandler implements ShopListActivity.OutsideClickListener {
-        private final LinearLayout view;
-        private final int paddingBottom;
-        private final SeekBar colorSlider;
-        private final Category category;
-        private final ChangeListener<Category> listener;
-        private final ShopListActivity activity;
-        private Runnable sliderCloseRunnable;
-
-        public ColorChooserHandler(
-                LinearLayout parentView,
-                SeekBar colorSlider,
-                Category category,
-                ChangeListener<Category> listener,
-                ShopListActivity activity) {
-
-            this.view = parentView;
-            this.colorSlider = colorSlider;
-            this.category = category;
-            this.listener = listener;
-            this.activity = activity;
-
-            this.paddingBottom = parentView.getPaddingBottom();
-        }
-
-        @Override
-        public void clickedOutside() {
-            view.setPadding(
-                    view.getPaddingLeft(),
-                    view.getPaddingTop(),
-                    view.getPaddingRight(),
-                    paddingBottom);
-
-            if (colorSlider.isShown()) {
-                final int selectedColor = getColorFromProgress(colorSlider.getProgress());
-                category.setColor(selectedColor);
-
-                listener.onChange(category);
-            }
-
-            activity.removeOutsideClickListener(colorSlider, this);
-
-            if (sliderCloseRunnable == null) {
-                sliderCloseRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        colorSlider.setVisibility(View.GONE);
-                    }
-                };
-            }
-            view.post(sliderCloseRunnable);
-        }
-
-        public void activateOn(View controllingView) {
-            controllingView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (colorSlider.isShown()) {
-                        return;
-                    }
-
-                    final int progress = getProgressFromColor(ModelHelper.getColor(category));
-                    colorSlider.setProgress(progress);
-
-                    colorSlider.setVisibility(View.VISIBLE);
-                    colorSlider.requestFocusFromTouch();
-
-                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), 0);
-
-                    activity.addOutsideClickListener(colorSlider, ColorChooserHandler.this);
-                }
-            });
-        }
+    public interface Listener {
+        void onEdit(Category category);
     }
 }

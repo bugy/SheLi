@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 
 import com.aigestudio.wheelpicker.WheelPicker;
 
+import net.buggy.components.ViewUtils;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.utils.NumberUtils;
@@ -56,7 +57,8 @@ public class QuantityEditor {
             }
         });
 
-        builder.show();
+        final AlertDialog dialog = builder.create();
+        ViewUtils.showStyled(dialog);
     }
 
     private int getQuantityIndex(BigDecimal quantity, List<String> possibleQuantities) {

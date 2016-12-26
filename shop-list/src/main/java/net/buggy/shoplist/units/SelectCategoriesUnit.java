@@ -18,6 +18,7 @@ import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
+import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.units.views.ViewRenderer;
 
 import java.util.List;
@@ -104,16 +105,6 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
                 public void onCreate(String name) {
                     addCategory(name, parentView.getContext(), activity.getDataStorage());
                 }
-
-                @Override
-                public void onEditCreate(String name) {
-                    throw new UnsupportedOperationException();
-                }
-
-                @Override
-                public void onNameChanged(String name) {
-
-                }
             });
 
         }
@@ -125,7 +116,7 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
                     final Toast toast = Toast.makeText(
                             context,
                             getHostingActivity().getString(
-                                    R.string.categories_unit_already_exists,
+                                    R.string.category_already_exists,
                                     category.getName()),
                             Toast.LENGTH_LONG);
                     toast.show();
@@ -134,9 +125,7 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
                 }
             }
 
-            final Category category = new Category();
-
-            category.setName(name);
+            final Category category = ModelHelper.createCategory(name);
 
             dataStorage.addCategory(category);
 

@@ -42,19 +42,15 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
 
     @Override
     protected void onEvent(Object event) {
-        if (event instanceof SelectProductsUnit.ProductsSelectedEvent) {
-            final Collection<SelectProductsUnit.RawShopItem> rawShopItems =
-                    ((SelectProductsUnit.ProductsSelectedEvent) event).getRawItems();
+        if (event instanceof SelectShopItemsUnit.ShopItemsCreatedEvent) {
+            final Collection<ShopItem> newItems =
+                    ((SelectShopItemsUnit.ShopItemsCreatedEvent) event).getShopItems();
 
             final DataStorage dataStorage = getHostingActivity().getDataStorage();
-            for (SelectProductsUnit.RawShopItem rawShopItem : rawShopItems) {
-                final ShopItem shopItem = new ShopItem();
-                shopItem.setProduct(rawShopItem.getProduct());
-                shopItem.setQuantity(rawShopItem.getQuantity());
+            for (ShopItem item : newItems) {
+                dataStorage.addShopItem(item);
 
-                dataStorage.addShopItem(shopItem);
-
-                adapter.add(shopItem);
+                adapter.add(item);
             }
 
             return;
@@ -118,9 +114,9 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                         existingProducts.add(availableShopItem.getProduct());
                     }
 
-                    final SelectProductsUnit selectProductsUnit = new SelectProductsUnit(existingProducts);
-                    selectProductsUnit.setListeningUnit(ShopItemListUnit.this);
-                    activity.startUnit(selectProductsUnit);
+                    final SelectShopItemsUnit selectShopItemsUnit = new SelectShopItemsUnit(existingProducts);
+                    selectShopItemsUnit.setListeningUnit(ShopItemListUnit.this);
+                    activity.startUnit(selectShopItemsUnit);
                 }
             });
 

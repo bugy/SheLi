@@ -152,11 +152,17 @@ public class FastCreationPanel extends LinearLayout {
         nameField.setText(text);
     }
 
-    public interface Listener {
-        void onCreate(String name);
+    public static abstract class Listener {
+        public void onCreate(String name) {
 
-        void onEditCreate(String name);
+        }
 
-        void onNameChanged(String name);
+        public void onEditCreate(String name) {
+
+        }
+
+        public void onNameChanged(String name) {
+
+        }
     }
 }

@@ -65,3 +65,8 @@ Used icons:
 ### Menu image (modified)
 http://www.oxygenna.com/news/brand-new-set-of-40-material-design-background
 Free to use for any purpose
+
+### com.github.yukuku:ambilwarna:2.0.1 (Android Color Picker aka AmbilWarna)
+https://github.com/yukuku/ambilwarna
+Copyright 2009-2015 Yuku
+Licensed under the Apache License, Version 2.0
