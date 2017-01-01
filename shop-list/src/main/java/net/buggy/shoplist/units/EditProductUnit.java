@@ -205,7 +205,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
         private transient String productName;
         private transient TextView titleField;
-        private transient ShopListActivity activity;
 
         private ToolbarRenderer(String productName) {
             this.productName = productName;
@@ -213,7 +212,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
         @Override
         public void renderTo(ViewGroup parentView, ShopListActivity activity) {
-            this.activity = activity;
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_edit_product_toolbar, parentView, true);
 
@@ -222,7 +220,9 @@ public class EditProductUnit extends Unit<ShopListActivity> {
         }
 
         private void updateTitle() {
-            final String title = activity.getString(R.string.unit_edit_product_title, productName);
+            final String title = titleField.getContext().getString(
+                    R.string.unit_edit_product_title, productName);
+
             titleField.setText(title);
         }
 

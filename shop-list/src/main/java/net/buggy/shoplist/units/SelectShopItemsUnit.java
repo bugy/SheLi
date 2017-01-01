@@ -15,10 +15,10 @@ import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
-import net.buggy.shoplist.components.AddShopItemCellFactory;
 import net.buggy.shoplist.components.CategoriesSpinner;
 import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
+import net.buggy.shoplist.components.SelectableShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
@@ -230,7 +230,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             final DataStorage dataStorage = getHostingActivity().getDataStorage();
 
             adapter = new FactoryBasedAdapter<>(
-                    new AddShopItemCellFactory());
+                    new SelectableShopItemCellFactory());
             adapter.setSelectionMode(MULTI);
             adapter.setSorter(createComparator());
 

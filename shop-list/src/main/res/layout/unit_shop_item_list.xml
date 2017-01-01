@@ -14,7 +14,7 @@
             android:id="@+id/shopping_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/cell_shop_item" />
+            tools:listitem="@layout/cell_to_buy_shop_item" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

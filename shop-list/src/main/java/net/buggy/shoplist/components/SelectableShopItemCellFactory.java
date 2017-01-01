@@ -27,31 +27,23 @@ import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.utils.StringUtils;
 
-import java.math.BigDecimal;
-
-public class ShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
+public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
 
     public static final String COMMENT_LISTENER_KEY = "COMMENT_LISTENER";
-
-    private final int layoutId;
-
-    public ShopItemCellFactory(int layoutId) {
-        this.layoutId = layoutId;
-    }
 
     @Override
     public ViewGroup createEmptyCell(final Context context, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         final ViewGroup result = (ViewGroup) inflater.inflate(
-                layoutId, parent, false);
+                R.layout.cell_selectable_shop_item, parent, false);
 
         final EditText commentEditField = (EditText) result.findViewById(
-                R.id.cell_shop_item_comment_field);
+                R.id.cell_selectable_shop_item_comment_field);
         ViewUtils.makeHintItalic(commentEditField);
 
         final ImageButton commentButton = (ImageButton) result.findViewById(
-                R.id.cell_shop_item_comment_button);
+                R.id.cell_selectable_shop_item_comment_button);
 
         final ShopListActivity activity = (ShopListActivity) commentEditField.getContext();
         activity.addOutsideClickListener(commentEditField, new ShopListActivity.OutsideClickListener() {
@@ -74,45 +66,69 @@ public class ShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
         final ShopItem shopItem = cell.getData();
         final Product product = shopItem.getProduct();
 
-        final TextView itemNameField = (TextView) view.findViewById(R.id.cell_shop_item_name_field);
+        view.setSelected(cell.isSelected());
+
+        final TextView itemNameField = (TextView) view.findViewById(R.id.cell_selectable_shop_item_name_field);
         if (newCell) {
             itemNameField.setText(product.getName());
         }
 
-        final ImageButton commentButton = (ImageButton) view.findViewById(R.id.cell_shop_item_comment_button);
+        final ImageButton commentButton = (ImageButton) view.findViewById(R.id.cell_selectable_shop_item_comment_button);
 
-        final TextView quantityView = (TextView) view.findViewById(R.id.cell_shop_item_quantity_field);
+        final TextView quantityView = (TextView) view.findViewById(R.id.cell_selectable_shop_item_quantity_field);
         final EditText commentEditField = (EditText) view.findViewById(
-                R.id.cell_shop_item_comment_field);
+                R.id.cell_selectable_shop_item_comment_field);
 
-        quantityView.setText(StringUtils.toString(shopItem.getQuantity()));
-        quantityView.setOnClickListener(new QuantityClickListener(shopItem, listener, quantityView));
+        if (!cell.isEnabled()) {
+            final int disabledColor = ViewUtils.resolveColor(R.color.color_disabled_background, view.getContext());
+            view.setBackgroundColor(disabledColor);
 
-        commentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                commentButtonClicked(commentEditField, listener);
-            }
-        });
+            itemNameField.setAlpha(0.6f);
+            commentEditField.setAlpha(0.6f);
+
+            quantityView.setVisibility(View.INVISIBLE);
+
+            commentButton.setVisibility(View.GONE);
+            commentEditField.setFocusable(false);
+
+        } else {
+            itemNameField.setAlpha(1);
+            commentEditField.setAlpha(1);
+
+            view.setBackgroundResource(R.drawable.selectable_background);
+
+            quantityView.setVisibility(View.VISIBLE);
+
+            commentEditField.setFocusable(true);
+            commentButton.setVisibility(View.VISIBLE);
+
+            quantityView.setText(StringUtils.toString(shopItem.getQuantity()));
+            quantityView.setOnClickListener(new QuantityClickListener(shopItem, listener, quantityView));
+
+            commentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!commentEditField.isFocused()) {
+                        commentEditField.setVisibility(View.VISIBLE);
+                        ViewUtils.focusTextField(commentEditField);
+                    } else {
+                        commentEditField.clearFocus();
+                        ViewUtils.hideSoftKeyboard(commentEditField);
+                    }
+
+                    listener.setSelected(true);
+                }
+            });
+        }
 
         if (newCell) {
             setupCommentField(cell, listener, shopItem, commentEditField);
         }
 
         final TagFlagContainer categoriesContainer = (TagFlagContainer) view.findViewById(
-                R.id.cell_shop_item_categories);
+                R.id.cell_selectable_shop_item_categories);
         final Multiset<Integer> colors = ModelHelper.getColors(product.getCategories());
         categoriesContainer.setColors(colors);
-    }
-
-    protected void commentButtonClicked(EditText commentEditField, ChangeListener<ShopItem> listener) {
-        if (!commentEditField.isFocused()) {
-            commentEditField.setVisibility(View.VISIBLE);
-            ViewUtils.focusTextField(commentEditField);
-        } else {
-            commentEditField.clearFocus();
-            ViewUtils.hideSoftKeyboard(commentEditField);
-        }
     }
 
     private void setupCommentField(final Cell<ShopItem> cell,
@@ -142,7 +158,15 @@ public class ShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
         commentEditField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                commentFocusChanged(hasFocus, listener, commentEditField);
+                if (!hasFocus) {
+                    final String comment = commentEditField.getText().toString().trim();
+
+                    if (comment.isEmpty()) {
+                        commentEditField.setVisibility(View.GONE);
+                    }
+                } else {
+                    listener.setSelected(true);
+                }
             }
         });
 
@@ -173,55 +197,14 @@ public class ShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
         commentEditField.addTextChangedListener(textChangeListener);
     }
 
-    protected void commentFocusChanged(boolean newFocused, ChangeListener<ShopItem> listener, EditText commentEditField) {
-        if (!newFocused) {
-            final String comment = commentEditField.getText().toString().trim();
-
-            if (comment.isEmpty()) {
-                commentEditField.setVisibility(View.GONE);
-            }
-        }
-    }
-
     @Override
     public void clearCell(Cell<ShopItem> cell, ViewGroup itemView) {
         final Object listener = cell.getViewState().get(COMMENT_LISTENER_KEY);
         if (listener != null) {
-            final EditText commentField = (EditText) itemView.findViewById(R.id.cell_shop_item_comment_field);
+            final EditText commentField = (EditText) itemView.findViewById(
+                    R.id.cell_selectable_shop_item_comment_field);
             commentField.removeTextChangedListener((TextWatcher) listener);
         }
     }
 
-    private static class QuantityClickListener implements View.OnClickListener {
-        private final ShopItem shopItem;
-        private final ChangeListener<ShopItem> listener;
-        private final TextView quantityView;
-
-        public QuantityClickListener(
-                ShopItem shopItem,
-                ChangeListener<ShopItem> listener,
-                TextView quantityView) {
-
-            this.shopItem = shopItem;
-            this.listener = listener;
-            this.quantityView = quantityView;
-        }
-
-        @Override
-        public void onClick(View view) {
-            final QuantityEditor quantityEditor = new QuantityEditor();
-            quantityEditor.editQuantity(shopItem.getProduct(),
-                    shopItem.getQuantity(),
-                    view.getContext(),
-                    new QuantityEditor.Listener() {
-                        @Override
-                        public void quantitySelected(BigDecimal newValue) {
-                            quantityView.setText(StringUtils.toString(newValue));
-
-                            shopItem.setQuantity(newValue);
-                            listener.onChange(shopItem);
-                        }
-                    });
-        }
-    }
 }

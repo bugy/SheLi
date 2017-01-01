@@ -52,6 +52,14 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             }
 
             return;
+
+        } else if (event instanceof ViewShopItemUnit.ShopItemEditedEvent) {
+            final ShopItem shopItem = ((ViewShopItemUnit.ShopItemEditedEvent) event).getShopItem();
+
+            getHostingActivity().getDataStorage().saveShopItem(shopItem);
+            adapter.update(shopItem);
+
+            return;
         }
 
         super.onEvent(event);
@@ -77,6 +85,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             handler.attach(itemsList);
 
             adapter = new FactoryBasedAdapter<>(new ToBuyShopItemCellFactory());
+            adapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.SINGLE);
             adapter.setSorter(new ShopItemComparator());
 
             final List<ShopItem> shopItems = dataStorage.getShopItems();
@@ -98,6 +107,19 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 @Override
                 public void changed(ShopItem changedItem) {
                     dataStorage.saveShopItem(changedItem);
+                }
+            });
+
+            adapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<ShopItem>() {
+                @Override
+                public void selectionChanged(ShopItem item, boolean selected) {
+                    if (selected) {
+                        adapter.deselectItem(item);
+
+                        final ViewShopItemUnit unit = new ViewShopItemUnit(item);
+                        unit.setListeningUnit(ShopItemListUnit.this);
+                        activity.startUnit(unit);
+                    }
                 }
             });
 
