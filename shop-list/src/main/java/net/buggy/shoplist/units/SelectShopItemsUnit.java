@@ -15,10 +15,10 @@ import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
+import net.buggy.shoplist.components.AddShopItemCellFactory;
 import net.buggy.shoplist.components.CategoriesSpinner;
 import net.buggy.shoplist.components.FastCreationPanel;
 import net.buggy.shoplist.components.ListDecorator;
-import net.buggy.shoplist.components.SelectShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
@@ -46,18 +46,21 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
 
     private transient FactoryBasedAdapter<ShopItem> adapter;
 
-    private final Set<Product> disabledProducts;
+    private final Set<ShopItem> existingItems;
     private Category selectedCategory;
     private String filterText;
 
     private final Map<Product, ShopItem> cachedItems = new ConcurrentHashMap<>();
     private final Set<ShopItem> selectedItems = Collections.newSetFromMap(new ConcurrentHashMap<ShopItem, Boolean>());
 
-    public SelectShopItemsUnit(Collection<Product> disabledProducts) {
-        if (disabledProducts != null) {
-            this.disabledProducts = ImmutableSet.copyOf(disabledProducts);
+    public SelectShopItemsUnit(Collection<ShopItem> existingItems) {
+        if (existingItems != null) {
+            this.existingItems = ImmutableSet.copyOf(existingItems);
+            for (ShopItem existingItem : existingItems) {
+                cachedItems.put(existingItem.getProduct(), existingItem);
+            }
         } else {
-            this.disabledProducts = ImmutableSet.of();
+            this.existingItems = ImmutableSet.of();
         }
     }
 
@@ -200,7 +203,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                                     Toast.LENGTH_LONG);
                             toast.show();
 
-                            if (!disabledProducts.contains(product)) {
+                            if (!existingItems.contains(item)) {
                                 adapter.selectItem(item);
                             }
 
@@ -227,7 +230,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             final DataStorage dataStorage = getHostingActivity().getDataStorage();
 
             adapter = new FactoryBasedAdapter<>(
-                    new SelectShopItemCellFactory());
+                    new AddShopItemCellFactory());
             adapter.setSelectionMode(MULTI);
             adapter.setSorter(createComparator());
 
@@ -236,10 +239,10 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                 ShopItem shopItem = getOrCreateShopItem(product);
 
                 adapter.add(shopItem);
+            }
 
-                if (disabledProducts.contains(product)) {
-                    adapter.disableItem(shopItem);
-                }
+            for (ShopItem existingItem : existingItems) {
+                adapter.disableItem(existingItem);
             }
 
             for (ShopItem selectedItem : selectedItems) {
@@ -302,16 +305,17 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
         return new Comparator<ShopItem>() {
             @Override
             public int compare(ShopItem i1, ShopItem i2) {
-                final Product p1 = i1.getProduct();
-                final Product p2 = i2.getProduct();
-
-                if (SelectShopItemsUnit.this.disabledProducts.contains(p1)) {
-                    if (!SelectShopItemsUnit.this.disabledProducts.contains(p2)) {
+                if (SelectShopItemsUnit.this.existingItems.contains(i1)) {
+                    if (!SelectShopItemsUnit.this.existingItems.contains(i2)) {
                         return 1;
                     }
-                } else if (SelectShopItemsUnit.this.disabledProducts.contains(p2)) {
+                } else if (SelectShopItemsUnit.this.existingItems.contains(i2)) {
                     return -1;
                 }
+
+
+                final Product p1 = i1.getProduct();
+                final Product p2 = i2.getProduct();
 
                 return productComparator.compare(p1, p2);
             }

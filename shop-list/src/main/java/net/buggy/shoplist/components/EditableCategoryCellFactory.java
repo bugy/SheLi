@@ -1,6 +1,5 @@
 package net.buggy.shoplist.components;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.view.KeyEvent;
@@ -17,15 +16,15 @@ import com.google.common.base.Objects;
 
 import net.buggy.components.TagFlag;
 import net.buggy.components.ViewUtils;
+import net.buggy.components.list.Cell;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
-import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
-public class EditableCategoryCellFactory implements CellFactory<Category, LinearLayout> {
+public class EditableCategoryCellFactory extends CellFactory<Category, LinearLayout> {
 
     private final Listener listener;
 
@@ -41,8 +40,11 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
     }
 
     @Override
-    public void fillCell(final Category category, final LinearLayout view, final ChangeListener<Category> listener, boolean selected, boolean enabled) {
-        final ShopListActivity activity = (ShopListActivity) view.getContext();
+    public void fillCell(final Cell<Category> cell,
+                         final LinearLayout view,
+                         boolean newCell,
+                         final ChangeListener<Category> listener) {
+        final Category category = cell.getData();
 
         final EditText nameField = (EditText) view.findViewById(R.id.cell_category_editable_name_field);
         nameField.setText(category.getName());
@@ -50,7 +52,7 @@ public class EditableCategoryCellFactory implements CellFactory<Category, Linear
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    ViewUtils.hideSoftKeyboard((Activity) view.getContext(), view);
+                    ViewUtils.hideSoftKeyboard(view);
                     nameField.clearFocus();
 
                     saveNameChange(nameField, category, listener);

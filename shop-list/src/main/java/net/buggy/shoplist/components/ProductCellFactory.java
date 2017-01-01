@@ -9,12 +9,13 @@ import android.widget.TextView;
 import com.google.common.collect.Multiset;
 
 import net.buggy.components.TagFlagContainer;
+import net.buggy.components.list.Cell;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 
-public class ProductCellFactory implements CellFactory<Product, ViewGroup> {
+public class ProductCellFactory extends CellFactory<Product, ViewGroup> {
 
     @Override
     public ViewGroup createEmptyCell(final Context context, ViewGroup parent) {
@@ -24,7 +25,9 @@ public class ProductCellFactory implements CellFactory<Product, ViewGroup> {
     }
 
     @Override
-    public void fillCell(Product product, ViewGroup view, ChangeListener<Product> listener, boolean selected, boolean enabled) {
+    public void fillCell(Cell<Product> cell, ViewGroup view, boolean newCell, ChangeListener<Product> listener) {
+        final Product product = cell.getData();
+
         final TextView itemNameField = (TextView) view.findViewById(R.id.cell_product_name_field);
         itemNameField.setText(product.getName());
 
@@ -34,6 +37,6 @@ public class ProductCellFactory implements CellFactory<Product, ViewGroup> {
         final Multiset<Integer> colors = ModelHelper.getColors(product.getCategories());
         categoriesContainer.setColors(colors);
 
-        view.setSelected(selected);
+        view.setSelected(cell.isSelected());
     }
 }

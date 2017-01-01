@@ -18,15 +18,13 @@ import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ShopItemComparator;
 import net.buggy.shoplist.components.CategoriesSpinner;
 import net.buggy.shoplist.components.ListDecorator;
-import net.buggy.shoplist.components.ShopItemCellFactory;
+import net.buggy.shoplist.components.ToBuyShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
-import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.views.ViewRenderer;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -59,7 +57,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         super.onEvent(event);
     }
 
-    private class MainViewRenderer extends ViewRenderer<ShopListActivity, RelativeLayout>{
+    private class MainViewRenderer extends ViewRenderer<ShopListActivity, RelativeLayout> {
 
         @Override
         public void renderTo(RelativeLayout parentView, final ShopListActivity activity) {
@@ -78,8 +76,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             final SwipeToRemoveHandler handler = new SwipeToRemoveHandler(backgroundColor);
             handler.attach(itemsList);
 
-            adapter = new FactoryBasedAdapter<>(
-                    new ShopItemCellFactory());
+            adapter = new FactoryBasedAdapter<>(new ToBuyShopItemCellFactory());
             adapter.setSorter(new ShopItemComparator());
 
             final List<ShopItem> shopItems = dataStorage.getShopItems();
@@ -109,12 +106,8 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 @Override
                 public void onClick(View v) {
                     final List<ShopItem> availableShopItems = adapter.getAllItems();
-                    Set<Product> existingProducts = new LinkedHashSet<>();
-                    for (ShopItem availableShopItem : availableShopItems) {
-                        existingProducts.add(availableShopItem.getProduct());
-                    }
 
-                    final SelectShopItemsUnit selectShopItemsUnit = new SelectShopItemsUnit(existingProducts);
+                    final SelectShopItemsUnit selectShopItemsUnit = new SelectShopItemsUnit(availableShopItems);
                     selectShopItemsUnit.setListeningUnit(ShopItemListUnit.this);
                     activity.startUnit(selectShopItemsUnit);
                 }

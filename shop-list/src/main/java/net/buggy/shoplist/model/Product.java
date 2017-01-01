@@ -9,6 +9,7 @@ import java.util.Set;
 public class Product extends Entity implements Serializable {
 
     private String name;
+    private String note;
     private final Set<Category> categories = new LinkedHashSet<>();
 
     public Product() {
@@ -20,6 +21,14 @@ public class Product extends Entity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Set<Category> getCategories() {

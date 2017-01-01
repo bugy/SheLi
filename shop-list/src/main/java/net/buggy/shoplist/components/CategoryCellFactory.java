@@ -7,12 +7,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.buggy.components.TagFlag;
+import net.buggy.components.list.Cell;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 
-public class CategoryCellFactory implements CellFactory<Category, LinearLayout> {
+public class CategoryCellFactory extends CellFactory<Category, LinearLayout> {
 
     @Override
     public LinearLayout createEmptyCell(Context context, ViewGroup parent) {
@@ -22,7 +23,9 @@ public class CategoryCellFactory implements CellFactory<Category, LinearLayout> 
     }
 
     @Override
-    public void fillCell(final Category category, final LinearLayout view, final ChangeListener<Category> listener, boolean selected, boolean enabled) {
+    public void fillCell(Cell<Category> cell, LinearLayout view, boolean newCell, ChangeListener<Category> listener) {
+        final Category category = cell.getData();
+
         final TextView nameField = (TextView) view.findViewById(R.id.cell_category_name_field);
         nameField.setText(category.getName());
 
@@ -31,7 +34,7 @@ public class CategoryCellFactory implements CellFactory<Category, LinearLayout> 
         final int color = ModelHelper.getColor(category);
         colorFlag.setColor(color);
 
-        view.setSelected(selected);
+        view.setSelected(cell.isSelected());
     }
 
 }

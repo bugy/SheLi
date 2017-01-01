@@ -1,6 +1,5 @@
 package net.buggy.shoplist;
 
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -230,41 +229,30 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
             View focusedView = getCurrentFocus();
 
-            if (focusedView instanceof EditText) {
-                if (!getLocationOnScreen(focusedView).contains(x, y)) {
-                    ViewUtils.hideSoftKeyboard(this, focusedView);
-                }
+            if (!outsideClickListeners.containsKey(focusedView)) {
+                if (focusedView instanceof EditText) {
+                    if (!ViewUtils.getLocationOnScreen(focusedView).contains(x, y)) {
+                        focusedView.clearFocus();
+                        ViewUtils.hideSoftKeyboard(focusedView);
+                    }
 
-            } else {
-                ViewUtils.hideSoftKeyboard(this, findViewById(R.id.main_activity_view));
+                } else {
+                    ViewUtils.hideSoftKeyboard(findViewById(R.id.main_activity_view));
+                }
             }
 
             for (View view : outsideClickListeners.keySet()) {
-                if (!getLocationOnScreen(view).contains(x, y)) {
+                if (!ViewUtils.getLocationOnScreen(view).contains(x, y)) {
                     final Collection<OutsideClickListener> listeners =
                             ImmutableList.copyOf(this.outsideClickListeners.get(view));
                     for (OutsideClickListener listener : listeners) {
-                        listener.clickedOutside();
+                        listener.clickedOutside(x, y);
                     }
                 }
             }
         }
 
         return handleReturn;
-    }
-
-    private Rect getLocationOnScreen(View view) {
-        Rect mRect = new Rect();
-        int[] location = new int[2];
-
-        view.getLocationOnScreen(location);
-
-        mRect.left = location[0];
-        mRect.top = location[1];
-        mRect.right = location[0] + view.getWidth();
-        mRect.bottom = location[1] + view.getHeight();
-
-        return mRect;
     }
 
     @Override
@@ -408,7 +396,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     }
 
     public interface OutsideClickListener {
-        void clickedOutside();
+        void clickedOutside(int x, int y);
     }
 
     private final static class UnitDescriptor implements Serializable {

@@ -5,6 +5,7 @@
     <color name="color_accent">#ef6c00</color>
     <color name="color_underground">#D0D0D0</color>
     <color name="color_primary_icons">#A0A0A0</color>
+    <color name="color_secondary_text">#A0A0A0</color>
     <color name="color_disabled_background">#E4E4E4</color>
     <color name="color_secondary">#dcedc8</color>
 

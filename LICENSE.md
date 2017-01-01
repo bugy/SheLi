@@ -59,7 +59,9 @@ Used icons:
 * ic_edit_black_24dp
 * ic_edit_black_24dp (modified)
 * ic_help_outline_black_24dp
+* ic_info_outline_black_24dp
 * ic_menu_white_48dp
+* ic_message_black_24dp
 * ic_shopping_cart_black_24dp
 
 ### Menu image (modified)

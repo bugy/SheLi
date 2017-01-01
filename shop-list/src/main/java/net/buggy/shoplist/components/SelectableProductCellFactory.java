@@ -10,10 +10,10 @@ public class SelectableProductCellFactory extends ProductCellFactory {
 
     @Override
     public ViewGroup createEmptyCell(Context context, ViewGroup parent) {
-        final ViewGroup emptyCell = super.createEmptyCell(context, parent);
+        final ViewGroup emptyView = super.createEmptyCell(context, parent);
 
-        emptyCell.setBackgroundResource(R.drawable.selectable_background);
+        emptyView.setBackgroundResource(R.drawable.selectable_background);
 
-        return emptyCell;
+        return emptyView;
     }
 }

@@ -1,6 +1,9 @@
 package net.buggy.shoplist.utils;
 
 
+import com.google.common.base.Objects;
+import com.google.common.base.Strings;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
@@ -26,6 +29,14 @@ public class StringUtils {
         }
 
         return s1.equalsIgnoreCase(s2);
+    }
+
+    public static boolean equal(String s1, String s2) {
+        if (Strings.isNullOrEmpty(s1) && Strings.isNullOrEmpty(s2)) {
+            return true;
+        }
+
+        return Objects.equal(s1, s2);
     }
 
     public static String toString(BigDecimal bigDecimal) {

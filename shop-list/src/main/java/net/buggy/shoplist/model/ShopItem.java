@@ -8,6 +8,7 @@ public class ShopItem extends Entity implements Serializable {
 
     private Product product;
     private BigDecimal quantity;
+    private String comment;
 
     public void setProduct(Product product) {
         this.product = product;
@@ -23,6 +24,14 @@ public class ShopItem extends Entity implements Serializable {
 
     public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override

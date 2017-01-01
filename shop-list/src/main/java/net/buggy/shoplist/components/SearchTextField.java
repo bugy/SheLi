@@ -1,6 +1,5 @@
 package net.buggy.shoplist.components;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -48,14 +47,12 @@ public class SearchTextField extends EditText {
     }
 
     private void init() {
-        originalTypeface = getTypeface();
-
         setGravity(Gravity.CENTER_VERTICAL);
         setImeOptions(EditorInfo.IME_ACTION_DONE);
         setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         setMaxLines(1);
 
-        updateStyle(getText(), originalTypeface);
+        ViewUtils.makeHintItalic(this);
 
         addTextChangedListener(new TextWatcher() {
             @Override
@@ -69,8 +66,6 @@ public class SearchTextField extends EditText {
 
             @Override
             public void afterTextChanged(Editable newEditable) {
-                updateStyle(newEditable, originalTypeface);
-
                 String text = newEditable.toString().trim();
 
                 fireTextChanged(text);
@@ -84,7 +79,7 @@ public class SearchTextField extends EditText {
                     final String text = getText().toString().trim();
 
                     clearFocus();
-                    ViewUtils.hideSoftKeyboard((Activity) getContext(), SearchTextField.this);
+                    ViewUtils.hideSoftKeyboard(SearchTextField.this);
 
                     fireOnFinish(text);
 
@@ -114,14 +109,6 @@ public class SearchTextField extends EditText {
         }
 
         listener.onFinish(text);
-    }
-
-    private void updateStyle(Editable text, Typeface originalTypeface) {
-        if (text.length() == 0) {
-            setTypeface(originalTypeface, Typeface.ITALIC);
-        } else {
-            setTypeface(originalTypeface, Typeface.NORMAL);
-        }
     }
 
     public interface Listener {

@@ -55,6 +55,7 @@ public class DataStorage implements Serializable {
             shopItem.setId(storedItem.getId());
             shopItem.setProduct(product);
             shopItem.setQuantity(storedItem.quantity);
+            shopItem.setComment(storedItem.comment);
 
             result.put(shopItem.getId(), shopItem);
         }
@@ -71,6 +72,7 @@ public class DataStorage implements Serializable {
         for (StoredProduct storedProduct : storedProducts) {
             final Product product = new Product();
             product.setName(storedProduct.name);
+            product.setNote(storedProduct.note);
             product.setId(storedProduct.getId());
 
             Set<Category> productCategories = new LinkedHashSet<>();
@@ -278,6 +280,9 @@ public class DataStorage implements Serializable {
         @Column(name = "Name")
         private String name;
 
+        @Column(name = "Note")
+        private String note;
+
         private final List<StoredProductCategoryLink> deletedLinks = new ArrayList<>();
         private final List<StoredProductCategoryLink> newLinks = new ArrayList<>();
 
@@ -295,6 +300,7 @@ public class DataStorage implements Serializable {
 
         public void fillFrom(Product product) {
             this.name = product.getName();
+            this.note = product.getNote();
 
             Set<Long> categoryIds = new LinkedHashSet<>();
             for (Category category : product.getCategories()) {
@@ -365,6 +371,9 @@ public class DataStorage implements Serializable {
         @Column(name = "Quantity")
         private BigDecimal quantity;
 
+        @Column(name = "Comment")
+        private String comment;
+
         public StoredShopItem() {
             super();
         }
@@ -378,6 +387,7 @@ public class DataStorage implements Serializable {
 
         public void fillFrom(ShopItem shopItem) {
             quantity = shopItem.getQuantity();
+            comment = shopItem.getComment();
 
             final StoredProduct storedProduct = new Select()
                     .from(StoredProduct.class)

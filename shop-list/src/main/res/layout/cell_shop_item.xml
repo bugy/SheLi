@@ -1,36 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="5dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    android:paddingRight="8dp">
+    android:paddingEnd="5dp"
+    android:paddingRight="5dp">
 
     <TextView
-        android:layout_width="45dp"
-        android:layout_height="match_parent"
-        android:gravity="center"
         android:id="@+id/cell_shop_item_quantity_field"
-        tools:text="99"/>
-
-    <TextView
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:id="@+id/cell_shop_item_name_field"
-        tools:text="Hamburger"/>
+        android:layout_marginStart="5dp"
+        android:gravity="center"
+        tools:text="99" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/cell_shop_item_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Hamburger" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/cell_shop_item_comment_button"
+                android:layout_width="33dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:paddingEnd="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                android:paddingStart="10dp"
+                android:src="@drawable/ic_message_black_24dp"
+                android:tint="@color/color_primary_icons"
+                android:scaleType="centerInside" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/cell_shop_item_comment_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/cell_shop_item_comment_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textAutoComplete"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
+            android:textColor="@color/color_secondary_text"
+            android:textSize="17sp"
+            tools:text="Buy 10 pieces" />
+    </LinearLayout>
 
     <net.buggy.components.TagFlagContainer
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
         android:id="@+id/cell_shop_item_categories"
-        android:paddingBottom="5dp">
-
-    </net.buggy.components.TagFlagContainer>
-
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp" />
 
 </LinearLayout>

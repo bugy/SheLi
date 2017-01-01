@@ -1,0 +1,1 @@
+ALTER TABLE ShopItems ADD Comment TEXT;

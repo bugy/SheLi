@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,46 +9,59 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            style="@style/FieldRow"
+        <android.support.v7.widget.GridLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingEnd="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingStart="12dp"
+            android:paddingTop="12dp"
+            app:columnCount="2"
+            app:rowCount="3"
+            app:useDefaultMargins="false"
+            app:alignmentMode="alignBounds">
 
             <TextView
                 style="@style/FieldLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/edit_product_name_field_label" />
+                android:text="@string/edit_product_name_field_label"
+                app:layout_gravity="right" />
 
             <EditText
                 android:id="@+id/edit_product_name_field"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete"
-                android:maxLines="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/FieldRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
-            android:paddingEnd="0dp"
-            android:paddingRight="0dp"
-            android:layout_marginTop="12dp">
+                android:maxLines="1"
+                app:layout_columnWeight="1" />
 
             <TextView
-                android:id="@+id/edit_product_categories_label"
                 style="@style/FieldLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/edit_product_categories_label" />
+                android:text="@string/edit_product_note_label" />
 
-        </LinearLayout>
+
+            <net.buggy.components.text.MultilineEditText
+                android:id="@+id/unit_edit_product_note_field"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoComplete|textMultiLine"
+                android:maxLength="100"
+                android:maxLines="5"
+                android:scrollHorizontally="false"
+                app:layout_gravity="fill_horizontal" />
+
+            <TextView
+                style="@style/FieldLabel"
+                android:layout_marginBottom="6dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="12dp"
+                android:paddingEnd="0dp"
+                android:paddingRight="0dp"
+                android:text="@string/edit_product_categories_label"
+                app:layout_columnSpan="2" />
+
+        </android.support.v7.widget.GridLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/unit_edit_product_categories_list"

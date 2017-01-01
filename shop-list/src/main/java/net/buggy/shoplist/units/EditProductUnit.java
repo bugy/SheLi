@@ -41,8 +41,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
     private final Product product;
     private final boolean newProduct;
 
-    private transient MainViewRenderer mainViewRenderer;
-    private ToolbarRenderer toolbarRenderer;
+    private transient ToolbarRenderer toolbarRenderer;
 
     private final Set<Category> selectedCategories = Collections.newSetFromMap(
             new ConcurrentHashMap<Category, Boolean>());
@@ -65,12 +64,11 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             selectedCategories.addAll(product.getCategories());
         }
 
-
-        mainViewRenderer = new MainViewRenderer();
-        addRenderer(MAIN_VIEW_ID, mainViewRenderer);
-
         toolbarRenderer = new ToolbarRenderer(productName);
         addRenderer(TOOLBAR_VIEW_ID, toolbarRenderer);
+
+        MainViewRenderer mainViewRenderer = new MainViewRenderer();
+        addRenderer(MAIN_VIEW_ID, mainViewRenderer);
     }
 
     public static final class ProductEditedEvent {
@@ -115,6 +113,10 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                 }
             });
 
+            final EditText noteField = (EditText) parentView.findViewById(R.id.unit_edit_product_note_field);
+            if (product.getNote() != null) {
+                noteField.setText(product.getNote());
+            }
 
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +149,9 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
                     product.setCategories(categoriesAdapter.getSelectedItems());
                     product.setName(name);
+
+                    final String note = noteField.getText().toString().trim();
+                    product.setNote(note);
 
                     activity.stopUnit(EditProductUnit.this);
 
