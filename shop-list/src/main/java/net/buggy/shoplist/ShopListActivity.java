@@ -170,29 +170,35 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
         if (Objects.equal(activeNavigatorName, newNavigatorName)) {
             if (!iterator.hasNext()) {
-                iterator.remove();
+                stopUnit(firstElement);
                 return;
             }
 
             final UnitDescriptor secondElement = iterator.next();
             if (!Objects.equal(secondElement.getNavigatorName(), newNavigatorName)) {
-                activeUnits.removeLastOccurrence(firstElement);
+                stopUnit(firstElement);
                 return;
             }
         }
 
         boolean deleteOthers = false;
+        List<UnitDescriptor> toDelete = new ArrayList<>();
+
         while (iterator.hasNext()) {
             final UnitDescriptor previousUnit = iterator.next();
             if (deleteOthers) {
-                iterator.remove();
+                toDelete.add(previousUnit);
                 continue;
             }
 
             if (!Objects.equal(previousUnit.getNavigatorName(), activeNavigatorName)) {
                 deleteOthers = true;
-                iterator.remove();
+                toDelete.add(previousUnit);
             }
+        }
+
+        for (UnitDescriptor unitDescriptor : toDelete) {
+            stopUnit(unitDescriptor);
         }
     }
 
