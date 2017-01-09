@@ -92,7 +92,7 @@
                 android:gravity="center"
                 android:layout_gravity="center_vertical"
                 android:text="@string/app_name"
-                android:textSize="20sp"
+                android:textSize="@dimen/large_font_size"
                 android:layout_marginLeft="18dp"
                 android:layout_marginStart="18dp" />
 

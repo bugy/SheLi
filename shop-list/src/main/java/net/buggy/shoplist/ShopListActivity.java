@@ -77,6 +77,9 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ViewUtils.addFont(getApplicationContext(), "decorated", "fonts/MarckScript-Regular.ttf");
+        ViewUtils.addFont(getApplicationContext(), "main", "fonts/Neucha.ttf");
+
         dataStorage = initDataStorage();
 
         setContentView(R.layout.activity_shop_list);

@@ -2,15 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="56dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingStart="10dp"
-    android:paddingLeft="10dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:paddingEnd="5dp"
-    android:paddingRight="5dp">
+    android:paddingEnd="16dp"
+    android:paddingRight="16dp">
+
+    <TextView
+        android:id="@+id/cell_to_buy_shop_item_quantity_field"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingEnd="12dp"
+        android:paddingRight="12dp"
+        android:paddingLeft="12dp"
+        android:paddingStart="12dp"
+        tools:text="99" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -29,9 +36,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/color_secondary_text"
-            android:textSize="17sp"
+            android:textSize="@dimen/small_font_size"
             android:maxLines="1"
             android:ellipsize="end"
+            android:layout_marginTop="-2dp"
             tools:text="Buy 10 pieces" />
     </LinearLayout>
 
@@ -41,14 +49,5 @@
         android:layout_height="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp" />
-
-    <TextView
-        android:id="@+id/cell_to_buy_shop_item_quantity_field"
-        android:layout_width="45dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:gravity="center"
-        tools:text="99" />
 
 </LinearLayout>

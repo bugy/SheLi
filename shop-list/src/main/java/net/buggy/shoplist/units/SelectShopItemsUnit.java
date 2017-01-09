@@ -1,6 +1,7 @@
 package net.buggy.shoplist.units;
 
 
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,6 +98,17 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             adapter.selectItem(newItem);
 
             return;
+
+        } else if (event instanceof ViewShopItemUnit.ShopItemEditedEvent) {
+            ViewShopItemUnit.ShopItemEditedEvent shopItemEvent =
+                    (ViewShopItemUnit.ShopItemEditedEvent) event;
+
+            final ShopItem shopItem = shopItemEvent.getShopItem();
+            cachedItems.put(shopItem.getProduct(), shopItem);
+            adapter.update(shopItem);
+            adapter.selectItem(shopItem);
+
+            return;
         }
 
         super.onEvent(event);
@@ -141,6 +153,10 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
 
             final RecyclerView productsList = (RecyclerView) parentView.findViewById(R.id.unit_select_shopitems_list);
             ListDecorator.decorateList(productsList);
+            DividerItemDecoration itemDecoration = new DividerItemDecoration(
+                    productsList.getContext(),
+                    DividerItemDecoration.VERTICAL);
+            productsList.addItemDecoration(itemDecoration);
 
             productsList.setAdapter(adapter);
 
@@ -229,8 +245,17 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
         private void initAdapter() {
             final DataStorage dataStorage = getHostingActivity().getDataStorage();
 
+            final SelectableShopItemCellFactory factory = new SelectableShopItemCellFactory(
+                    new SelectableShopItemCellFactory.Listener() {
+                        @Override
+                        public void onEditClick(ShopItem shopItem) {
+                            final ViewShopItemUnit unit = new ViewShopItemUnit(shopItem);
+                            unit.setListeningUnit(SelectShopItemsUnit.this);
+                            getHostingActivity().startUnit(unit);
+                        }
+                    });
             adapter = new FactoryBasedAdapter<>(
-                    new SelectableShopItemCellFactory());
+                    factory);
             adapter.setSelectionMode(MULTI);
             adapter.setSorter(createComparator());
 

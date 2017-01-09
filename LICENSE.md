@@ -72,3 +72,19 @@ Free to use for any purpose
 https://github.com/yukuku/ambilwarna
 Copyright 2009-2015 Yuku
 Licensed under the Apache License, Version 2.0
+
+### Material Design Icons
+https://materialdesignicons.com/
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 (https://github.com/Templarian/MaterialDesign/blob/master/license.txt)
+* ic_chevron_double_right_black_24dp.png (By: Austin Andrews)
+
+### MarckScript-Regular.ttf
+https://fonts.google.com/specimen/Marck+Script
+Designer Denis Masharov
+Open Font License: http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL_web
+
+
+### Neucha.ttf
+https://fonts.google.com/specimen/Neucha
+Designer Jovanny Lemonad
+Open Font License: http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL_web

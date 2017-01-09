@@ -13,11 +13,13 @@
         <!-- Pre-lolipop -->
         <item name="android:windowContentOverlay">@null</item>
 
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/def_font_size</item>
 
-        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
-        <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
-
+        <item name="android:textViewStyle">@style/App_TextViewStyle</item>
+        <item name="buttonStyle">@style/App_ButtonStyle</item>
+        <item name="editTextStyle">@style/App_EditTextStyle</item>
+        <item name="android:editTextStyle">@style/App_EditTextStyle</item>
+        <item name="autoCompleteTextViewStyle">@style/App_EditTextStyle</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -36,7 +38,7 @@
         <item name="layout_anchorGravity">bottom|end</item>
     </style>
 
-    <style name="FieldLabel" parent="RobotoTextViewStyle">
+    <style name="FieldLabel" parent="App_TextViewStyle">
         <item name="android:layout_marginEnd">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:gravity">center_vertical|start</item>
@@ -52,11 +54,19 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif</item>
+    <style name="App_TextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">decorated</item>
     </style>
 
-    <style name="RobotoButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:fontFamily">sans-serif</item>
+    <style name="App_TitleTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">decorated</item>
+    </style>
+
+    <style name="App_EditTextStyle" parent="android:Widget.EditText">
+        <item name="android:fontFamily">decorated</item>
+    </style>
+
+    <style name="App_ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:fontFamily">decorated</item>
     </style>
 </resources>

@@ -11,21 +11,21 @@
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/unit_shop_item_list_title"
+        style="@style/App_TitleTextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="17dp"
         android:layout_marginStart="17dp"
         android:gravity="center"
         android:text="@string/unit_shot_items_title"
-        android:textSize="18sp">
-    </TextView>
+        android:textSize="@dimen/title_font_size" />
 
     <net.buggy.shoplist.components.CategoriesSpinner
         android:id="@+id/unit_shop_items_categories_spinner"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="12dp"
         android:layout_weight="1"
-        android:spinnerMode="dropdown"
         android:dropDownVerticalOffset="?attr/actionBarSize"
-        android:layout_marginLeft="12dp"/>
+        android:spinnerMode="dropdown" />
 </LinearLayout>

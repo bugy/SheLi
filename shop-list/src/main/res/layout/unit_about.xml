@@ -20,7 +20,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
             android:text="@string/app_name"
-            android:textSize="28sp"
+            android:textSize="@dimen/large_font_size"
             android:drawableLeft="@mipmap/logo"
             android:drawableStart="@mipmap/logo"
             android:drawablePadding="5dp"

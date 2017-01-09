@@ -10,11 +10,13 @@
     tools:layout_height="?attr/actionBarSize">
 
     <TextView
+        android:id="@+id/unit_products_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/unit_products_title"
         android:gravity="center"
-        android:text="@string/unit_products_title"></TextView>
+        android:text="@string/unit_products_title"
+        android:textSize="@dimen/title_font_size"
+        style="@style/App_TitleTextViewStyle" />
 
     <net.buggy.shoplist.components.CategoriesSpinner
         android:id="@+id/unit_products_category_spinner"
