@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
@@ -161,7 +162,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
             initCategoriesSection(parentView, activity);
 
-            if (newProduct && firstRender) {
+            if (newProduct && firstRender && Strings.isNullOrEmpty(product.getName())) {
                 ViewUtils.focusTextField(nameField);
             }
 

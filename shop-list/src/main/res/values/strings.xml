@@ -8,6 +8,7 @@
     <string name="unit_shot_items_title">To buy</string>
     <string name="fast_creation_name_hint">New</string>
     <string name="unit_select_shopitems_search_hint">Search</string>
+    <string name="unit_shopitems_list_add_hint">Add item</string>
     <string name="fast_creation_add_and_edit">Add and edit</string>
     <string name="unit_products_search_hint">Search</string>
     <string name="unit_products_search_icon">Search icon</string>
@@ -21,6 +22,7 @@
     <string name="category_already_exists">%s already exists</string>
     <string name="categories_unit_already_exists_on_edit">%s already exists, won\'t save</string>
     <string name="products_unit_already_exists">%s already exists</string>
+    <string name="shop_item_already_exists">%s already exists</string>
     <string name="fast_creation_add_button_hint">Add</string>
     <string name="unit_products_title">Products</string>
     <string name="unit_about_title">About</string>
@@ -43,4 +45,7 @@
     <string name="unit_view_shop_item_note_label">Note</string>
     <string name="unit_view_shop_item_title">%s info</string>
     <string name="unit_view_shop_item_quantity_field_label">Quantity</string>
+    <string name="cell_search_product_new">new</string>
+    <string name="unit_shopitem_not_specified_quantity">Not specified</string>
+    <string name="clear_selected_catetories_in_filter">Clear</string>
 </resources>

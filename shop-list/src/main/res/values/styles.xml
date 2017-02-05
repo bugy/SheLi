@@ -55,18 +55,18 @@
     </style>
 
     <style name="App_TextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">decorated</item>
+        <item name="android:fontFamily">main</item>
     </style>
 
     <style name="App_TitleTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">decorated</item>
+        <item name="android:fontFamily">main</item>
     </style>
 
     <style name="App_EditTextStyle" parent="android:Widget.EditText">
-        <item name="android:fontFamily">decorated</item>
+        <item name="android:fontFamily">main</item>
     </style>
 
     <style name="App_ButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:fontFamily">decorated</item>
+        <item name="android:fontFamily">main</item>
     </style>
 </resources>

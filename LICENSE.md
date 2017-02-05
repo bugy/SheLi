@@ -48,12 +48,16 @@ Used icons:
 * ic_add_black_36dp (modified)
 * ic_add_shopping_cart_black_48dp (modified)
 * ic_add_white_48dp
+* ic_add_white_48dp (modified into: add_shopitem.png)
+* ic_arrow_back (modified into: search_back.png)
 * ic_bookmark_border_black_24dp
 * ic_bubble_chart_black_24dp
 * ic_cancel_black_24dp
 * ic_check_black_36dp
+* ic_check_black_36dp (modified into: already_added_18dp.png, check_checked_27dp.png, check_unchecked_27dp.png)
 * ic_check_white_24dp
 * ic_check_white_48dp
+* ic_check_white_48dp (modified into: clear_checked_shopitems_enabled.png, clear_checked_shopitems_disabled.png)
 * ic_close_black_36dp
 * ic_delete_forever_black_48dp
 * ic_edit_black_24dp
@@ -62,6 +66,7 @@ Used icons:
 * ic_info_outline_black_24dp
 * ic_menu_white_48dp
 * ic_message_black_24dp
+* ic_playlist_add (modified into: add_from_products.png)
 * ic_shopping_cart_black_24dp
 
 ### Menu image (modified)
@@ -76,7 +81,9 @@ Licensed under the Apache License, Version 2.0
 ### Material Design Icons
 https://materialdesignicons.com/
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 (https://github.com/Templarian/MaterialDesign/blob/master/license.txt)
-* ic_chevron_double_right_black_24dp.png (By: Austin Andrews)
+* ic_chevron_double_right_black_24dp.png
+* filter-outline (By: Austin Andrews) (modified into: category_filter_disabled.png, category_filter_enabled.png)
+* broom (By: Austin Andrews) (modified into: clear_checked_shopitems_enabled.png, clear_checked_shopitems_disabled.png)
 
 ### MarckScript-Regular.ttf
 https://fonts.google.com/specimen/Marck+Script

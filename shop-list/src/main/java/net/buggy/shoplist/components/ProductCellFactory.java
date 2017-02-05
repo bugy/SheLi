@@ -10,6 +10,7 @@ import com.google.common.collect.Multiset;
 
 import net.buggy.components.TagFlagContainer;
 import net.buggy.components.list.Cell;
+import net.buggy.components.list.CellContext;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.ModelHelper;
@@ -25,7 +26,7 @@ public class ProductCellFactory extends CellFactory<Product, ViewGroup> {
     }
 
     @Override
-    public void fillCell(Cell<Product> cell, ViewGroup view, boolean newCell, ChangeListener<Product> listener) {
+    public void fillCell(Cell<Product> cell, ViewGroup view, CellContext<Product> cellContext, ChangeListener<Product> listener) {
         final Product product = cell.getData();
 
         final TextView itemNameField = (TextView) view.findViewById(R.id.cell_product_name_field);

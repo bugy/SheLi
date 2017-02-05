@@ -17,6 +17,7 @@ import com.google.common.base.Objects;
 import net.buggy.components.TagFlag;
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.Cell;
+import net.buggy.components.list.CellContext;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.Category;
@@ -42,7 +43,7 @@ public class EditableCategoryCellFactory extends CellFactory<Category, LinearLay
     @Override
     public void fillCell(final Cell<Category> cell,
                          final LinearLayout view,
-                         boolean newCell,
+                         CellContext<Category> cellContext,
                          final ChangeListener<Category> listener) {
         final Category category = cell.getData();
 

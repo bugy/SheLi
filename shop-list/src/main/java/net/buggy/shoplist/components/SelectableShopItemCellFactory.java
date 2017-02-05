@@ -13,6 +13,7 @@ import com.google.common.base.Strings;
 
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.Cell;
+import net.buggy.components.list.CellContext;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.Product;
@@ -38,7 +39,7 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
     }
 
     @Override
-    public void fillCell(final Cell<ShopItem> cell, final ViewGroup view, boolean newCell, final ChangeListener<ShopItem> listener) {
+    public void fillCell(final Cell<ShopItem> cell, final ViewGroup view, CellContext<ShopItem> cellContext, final ChangeListener<ShopItem> listener) {
         final ShopItem shopItem = cell.getData();
         final Product product = shopItem.getProduct();
 
@@ -72,7 +73,11 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
             quantityView.setVisibility(View.VISIBLE);
             editButton.setVisibility(View.VISIBLE);
 
-            quantityView.setText(StringUtils.toString(shopItem.getQuantity()));
+            if (shopItem.getQuantity() != null) {
+                quantityView.setText(StringUtils.toString(shopItem.getQuantity()));
+            } else {
+                quantityView.setText("");
+            }
             quantityView.setOnClickListener(new QuantityClickListener(shopItem, listener, quantityView));
         }
 

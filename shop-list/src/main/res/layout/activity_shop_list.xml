@@ -6,55 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".ShopListActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_width="0px"
-            android:layout_height="0px" />
-
-        <LinearLayout
-            android:id="@+id/main_activity_toolbar"
-            style="@style/ToolbarTheme"
-
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:clipToPadding="false"
-            android:elevation="4dp"
-            android:orientation="horizontal"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:theme="@style/ToolbarTheme">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <LinearLayout
+                android:id="@+id/main_activity_toolbar"
+                style="@style/ToolbarTheme"
+
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:clipToPadding="false"
+                android:elevation="4dp"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:theme="@style/ToolbarTheme">
+
+                <RelativeLayout
+                    android:id="@+id/toolbar_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/toolbar_menu_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="48dp"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_menu_white_48dp" />
+            </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/toolbar_container"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:id="@+id/main_activity_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1" />
-
-            <ImageButton
-                android:id="@+id/toolbar_menu_button"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_menu_white_48dp" />
         </LinearLayout>
 
+
         <RelativeLayout
-            android:id="@+id/main_activity_view"
+            android:id="@+id/activity_overlay_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/main_activity_menu_panel"
@@ -74,27 +85,27 @@
                 android:layout_width="48dp"
                 android:layout_height="49dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/logo"
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="5dp"
-                android:paddingLeft="7dp"
-                android:paddingStart="7dp"
-                android:paddingRight="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="5dp"
                 android:background="@drawable/menu_logo_icon_background"
-                android:contentDescription="@string/logo_image_description" />
+                android:contentDescription="@string/logo_image_description"
+                android:paddingBottom="5dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="7dp"
+                android:paddingRight="5dp"
+                android:paddingStart="7dp"
+                android:paddingTop="8dp"
+                android:src="@mipmap/logo" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_gravity="center_vertical"
-                android:text="@string/app_name"
-                android:textSize="@dimen/large_font_size"
                 android:layout_marginLeft="18dp"
-                android:layout_marginStart="18dp" />
+                android:layout_marginStart="18dp"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textSize="@dimen/large_font_size" />
 
         </LinearLayout>
 
@@ -106,4 +117,3 @@
     </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>
-

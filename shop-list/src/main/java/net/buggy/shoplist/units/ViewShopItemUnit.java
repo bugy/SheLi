@@ -49,7 +49,11 @@ public class ViewShopItemUnit extends Unit<ShopListActivity> {
             nameField.setText(product.getName());
 
             final TextView quantityField = (TextView) parentView.findViewById(R.id.unit_view_shop_item_quantity_field);
-            quantityField.setText(StringUtils.toString(shopItem.getQuantity()));
+            if (shopItem.getQuantity() != null) {
+                quantityField.setText(StringUtils.toString(shopItem.getQuantity()));
+            } else {
+                quantityField.setText(activity.getString(R.string.unit_shopitem_not_specified_quantity));
+            }
             quantityField.setOnClickListener(new QuantityClickListener(shopItem, null, quantityField));
 
             final TextView noteField = (TextView) parentView.findViewById(R.id.unit_view_shop_item_note_field);

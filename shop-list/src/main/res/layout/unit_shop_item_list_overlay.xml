@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/unit_shopitem_list_add_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="48dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="48dp"
+    android:layout_marginStart="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/unit_shopitem_list_search_panel"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/search_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/unit_shopitem_list_search_back_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="38dp"
+            android:layout_height="match_parent"
+            android:paddingEnd="4dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="4dp"
+            android:paddingStart="12dp"
+            android:scaleType="center"
+            android:src="@drawable/search_back"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/unit_shopitem_list_search_field"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:inputType="text"
+            android:scrollHorizontally="true"
+            android:background="@android:color/transparent"
+            android:gravity="center_vertical"
+            android:hint="@string/unit_shopitems_list_add_hint"
+            android:paddingLeft="14dp"
+            android:paddingStart="14dp"
+            android:textColorHint="@color/color_hint_text"
+            android:textSize="@dimen/def_font_size"
+            android:imeOptions="actionDone" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/color_separator" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/unit_shopitem_list_add_products_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:paddingEnd="12dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="12dp"
+            android:paddingStart="14dp"
+            android:paddingTop="12dp"
+            android:scaleType="center"
+            android:src="@drawable/add_from_products" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/unit_shopitem_list_search_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="38dp"
+        android:layout_marginStart="38dp"
+        android:background="@drawable/search_list_background"
+        android:paddingBottom="6dp"
+        android:paddingTop="2dp"
+        android:visibility="gone" />
+
+</LinearLayout>

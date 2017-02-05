@@ -45,6 +45,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
     public static final int MAIN_VIEW_ID = R.id.main_activity_view;
     public static final int TOOLBAR_VIEW_ID = R.id.toolbar_container;
+    public static final int OVERLAY_VIEW_ID = R.id.activity_overlay_view;
 
     private final List<UnitNavigator<ShopListActivity>> navigators;
 

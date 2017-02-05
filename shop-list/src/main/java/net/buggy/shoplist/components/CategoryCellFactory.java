@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import net.buggy.components.TagFlag;
 import net.buggy.components.list.Cell;
+import net.buggy.components.list.CellContext;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.Category;
@@ -23,7 +24,7 @@ public class CategoryCellFactory extends CellFactory<Category, LinearLayout> {
     }
 
     @Override
-    public void fillCell(Cell<Category> cell, LinearLayout view, boolean newCell, ChangeListener<Category> listener) {
+    public void fillCell(Cell<Category> cell, LinearLayout view, CellContext<Category> cellContext, ChangeListener<Category> listener) {
         final Category category = cell.getData();
 
         final TextView nameField = (TextView) view.findViewById(R.id.cell_category_name_field);

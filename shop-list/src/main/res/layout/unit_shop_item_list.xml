@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_background">
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/unit_shop_item_list_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/unit_shop_item_list_swipe_refresh">
+        android:layout_marginBottom="36dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/shopping_list"
@@ -18,14 +19,37 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_gravity="bottom"
+        android:background="@color/color_primary"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal">
 
-    <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/unit_shopitem_list_add_item_button"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingStart="8dp"
+            android:scaleType="center"
+            android:src="@drawable/add_shopitem" />
 
-        android:id="@+id/unit_shop_item_list_button_add"
-        style="@style/Widget.Design.FloatingActionButton.AtBottom"
-        android:src="@drawable/ic_add_white_48dp"
-        app:layout_anchor="@id/shopping_list"
-        app:layout_anchorGravity="bottom|end" />
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/unit_shopitem_list_clean_checked_button"
+            android:layout_width="43dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:paddingEnd="14dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="14dp"
+            android:paddingStart="8dp"
+            android:scaleType="center"
+            android:src="@drawable/clear_checked_shopitems" />
 
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

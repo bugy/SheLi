@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="5dp"
-    android:layout_marginStart="5dp"
-    android:orientation="horizontal"
+    android:paddingEnd="4dp"
+    android:paddingRight="4dp"
     tools:background="?attr/colorPrimary"
     tools:layout_height="?attr/actionBarSize">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/unit_shop_item_list_title"
-        style="@style/App_TitleTextViewStyle"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/unit_shopitem_list_filter_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="17dp"
-        android:layout_marginStart="17dp"
-        android:gravity="center"
-        android:text="@string/unit_shot_items_title"
-        android:textSize="@dimen/title_font_size" />
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
+        android:scaleType="center"
+        android:src="@drawable/category_filter" />
 
-    <net.buggy.shoplist.components.CategoriesSpinner
-        android:id="@+id/unit_shop_items_categories_spinner"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="12dp"
-        android:layout_weight="1"
-        android:dropDownVerticalOffset="?attr/actionBarSize"
-        android:spinnerMode="dropdown" />
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/unit_shop_item_list_active_categories"
+        android:layout_width="6dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/unit_shopitem_list_filter_button"
+        android:layout_toEndOf="@id/unit_shopitem_list_filter_button"
+        android:layout_marginLeft="-14dp"
+        android:layout_marginStart="-14dp"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>
