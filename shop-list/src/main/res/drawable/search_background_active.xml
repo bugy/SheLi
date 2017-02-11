@@ -14,13 +14,13 @@
     </item>
 
     <item
-        android:top="-2dp"
-        android:right="-2dp"
-        android:left="-2dp">
+        android:top="-1dp"
+        android:right="-1dp"
+        android:left="-1dp">
         <shape>
             <solid android:color="@android:color/transparent" />
             <stroke
-                android:width="2dp"
+                android:width="1dp"
                 android:color="@color/color_separator" />
         </shape>
     </item>

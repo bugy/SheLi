@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import net.buggy.components.ViewUtils;
 import net.buggy.components.list.Cell;
 import net.buggy.components.list.CellContext;
 import net.buggy.components.list.CellFactory;
@@ -48,50 +47,50 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
         final TextView itemNameField = (TextView) view.findViewById(R.id.cell_selectable_shop_item_name_field);
         itemNameField.setText(product.getName());
 
-        final TextView quantityView = (TextView) view.findViewById(R.id.cell_selectable_shop_item_quantity_field);
-        final TextView commentEditField = (TextView) view.findViewById(
+        final TextView commentField = (TextView) view.findViewById(
                 R.id.cell_selectable_shop_item_comment_field);
-        final ImageButton editButton = (ImageButton) view.findViewById(R.id.cell_selectable_shop_item_edit_button);
 
-        if (!cell.isEnabled()) {
-            final int disabledColor = ViewUtils.resolveColor(R.color.color_disabled_background, view.getContext());
-            view.setBackgroundColor(disabledColor);
-
-            itemNameField.setAlpha(0.6f);
-            commentEditField.setAlpha(0.6f);
-
-            quantityView.setVisibility(View.INVISIBLE);
-
-            editButton.setVisibility(View.GONE);
-
+        String comment = buildComment(shopItem);
+        if (Strings.isNullOrEmpty(comment)) {
+            commentField.setVisibility(View.GONE);
         } else {
-            itemNameField.setAlpha(1);
-            commentEditField.setAlpha(1);
-
-            view.setBackgroundResource(R.drawable.selectable_background);
-
-            quantityView.setVisibility(View.VISIBLE);
-            editButton.setVisibility(View.VISIBLE);
-
-            if (shopItem.getQuantity() != null) {
-                quantityView.setText(StringUtils.toString(shopItem.getQuantity()));
-            } else {
-                quantityView.setText("");
-            }
-            quantityView.setOnClickListener(new QuantityClickListener(shopItem, listener, quantityView));
+            commentField.setText(comment);
         }
 
-        commentEditField.setText(shopItem.getComment());
-        if (Strings.isNullOrEmpty(shopItem.getComment())) {
-            commentEditField.setVisibility(View.GONE);
-        }
-
+        final ImageButton editButton = (ImageButton) view.findViewById(R.id.cell_selectable_shop_item_edit_button);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SelectableShopItemCellFactory.this.listener.onEditClick(shopItem);
             }
         });
+
+        final View separator = view.findViewById(
+                R.id.cell_selectable_shop_item_separator);
+        if ((cellContext.getNextCell() == null)
+                || (cellContext.getNextCell().isSelected() != cell.isSelected())) {
+            separator.setVisibility(View.INVISIBLE);
+        } else {
+            separator.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private String buildComment(ShopItem shopItem) {
+        String result = "";
+
+        if (shopItem.getQuantity() != null) {
+            result += StringUtils.toString(shopItem.getQuantity());
+        }
+
+        if (!Strings.isNullOrEmpty(shopItem.getComment())) {
+            if (!result.isEmpty()) {
+                result += ", ";
+            }
+
+            result += shopItem.getComment();
+        }
+
+        return result;
     }
 
     public interface Listener {

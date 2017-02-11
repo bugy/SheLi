@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_background">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <net.buggy.shoplist.components.FastCreationPanel
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/unit_select_shopitems_creation_panel" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/unit_select_shopitems_list"
@@ -23,10 +18,10 @@
 
     <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/unit_select_shopitems_accept_button"
         style="@style/Widget.Design.FloatingActionButton.AtBottom"
-        android:id="@+id/unit_select_shopitems_button_accept"
         android:src="@drawable/ic_check_white_24dp"
-        app:layout_anchorGravity="bottom|end"
-        app:layout_anchor="@id/unit_select_shopitems_list" />
+        app:layout_anchor="@id/unit_select_shopitems_list"
+        app:layout_anchorGravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>

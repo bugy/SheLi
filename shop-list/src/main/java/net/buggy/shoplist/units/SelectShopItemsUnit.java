@@ -1,23 +1,19 @@
 package net.buggy.shoplist.units;
 
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
 import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
-import net.buggy.shoplist.components.CategoriesSpinner;
-import net.buggy.shoplist.components.FastCreationPanel;
+import net.buggy.shoplist.components.CategoriesFilter;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.components.SelectableShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
@@ -27,9 +23,7 @@ import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.EditProductUnit.ProductEditedEvent;
 import net.buggy.shoplist.units.views.ViewRenderer;
-import net.buggy.shoplist.utils.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,8 +42,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
     private transient FactoryBasedAdapter<ShopItem> adapter;
 
     private final Set<ShopItem> existingItems;
-    private Category selectedCategory;
-    private String filterText;
+    private List<Category> selectedCategories;
 
     private final Map<Product, ShopItem> cachedItems = new ConcurrentHashMap<>();
     private final Set<ShopItem> selectedItems = Collections.newSetFromMap(new ConcurrentHashMap<ShopItem, Boolean>());
@@ -77,7 +70,6 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
         }
 
         final ShopItem shopItem = new ShopItem();
-        shopItem.setQuantity(BigDecimal.ONE);
         shopItem.setProduct(product);
 
         cachedItems.put(product, shopItem);
@@ -144,8 +136,6 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
     private class MainViewRenderer extends ViewRenderer<ShopListActivity, RelativeLayout> {
         @Override
         public void renderTo(final RelativeLayout parentView, final ShopListActivity activity) {
-            final DataStorage dataStorage = activity.getDataStorage();
-
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_select_shopitems, parentView, true);
 
@@ -153,14 +143,10 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
 
             final RecyclerView productsList = (RecyclerView) parentView.findViewById(R.id.unit_select_shopitems_list);
             ListDecorator.decorateList(productsList);
-            DividerItemDecoration itemDecoration = new DividerItemDecoration(
-                    productsList.getContext(),
-                    DividerItemDecoration.VERTICAL);
-            productsList.addItemDecoration(itemDecoration);
 
             productsList.setAdapter(adapter);
 
-            final View acceptButton = parentView.findViewById(R.id.unit_select_shopitems_button_accept);
+            final View acceptButton = parentView.findViewById(R.id.unit_select_shopitems_accept_button);
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -169,77 +155,6 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                     sendSelectionEventAndExit(selectedItems);
                 }
             });
-
-            final FastCreationPanel creationPanel = (FastCreationPanel)
-                    parentView.findViewById(R.id.unit_select_shopitems_creation_panel);
-            creationPanel.setEditAddEnabled(true);
-            final String searchHint = parentView.getResources().getString(R.string.unit_select_shopitems_search_hint);
-            creationPanel.setHint(searchHint);
-            creationPanel.setListener(new FastCreationPanel.Listener() {
-                @Override
-                public void onCreate(String name) {
-                    if (checkIfExists(name)) {
-                        return;
-                    }
-
-                    final Product product = new Product();
-                    product.setName(name);
-
-                    dataStorage.addProduct(product);
-
-                    final ShopItem newItem = getOrCreateShopItem(product);
-                    adapter.add(newItem);
-                    adapter.selectItem(newItem);
-                }
-
-                @Override
-                public void onEditCreate(String name) {
-                    if (checkIfExists(name)) {
-                        return;
-                    }
-
-                    final Product product = new Product();
-                    product.setName(name);
-                    final EditProductUnit editProductUnit = new EditProductUnit(product, true);
-                    editProductUnit.setListeningUnit(SelectShopItemsUnit.this);
-                    activity.startUnit(editProductUnit);
-                }
-
-                private boolean checkIfExists(String name) {
-                    final List<ShopItem> shopItems = adapter.getAllItems();
-                    for (ShopItem item : shopItems) {
-                        final Product product = item.getProduct();
-
-                        if (StringUtils.equalIgnoreCase(name, product.getName())) {
-                            final Toast toast = Toast.makeText(
-                                    parentView.getContext(),
-                                    activity.getString(
-                                            R.string.products_unit_already_exists,
-                                            product.getName()),
-                                    Toast.LENGTH_LONG);
-                            toast.show();
-
-                            if (!existingItems.contains(item)) {
-                                adapter.selectItem(item);
-                            }
-
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
-                @Override
-                public void onNameChanged(String name) {
-                    filterText = name;
-
-                    filterProducts(selectedCategory, filterText);
-                }
-            });
-
-            if (!Strings.isNullOrEmpty(filterText)) {
-                creationPanel.setText(filterText);
-            }
         }
 
         private void initAdapter() {
@@ -263,11 +178,9 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             for (Product product : products) {
                 ShopItem shopItem = getOrCreateShopItem(product);
 
-                adapter.add(shopItem);
-            }
-
-            for (ShopItem existingItem : existingItems) {
-                adapter.disableItem(existingItem);
+                if (!existingItems.contains(shopItem)) {
+                    adapter.add(shopItem);
+                }
             }
 
             for (ShopItem selectedItem : selectedItems) {
@@ -310,15 +223,17 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_create_shopitems_toolbar, parentView, true);
 
-            final CategoriesSpinner categorySpinner = (CategoriesSpinner) parentView.findViewById(
-                    R.id.unit_select_shopitems_category_spinner);
-            categorySpinner.setCategories(dataStorage.getCategories());
-            categorySpinner.setListener(new CategoriesSpinner.Listener() {
-                @Override
-                public void categorySelected(Category category) {
-                    selectedCategory = category;
+            final CategoriesFilter categoriesFilter = (CategoriesFilter) parentView.findViewById(
+                    R.id.unit_create_shopitems_toolbar_categories_filter);
+            categoriesFilter.setPopupAnchor(parentView);
+            categoriesFilter.setCategories(dataStorage.getCategories());
 
-                    filterProducts(selectedCategory, filterText);
+            categoriesFilter.addListener(new CategoriesFilter.Listener() {
+                @Override
+                public void categoriesSelected(List<Category> categories) {
+                    selectedCategories = categories;
+
+                    filterProducts(selectedCategories);
                 }
             });
         }
@@ -330,15 +245,6 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
         return new Comparator<ShopItem>() {
             @Override
             public int compare(ShopItem i1, ShopItem i2) {
-                if (SelectShopItemsUnit.this.existingItems.contains(i1)) {
-                    if (!SelectShopItemsUnit.this.existingItems.contains(i2)) {
-                        return 1;
-                    }
-                } else if (SelectShopItemsUnit.this.existingItems.contains(i2)) {
-                    return -1;
-                }
-
-
                 final Product p1 = i1.getProduct();
                 final Product p2 = i2.getProduct();
 
@@ -347,8 +253,8 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
         };
     }
 
-    private void filterProducts(final Category category, final String newText) {
-        final ProductsFilter productsFilter = new ProductsFilter(newText, category);
+    private void filterProducts(final List<Category> categories) {
+        final ProductsFilter productsFilter = new ProductsFilter("", categories);
 
         adapter.setFilter(new Predicate<ShopItem>() {
             @Override

@@ -2,7 +2,6 @@ package net.buggy.shoplist.units;
 
 
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -12,36 +11,31 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 
-import net.buggy.components.TagFlag;
 import net.buggy.components.ViewUtils;
 import net.buggy.components.animation.AnimationAdapter;
 import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.SwipeToRemoveHandler;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
-import net.buggy.shoplist.compare.CategoryComparator;
 import net.buggy.shoplist.compare.ShopItemComparator;
-import net.buggy.shoplist.components.CategoriesFilterCellFactory;
+import net.buggy.shoplist.components.CategoriesFilter;
 import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.components.SearchProductCellFactory;
 import net.buggy.shoplist.components.SearchProductCellFactory.SearchedProduct;
 import net.buggy.shoplist.components.ToBuyShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
-import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.views.ViewRenderer;
@@ -56,7 +50,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static android.widget.ListPopupWindow.MATCH_PARENT;
 import static net.buggy.components.list.FactoryBasedAdapter.SelectionMode.MULTI;
 
 public class ShopItemListUnit extends Unit<ShopListActivity> {
@@ -235,91 +228,15 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                     parentView,
                     true);
 
-            final ImageButton categoriesFilterButton = (ImageButton) parentView.findViewById(
-                    R.id.unit_shopitem_list_filter_button);
+            final CategoriesFilter categoriesFilter = (CategoriesFilter) parentView.findViewById(
+                    R.id.unit_shop_item_list_toolbar_categories_filter);
+            categoriesFilter.setPopupAnchor(parentView);
+            categoriesFilter.setCategories(activity.getDataStorage().getCategories());
 
-            final RelativeLayout activeCategoriesContainer = (RelativeLayout) parentView.findViewById(
-                    R.id.unit_shop_item_list_active_categories);
-            final int filterButtonHeight = categoriesFilterButton.getDrawable().getIntrinsicHeight();
-
-            final FactoryBasedAdapter<Category> categoriesAdapter = new FactoryBasedAdapter<>(
-                    new CategoriesFilterCellFactory());
-            categoriesAdapter.setSorter(CategoryComparator.INSTANCE);
-            categoriesAdapter.setSelectionMode(MULTI);
-            categoriesAdapter.addAll(activity.getDataStorage().getCategories());
-
-            final int flagCutHeight = ViewUtils.dpToPx(4, activity);
-            categoriesAdapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<Category>() {
+            categoriesFilter.addListener(new CategoriesFilter.Listener() {
                 @Override
-                public void selectionChanged(Category item, boolean selected) {
-                    final List<Category> selectedItems = categoriesAdapter.getSelectedItems();
-                    filterShopItems(selectedItems);
-
-                    activeCategoriesContainer.removeAllViews();
-
-                    if (!CollectionUtils.isEmpty(selectedItems)) {
-                        categoriesFilterButton.setActivated(true);
-
-                        final int itemHeight = filterButtonHeight / selectedItems.size();
-                        int i = 0;
-
-                        for (Category category : selectedItems) {
-                            int flagHeight = itemHeight * (i + 1) + flagCutHeight;
-
-                            final TagFlag tagFlag = new TagFlag(activity);
-                            tagFlag.setColor(ModelHelper.getColor(category));
-                            tagFlag.setBorderColor(Color.TRANSPARENT);
-                            final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                                    LayoutParams.MATCH_PARENT, flagHeight);
-                            params.topMargin = flagCutHeight;
-                            tagFlag.setLayoutParams(params);
-                            tagFlag.setCutHeight(flagCutHeight);
-
-                            i++;
-
-                            activeCategoriesContainer.addView(tagFlag, 0);
-                        }
-
-                    } else {
-                        categoriesFilterButton.setActivated(false);
-                    }
-                }
-            });
-
-            final LayoutInflater popupInflater = LayoutInflater.from(activity);
-            final ViewGroup popupContent = (ViewGroup) popupInflater.inflate(
-                    R.layout.popup_categories_filter,
-                    parentView,
-                    false);
-
-            final RecyclerView categoriesList = (RecyclerView) popupContent.findViewById(
-                    R.id.popup_categories_filter_categories_list);
-            ListDecorator.decorateList(categoriesList);
-            categoriesList.setAdapter(categoriesAdapter);
-
-            final PopupWindow popupWindow = new PopupWindow(popupContent,
-                    MATCH_PARENT,
-                    MATCH_PARENT,
-                    true);
-            popupWindow.setFocusable(false);
-            popupWindow.setOutsideTouchable(true);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-            popupContent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (popupWindow.isShowing()) {
-                        popupWindow.dismiss();
-                    }
-                }
-            });
-
-            categoriesFilterButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!popupWindow.isShowing()) {
-                        popupWindow.showAsDropDown(parentView);
-                    }
+                public void categoriesSelected(List<Category> categories) {
+                    filterShopItems(categories);
                 }
             });
         }

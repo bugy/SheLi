@@ -67,6 +67,7 @@ Used icons:
 * ic_menu_white_48dp
 * ic_message_black_24dp
 * ic_playlist_add (modified into: add_from_products.png)
+* ic_rate_review_black_24dp (modified into: shop_item_comment_14dp.png)
 * ic_shopping_cart_black_24dp
 
 ### Menu image (modified)
@@ -84,6 +85,7 @@ SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 (https://github.com/Templar
 * ic_chevron_double_right_black_24dp.png
 * filter-outline (By: Austin Andrews) (modified into: category_filter_disabled.png, category_filter_enabled.png)
 * broom (By: Austin Andrews) (modified into: clear_checked_shopitems_enabled.png, clear_checked_shopitems_disabled.png)
+* rename-box
 
 ### MarckScript-Regular.ttf
 https://fonts.google.com/specimen/Marck+Script

@@ -48,4 +48,5 @@
     <string name="cell_search_product_new">new</string>
     <string name="unit_shopitem_not_specified_quantity">Not specified</string>
     <string name="clear_selected_catetories_in_filter">Clear</string>
+    <string name="unit_create_shopitems_select_products">Select new products</string>
 </resources>

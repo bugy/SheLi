@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/App_TitleTextViewStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="5dp"
-    android:layout_marginStart="5dp"
-    android:orientation="horizontal"
+    android:gravity="center_vertical"
     tools:background="?attr/colorPrimary"
     tools:layout_height="?attr/actionBarSize">
 
-    <net.buggy.shoplist.components.CategoriesSpinner
-        android:id="@+id/unit_select_shopitems_category_spinner"
+    <net.buggy.shoplist.components.CategoriesFilter
+        android:id="@+id/unit_create_shopitems_toolbar_categories_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:dropDownVerticalOffset="?attr/actionBarSize"
-        android:spinnerMode="dropdown" />
+        android:gravity="center"
+        android:text="@string/unit_create_shopitems_select_products"
+        android:textSize="@dimen/title_font_size" />
 
 </LinearLayout>

@@ -29,6 +29,7 @@ import net.buggy.shoplist.units.views.InflatingViewRenderer;
 import net.buggy.shoplist.units.views.ViewRenderer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
@@ -236,6 +237,6 @@ public class ProductsUnit extends Unit<ShopListActivity> {
     }
 
     private void filterProducts(Category selectedCategory, String searchedText) {
-        adapter.setFilter(new ProductsFilter(searchedText, selectedCategory));
+        adapter.setFilter(new ProductsFilter(searchedText, Collections.singletonList(selectedCategory)));
     }
 }
