@@ -154,7 +154,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            adapter.addClickListener(new FactoryBasedAdapter.ClickListener<ShopItem>() {
+            adapter.addLongClickListener(new FactoryBasedAdapter.ClickListener<ShopItem>() {
                 @Override
                 public void itemClicked(ShopItem item) {
                     final ViewShopItemUnit unit = new ViewShopItemUnit(item);
