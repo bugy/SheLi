@@ -12,34 +12,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            style="@style/FieldRow"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/FieldLabel"
-                android:layout_width="55dp"
-                android:layout_height="match_parent"
-                android:text="@string/unit_edit_category_name_label" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingEnd="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingStart="12dp">
 
             <EditText
                 android:id="@+id/unit_edit_category_name_field"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical|start"
+                android:hint="@string/unit_edit_category_name_label"
                 android:imeOptions="actionDone"
                 android:inputType="textNoSuggestions"
                 android:maxLines="1"
                 tools:text="Fruits" />
-        </LinearLayout>
+
+        </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
             style="@style/FieldRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:layout_marginTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp">
 
             <TextView
                 style="@style/FieldLabel"
@@ -57,13 +60,18 @@
             style="@style/FieldLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
             android:text="@string/unit_edit_category_products_label" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/unit_edit_category_products_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp" />
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
