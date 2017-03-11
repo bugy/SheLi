@@ -8,14 +8,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import net.buggy.components.spinners.MaterialSpinner;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.components.QuantityClickListener;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
+import net.buggy.shoplist.model.UnitOfMeasure;
 import net.buggy.shoplist.units.views.ViewRenderer;
 import net.buggy.shoplist.utils.StringUtils;
 
+import java.util.Arrays;
+
+import static net.buggy.components.ViewUtils.setTextWithoutAnimation;
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
 
@@ -46,25 +51,36 @@ public class ViewShopItemUnit extends Unit<ShopListActivity> {
             final Product product = shopItem.getProduct();
 
             final TextView nameField = (TextView) parentView.findViewById(R.id.unit_view_shop_item_name_field);
-            nameField.setText(product.getName());
+            setTextWithoutAnimation(nameField, product.getName());
 
             final EditText quantityField = (EditText) parentView.findViewById(R.id.unit_view_shop_item_quantity_field);
             if (shopItem.getQuantity() != null) {
-                quantityField.setText(StringUtils.toString(shopItem.getQuantity()));
+                setTextWithoutAnimation(quantityField, StringUtils.toString(shopItem.getQuantity()));
             } else {
-                quantityField.setText(activity.getString(R.string.unit_shopitem_not_specified_quantity));
+                setTextWithoutAnimation(quantityField, activity.getString(R.string.unit_shopitem_not_specified_quantity));
             }
             quantityField.setOnClickListener(new QuantityClickListener(shopItem, null, quantityField));
 
+            final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
+                    parentView.findViewById(R.id.unit_view_shop_item_units_field);
+            unitsField.setHint(activity.getString(R.string.unit_view_shop_item_units_field_label));
+            unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
+            if (shopItem.getUnitOfMeasure() != null) {
+                unitsField.setSelectedItem(shopItem.getUnitOfMeasure());
+            } else if (product.getDefaultUnits() != null) {
+                unitsField.setSelectedItem(product.getDefaultUnits());
+            }
+            unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
+
             final TextView noteField = (TextView) parentView.findViewById(R.id.unit_view_shop_item_note_field);
             if (product.getNote() != null) {
-                noteField.setText(product.getNote());
+                setTextWithoutAnimation(noteField, product.getNote());
             }
 
             final EditText commentField = (EditText) parentView.findViewById(
                     R.id.unit_view_shop_item_comment_field);
             if (shopItem.getComment() != null) {
-                commentField.setText(shopItem.getComment());
+                setTextWithoutAnimation(commentField, shopItem.getComment());
             }
 
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(
@@ -76,6 +92,9 @@ public class ViewShopItemUnit extends Unit<ShopListActivity> {
                     final String comment = commentField.getText().toString().trim();
 
                     shopItem.setComment(comment);
+
+                    final UnitOfMeasure selectedItem = unitsField.getSelectedItem();
+                    shopItem.setUnitOfMeasure(selectedItem);
 
                     activity.stopUnit(ViewShopItemUnit.this);
 

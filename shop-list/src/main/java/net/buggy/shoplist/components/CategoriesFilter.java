@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import net.buggy.components.TagFlag;
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
+import net.buggy.components.list.ListDecorator;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.compare.CategoryComparator;
 import net.buggy.shoplist.model.Category;

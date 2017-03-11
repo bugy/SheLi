@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ShopList</string>
     <string name="edit_product_name_field_label">Name</string>
+    <string name="edit_product_units_field_label">Units of measure</string>
     <string name="edit_product_note_label">Note</string>
     <string name="edit_product_categories_label">Linked categories</string>
     <string name="edit_product_save_button_label">Save</string>
@@ -45,8 +46,19 @@
     <string name="unit_view_shop_item_note_label">Note</string>
     <string name="unit_view_shop_item_title">%s info</string>
     <string name="unit_view_shop_item_quantity_field_label">Quantity</string>
+    <string name="unit_view_shop_item_units_field_label">Units of measure</string>
     <string name="cell_search_product_new">new</string>
     <string name="unit_shopitem_not_specified_quantity">Not specified</string>
     <string name="clear_selected_catetories_in_filter">Clear</string>
     <string name="unit_create_shopitems_select_products">Select new products</string>
+    <string name="unit_of_measure_kg">Kilogram</string>
+    <string name="unit_of_measure_gram">Gram</string>
+    <string name="unit_of_measure_liter">Liter</string>
+    <string name="unit_of_measure_bottle">Bottle</string>
+    <string name="unit_of_measure_pack">Pack</string>
+    <string name="unit_of_measure_kg_short">kg</string>
+    <string name="unit_of_measure_gram_short">g</string>
+    <string name="unit_of_measure_liter_short">l</string>
+    <string name="unit_of_measure_bottle_short">btl</string>
+    <string name="unit_of_measure_pack_short">p</string>
 </resources>

@@ -12,12 +12,12 @@ import com.google.common.base.Objects;
 
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
+import net.buggy.components.list.ListDecorator;
 import net.buggy.components.list.SwipeToRemoveHandler;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
 import net.buggy.shoplist.components.CategoriesSpinner;
-import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.components.ProductCellFactory;
 import net.buggy.shoplist.components.SearchTextField;
 import net.buggy.shoplist.data.DataStorage;
@@ -237,6 +237,9 @@ public class ProductsUnit extends Unit<ShopListActivity> {
     }
 
     private void filterProducts(Category selectedCategory, String searchedText) {
-        adapter.setFilter(new ProductsFilter(searchedText, Collections.singletonList(selectedCategory)));
+        final List<Category> categories = (selectedCategory != null)
+                ? Collections.singletonList(selectedCategory)
+                : null;
+        adapter.setFilter(new ProductsFilter(searchedText, categories));
     }
 }

@@ -1,5 +1,6 @@
 package net.buggy.shoplist.model;
 
+import android.content.Context;
 import android.graphics.Color;
 
 import com.google.common.base.Objects;
@@ -84,5 +85,24 @@ public class ModelHelper {
         category.setColor(color);
 
         return category;
+    }
+
+    public static String buildStringQuantity(ShopItem shopItem, Context context) {
+        if (shopItem.getQuantity() == null) {
+            return "";
+        }
+
+        final String quantityString = StringUtils.toString(shopItem.getQuantity());
+
+        UnitOfMeasure unitOfMeasure = shopItem.getUnitOfMeasure();
+        if (unitOfMeasure == null) {
+            unitOfMeasure = shopItem.getProduct().getDefaultUnits();
+        }
+        if (unitOfMeasure == null) {
+            return quantityString;
+        }
+
+        final String unitsString = context.getString(unitOfMeasure.getShortNameKey());
+        return quantityString + " " + unitsString;
     }
 }

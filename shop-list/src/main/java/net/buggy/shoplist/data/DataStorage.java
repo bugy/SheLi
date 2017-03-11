@@ -13,6 +13,7 @@ import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Entity;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
+import net.buggy.shoplist.model.UnitOfMeasure;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -56,6 +57,7 @@ public class DataStorage implements Serializable {
             shopItem.setProduct(product);
             shopItem.setQuantity(storedItem.quantity);
             shopItem.setComment(storedItem.comment);
+            shopItem.setUnitOfMeasure(storedItem.unitOfMeasure);
 
             result.put(shopItem.getId(), shopItem);
         }
@@ -74,6 +76,7 @@ public class DataStorage implements Serializable {
             product.setName(storedProduct.name);
             product.setNote(storedProduct.note);
             product.setId(storedProduct.getId());
+            product.setDefaultUnits(storedProduct.unitOfMeasure);
 
             Set<Category> productCategories = new LinkedHashSet<>();
             for (StoredCategory storedCategory : storedProduct.getCategories()) {
@@ -283,6 +286,9 @@ public class DataStorage implements Serializable {
         @Column(name = "Note")
         private String note;
 
+        @Column(name = "UnitOfMeasure")
+        private UnitOfMeasure unitOfMeasure;
+
         private final List<StoredProductCategoryLink> deletedLinks = new ArrayList<>();
         private final List<StoredProductCategoryLink> newLinks = new ArrayList<>();
 
@@ -301,6 +307,7 @@ public class DataStorage implements Serializable {
         public void fillFrom(Product product) {
             this.name = product.getName();
             this.note = product.getNote();
+            this.unitOfMeasure = product.getDefaultUnits();
 
             Set<Long> categoryIds = new LinkedHashSet<>();
             for (Category category : product.getCategories()) {
@@ -374,6 +381,9 @@ public class DataStorage implements Serializable {
         @Column(name = "Comment")
         private String comment;
 
+        @Column(name = "UnitOfMeasure")
+        private UnitOfMeasure unitOfMeasure;
+
         public StoredShopItem() {
             super();
         }
@@ -388,6 +398,7 @@ public class DataStorage implements Serializable {
         public void fillFrom(ShopItem shopItem) {
             quantity = shopItem.getQuantity();
             comment = shopItem.getComment();
+            unitOfMeasure = shopItem.getUnitOfMeasure();
 
             final StoredProduct storedProduct = new Select()
                     .from(StoredProduct.class)

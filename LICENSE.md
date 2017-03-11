@@ -30,12 +30,7 @@ https://github.com/AigeStudio/WheelPicker
 Copyright 2015-2017 AigeStudio
 Licensed under the Apache License, Version 2.0
 
-###org.apmem.tools:layouts:1.10
-https://github.com/ApmeM/android-flowlayout
-Copyright 2011, Artem Votincev (apmem.org)
-Licensed under the Apache License, Version 2.0
-
-###com.google.guava:guava:19
+###com.google.guava:guava:20
 https://github.com/google/guava
 Licensed under the Apache License, Version 2.0 
 
@@ -50,6 +45,7 @@ Used icons:
 * ic_add_white_48dp
 * ic_add_white_48dp (modified into: add_shopitem.png)
 * ic_arrow_back (modified into: search_back.png)
+* ic_arrow_drop_down_black_48px (modified into ic_arrow_drop_down_black_12dp)
 * ic_bookmark_border_black_24dp
 * ic_bubble_chart_black_24dp
 * ic_cancel_black_24dp

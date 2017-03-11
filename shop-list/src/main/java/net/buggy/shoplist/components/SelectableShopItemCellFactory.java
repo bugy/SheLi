@@ -15,9 +15,9 @@ import net.buggy.components.list.Cell;
 import net.buggy.components.list.CellContext;
 import net.buggy.components.list.CellFactory;
 import net.buggy.shoplist.R;
+import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
-import net.buggy.shoplist.utils.StringUtils;
 
 public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
 
@@ -50,7 +50,7 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
         final TextView commentField = (TextView) view.findViewById(
                 R.id.cell_selectable_shop_item_comment_field);
 
-        String comment = buildComment(shopItem);
+        String comment = buildComment(shopItem, view.getContext());
         if (Strings.isNullOrEmpty(comment)) {
             commentField.setVisibility(View.GONE);
         } else {
@@ -75,11 +75,11 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
         }
     }
 
-    private String buildComment(ShopItem shopItem) {
+    private String buildComment(ShopItem shopItem, Context context) {
         String result = "";
 
         if (shopItem.getQuantity() != null) {
-            result += StringUtils.toString(shopItem.getQuantity());
+            result += ModelHelper.buildStringQuantity(shopItem, context);
         }
 
         if (!Strings.isNullOrEmpty(shopItem.getComment())) {

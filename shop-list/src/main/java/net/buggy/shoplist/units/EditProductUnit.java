@@ -18,22 +18,26 @@ import com.google.common.base.Strings;
 
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
+import net.buggy.components.list.ListDecorator;
+import net.buggy.components.spinners.MaterialSpinner;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.CategoryComparator;
 import net.buggy.shoplist.components.CategoryCellFactory;
-import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
+import net.buggy.shoplist.model.UnitOfMeasure;
 import net.buggy.shoplist.units.views.ViewRenderer;
 import net.buggy.shoplist.utils.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static net.buggy.components.ViewUtils.setTextWithoutAnimation;
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
 
@@ -95,7 +99,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             inflater.inflate(R.layout.unit_edit_product, parentView, true);
 
             final EditText nameField = (EditText) parentView.findViewById(R.id.edit_product_name_field);
-            nameField.setText(product.getName());
+            setTextWithoutAnimation(nameField, product.getName());
             nameField.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -116,8 +120,16 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
             final EditText noteField = (EditText) parentView.findViewById(R.id.unit_edit_product_note_field);
             if (product.getNote() != null) {
-                noteField.setText(product.getNote());
+                setTextWithoutAnimation(noteField, product.getNote());
             }
+
+            @SuppressWarnings("unchecked")
+            final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
+                    parentView.findViewById(R.id.unit_edit_product_units_field);
+            unitsField.setHint(activity.getString(R.string.edit_product_units_field_label));
+            unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
+            unitsField.setSelectedItem(product.getDefaultUnits(), false);
+            unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
 
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +165,9 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
                     final String note = noteField.getText().toString().trim();
                     product.setNote(note);
+
+                    final UnitOfMeasure unitOfMeasure = unitsField.getSelectedItem();
+                    product.setDefaultUnits(unitOfMeasure);
 
                     activity.stopUnit(EditProductUnit.this);
 

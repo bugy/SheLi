@@ -31,11 +31,11 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:paddingEnd="12dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:paddingStart="12dp"
-            android:layout_marginTop="8dp">
+            android:paddingStart="12dp">
 
             <net.buggy.components.text.MultilineEditText
                 android:id="@+id/unit_edit_product_note_field"
@@ -50,6 +50,16 @@
                 tools:text="Some very long line with many text and this note should be in multiple lines." />
         </android.support.design.widget.TextInputLayout>
 
+        <net.buggy.components.spinners.MaterialSpinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingEnd="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingStart="12dp"
+            android:id="@+id/unit_edit_product_units_field" />
+
         <TextView
             style="@style/FieldLabel"
             android:layout_width="match_parent"
@@ -63,8 +73,6 @@
             android:id="@+id/unit_edit_product_categories_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1" />
     </LinearLayout>

@@ -10,12 +10,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.buggy.components.list.FactoryBasedAdapter;
+import net.buggy.components.list.ListDecorator;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.CategoryComparator;
 import net.buggy.shoplist.components.CategoryCellFactory;
 import net.buggy.shoplist.components.FastCreationPanel;
-import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;

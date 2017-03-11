@@ -25,7 +25,7 @@
             android:value="ShopList.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="9" />
+            android:value="10" />
     </application>
 
 </manifest>

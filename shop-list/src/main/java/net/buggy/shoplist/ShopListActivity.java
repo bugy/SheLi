@@ -20,8 +20,8 @@ import com.google.common.collect.Multimaps;
 
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
+import net.buggy.components.list.ListDecorator;
 import net.buggy.components.list.MenuCellFactory;
-import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.navigation.AboutAppUnitNavigator;
 import net.buggy.shoplist.navigation.CategoriesListUnitNavigator;

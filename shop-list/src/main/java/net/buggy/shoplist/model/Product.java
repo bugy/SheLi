@@ -10,6 +10,8 @@ public class Product extends Entity implements Serializable {
 
     private String name;
     private String note;
+    private UnitOfMeasure defaultUnits;
+
     private final Set<Category> categories = new LinkedHashSet<>();
 
     public Product() {
@@ -41,6 +43,14 @@ public class Product extends Entity implements Serializable {
         if (categories != null) {
             this.categories.addAll(categories);
         }
+    }
+
+    public UnitOfMeasure getDefaultUnits() {
+        return defaultUnits;
+    }
+
+    public void setDefaultUnits(UnitOfMeasure defaultUnits) {
+        this.defaultUnits = defaultUnits;
     }
 
     @Override

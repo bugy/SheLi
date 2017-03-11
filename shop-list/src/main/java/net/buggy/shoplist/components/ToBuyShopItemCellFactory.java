@@ -25,9 +25,10 @@ import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
-import net.buggy.shoplist.utils.StringUtils;
 
 import java.util.Set;
+
+import static net.buggy.shoplist.model.ModelHelper.buildStringQuantity;
 
 public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
 
@@ -59,7 +60,7 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
 
         final TextView quantityView = (TextView) view.findViewById(R.id.cell_to_buy_shop_item_quantity_field);
         if (shopItem.getQuantity() != null) {
-            quantityView.setText(StringUtils.toString(shopItem.getQuantity()));
+            quantityView.setText(buildStringQuantity(shopItem, view.getContext()));
         } else {
             quantityView.setText("");
         }

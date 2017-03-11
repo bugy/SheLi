@@ -10,11 +10,11 @@ import com.android.internal.util.Predicate;
 import com.google.common.collect.ImmutableSet;
 
 import net.buggy.components.list.FactoryBasedAdapter;
+import net.buggy.components.list.ListDecorator;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
 import net.buggy.shoplist.components.CategoriesFilter;
-import net.buggy.shoplist.components.ListDecorator;
 import net.buggy.shoplist.components.SelectableShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.filters.ProductsFilter;
@@ -169,8 +169,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                             getHostingActivity().startUnit(unit);
                         }
                     });
-            adapter = new FactoryBasedAdapter<>(
-                    factory);
+            adapter = new FactoryBasedAdapter<>(factory);
             adapter.setSelectionMode(MULTI);
             adapter.setSorter(createComparator());
 
