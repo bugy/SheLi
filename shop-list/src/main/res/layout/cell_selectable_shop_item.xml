@@ -57,8 +57,7 @@
             android:paddingRight="16dp"
             android:paddingStart="16dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/shop_item_comment_14dp"
-            android:tint="@color/color_primary_icons" />
+            android:src="@drawable/shop_item_comment_14dp" />
 
     </LinearLayout>
 

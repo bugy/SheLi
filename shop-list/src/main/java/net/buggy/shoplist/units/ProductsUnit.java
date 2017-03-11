@@ -1,7 +1,10 @@
 package net.buggy.shoplist.units;
 
+import android.graphics.PorterDuff;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -208,6 +211,11 @@ public class ProductsUnit extends Unit<ShopListActivity> {
                 public void onFinish(String text) {
                 }
             });
+
+
+            final AppCompatImageView searchIcon = (AppCompatImageView)
+                    parentView.findViewById(R.id.unit_products_search_icon);
+            DrawableCompat.setTintMode(searchIcon.getDrawable(), PorterDuff.Mode.SRC_IN);
         }
     }
 
