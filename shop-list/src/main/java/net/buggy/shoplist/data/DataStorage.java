@@ -58,6 +58,7 @@ public class DataStorage implements Serializable {
             shopItem.setQuantity(storedItem.quantity);
             shopItem.setComment(storedItem.comment);
             shopItem.setUnitOfMeasure(storedItem.unitOfMeasure);
+            shopItem.setChecked((storedItem.checked != null) ? storedItem.checked : false);
 
             result.put(shopItem.getId(), shopItem);
         }
@@ -384,6 +385,9 @@ public class DataStorage implements Serializable {
         @Column(name = "UnitOfMeasure")
         private UnitOfMeasure unitOfMeasure;
 
+        @Column(name = "Checked")
+        private Boolean checked;
+
         public StoredShopItem() {
             super();
         }
@@ -399,6 +403,7 @@ public class DataStorage implements Serializable {
             quantity = shopItem.getQuantity();
             comment = shopItem.getComment();
             unitOfMeasure = shopItem.getUnitOfMeasure();
+            checked = shopItem.isChecked();
 
             final StoredProduct storedProduct = new Select()
                     .from(StoredProduct.class)

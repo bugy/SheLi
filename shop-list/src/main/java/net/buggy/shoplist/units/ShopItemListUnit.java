@@ -49,6 +49,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static net.buggy.components.list.FactoryBasedAdapter.SelectionMode.MULTI;
 
@@ -56,6 +58,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
 
     private transient FactoryBasedAdapter<ShopItem> adapter;
     private transient EditText searchField;
+    private transient ImageButton cleanCheckedButton;
 
     @Override
     public void start() {
@@ -117,6 +120,8 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
 
             initCleanButton(parentView);
 
+            initCheckListener();
+
             initAddItemButton(parentView);
         }
 
@@ -132,8 +137,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             adapter.setSelectionMode(MULTI);
             adapter.setSorter(new ShopItemComparator());
 
-            final List<ShopItem> shopItems = dataStorage.getShopItems();
-            adapter.addAll(shopItems);
+            refreshShopItems(dataStorage.getShopItems(), adapter);
 
             itemsList.setAdapter(adapter);
 
@@ -169,8 +173,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    adapter.clear();
-                    adapter.addAll(dataStorage.getShopItems());
+                    refreshShopItems(dataStorage.getShopItems(), adapter);
 
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -191,8 +194,8 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         }
 
         private void initCleanButton(RelativeLayout parentView) {
-            final ImageButton cleanCheckedButton =
-                    (ImageButton) parentView.findViewById(R.id.unit_shopitem_list_clean_checked_button);
+            cleanCheckedButton = (ImageButton) parentView.findViewById(
+                    R.id.unit_shopitem_list_clean_checked_button);
             cleanCheckedButton.setEnabled(false);
             cleanCheckedButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -204,18 +207,43 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                     cleanCheckedButton.setEnabled(false);
                 }
             });
+        }
+
+        private void initCheckListener() {
+            final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
             adapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<ShopItem>() {
                 @Override
-                public void selectionChanged(ShopItem item, boolean selected) {
+                public void selectionChanged(final ShopItem item, boolean selected) {
                     if (selected) {
                         cleanCheckedButton.setEnabled(true);
                     } else {
                         final boolean anythingSelected = !adapter.getSelectedItems().isEmpty();
                         cleanCheckedButton.setEnabled(anythingSelected);
                     }
+
+                    item.setChecked(selected);
+
+                    executorService.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            final DataStorage dataStorage = getHostingActivity().getDataStorage();
+                            dataStorage.saveShopItem(item);
+                        }
+                    });
                 }
             });
+        }
+    }
+
+    private void refreshShopItems(List<ShopItem> setShopItems, FactoryBasedAdapter<ShopItem> adapter) {
+        adapter.clear();
+        adapter.addAll(setShopItems);
+
+        for (ShopItem shopItem : setShopItems) {
+            if (shopItem.isChecked()) {
+                adapter.selectItem(shopItem);
+            }
         }
     }
 

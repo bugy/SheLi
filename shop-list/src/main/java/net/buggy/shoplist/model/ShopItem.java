@@ -10,6 +10,7 @@ public class ShopItem extends Entity implements Serializable {
     private BigDecimal quantity;
     private UnitOfMeasure unitOfMeasure;
     private String comment;
+    private boolean checked = false;
 
     public void setProduct(Product product) {
         this.product = product;
@@ -41,6 +42,14 @@ public class ShopItem extends Entity implements Serializable {
 
     public void setUnitOfMeasure(UnitOfMeasure unitOfMeasure) {
         this.unitOfMeasure = unitOfMeasure;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     @Override
