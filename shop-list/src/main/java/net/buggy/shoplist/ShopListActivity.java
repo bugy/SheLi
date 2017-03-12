@@ -393,7 +393,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
             if (lastIndex >= 0) {
                 units.remove(lastIndex);
 
-                if (units.size() > 0) {
+                if ((units.size() > 0) && (lastIndex == units.size())) {
                     final Unit lastOwner = units.get(units.size() - 1);
                     lastOwner.viewClaimed(entry.getKey());
                 }

@@ -97,10 +97,12 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
     }
 
     public void viewClaimed(int viewId) {
-        claimedViews.add(viewId);
+        if (!claimedViews.contains(viewId)) {
+            claimedViews.add(viewId);
 
-        if (claimedViews.size() == renderers.size()) {
-            displayUnit();
+            if (claimedViews.size() == renderers.size()) {
+                displayUnit();
+            }
         }
     }
 
