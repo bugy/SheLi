@@ -3,6 +3,7 @@ package net.buggy.shoplist.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -11,6 +12,9 @@ public class Product extends Entity implements Serializable {
     private String name;
     private String note;
     private UnitOfMeasure defaultUnits;
+    private Integer periodCount;
+    private PeriodType periodType = PeriodType.WEEKS;
+    private Date lastBuyDate;
 
     private final Set<Category> categories = new LinkedHashSet<>();
 
@@ -51,6 +55,30 @@ public class Product extends Entity implements Serializable {
 
     public void setDefaultUnits(UnitOfMeasure defaultUnits) {
         this.defaultUnits = defaultUnits;
+    }
+
+    public Integer getPeriodCount() {
+        return periodCount;
+    }
+
+    public void setPeriodCount(Integer periodCount) {
+        this.periodCount = periodCount;
+    }
+
+    public PeriodType getPeriodType() {
+        return periodType;
+    }
+
+    public void setPeriodType(PeriodType periodType) {
+        this.periodType = periodType;
+    }
+
+    public Date getLastBuyDate() {
+        return lastBuyDate;
+    }
+
+    public void setLastBuyDate(Date lastBuyDate) {
+        this.lastBuyDate = lastBuyDate;
     }
 
     @Override

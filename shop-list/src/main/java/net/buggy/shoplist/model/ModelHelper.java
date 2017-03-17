@@ -7,16 +7,21 @@ import com.google.common.base.Objects;
 import com.google.common.collect.LinkedHashMultiset;
 import com.google.common.collect.Multiset;
 
+import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.utils.DateUtils;
 import net.buggy.shoplist.utils.StringUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 public class ModelHelper {
+
+    public static final int MIN_OVERDUE_AGE_PERCENT = 75;
 
     public static int getColor(Category category) {
         if (category.getColor() != null) {
@@ -104,5 +109,57 @@ public class ModelHelper {
 
         final String unitsString = context.getString(unitOfMeasure.getShortNameKey());
         return quantityString + " " + unitsString;
+    }
+
+    public static String getAgeText(Date date, Context context) {
+        if (date == null) {
+            return "";
+        }
+
+        final double daysDiff = DateUtils.daysDiff(date, new Date());
+        final long daysDiffRounded = Math.round(daysDiff);
+
+        if (daysDiffRounded <= 6) {
+            return context.getString(R.string.days_ago, String.valueOf(daysDiffRounded));
+        }
+
+        int weeksRounded = (int) Math.round(daysDiff / 7);
+        if (weeksRounded <= 4) {
+            return context.getString(R.string.weeks_ago, String.valueOf(weeksRounded));
+        }
+
+        int monthsRounded = (int) Math.round(daysDiff / 30);
+        if (monthsRounded < 10) {
+            return context.getString(R.string.months_ago, String.valueOf(monthsRounded));
+        }
+
+        int yearsRounded = (int) Math.round(daysDiff / 365);
+        if (yearsRounded <= 5) {
+            return context.getString(R.string.years_ago, String.valueOf(yearsRounded));
+        }
+
+        return context.getString(R.string.long_ago);
+    }
+
+    public static int ageToPercent(Product product) {
+        final Integer periodCount = product.getPeriodCount();
+        if (periodCount == null) {
+            return 0;
+        }
+
+        if (product.getPeriodType() == null) {
+            return 0;
+        }
+
+        final Date lastBuyDate = product.getLastBuyDate();
+        if (lastBuyDate == null) {
+            return 0;
+        }
+
+        final PeriodType periodType = product.getPeriodType();
+        final int periodDays = periodType.getDays() * periodCount;
+        final double ageDays = DateUtils.daysDiff(lastBuyDate, new Date());
+
+        return (int) Math.round(ageDays / periodDays * 100);
     }
 }

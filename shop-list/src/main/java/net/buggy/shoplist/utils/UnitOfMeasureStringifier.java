@@ -1,4 +1,4 @@
-package net.buggy.shoplist.units;
+package net.buggy.shoplist.utils;
 
 import com.google.common.base.Function;
 

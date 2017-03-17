@@ -6,6 +6,7 @@
     <string name="edit_product_categories_label">Linked categories</string>
     <string name="edit_product_save_button_label">Save</string>
     <string name="edit_product_delete_button_description">Delete product</string>
+    <string name="edit_product_period_count_label">How often</string>
     <string name="unit_shot_items_title">To buy</string>
     <string name="fast_creation_name_hint">New</string>
     <string name="unit_select_shopitems_search_hint">Search</string>
@@ -61,4 +62,13 @@
     <string name="unit_of_measure_liter_short">l</string>
     <string name="unit_of_measure_bottle_short">btl</string>
     <string name="unit_of_measure_pack_short">p</string>
+    <string name="period_type_days">Days</string>
+    <string name="period_type_weeks">Weeks</string>
+    <string name="period_type_months">Months</string>
+    <string name="period_type_years">Years</string>
+    <string name="days_ago">%sd ago</string>
+    <string name="weeks_ago">%sw ago</string>
+    <string name="months_ago">%sm ago</string>
+    <string name="years_ago">%sy ago</string>
+    <string name="long_ago">long ago</string>
 </resources>

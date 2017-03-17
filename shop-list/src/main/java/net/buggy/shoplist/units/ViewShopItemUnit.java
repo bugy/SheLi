@@ -17,6 +17,7 @@ import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.model.UnitOfMeasure;
 import net.buggy.shoplist.units.views.ViewRenderer;
 import net.buggy.shoplist.utils.StringUtils;
+import net.buggy.shoplist.utils.UnitOfMeasureStringifier;
 
 import java.util.Arrays;
 

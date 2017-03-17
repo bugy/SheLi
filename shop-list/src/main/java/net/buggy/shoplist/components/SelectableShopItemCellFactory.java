@@ -2,6 +2,7 @@ package net.buggy.shoplist.components;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
+import net.buggy.components.ViewUtils;
 import net.buggy.components.list.Cell;
 import net.buggy.components.list.CellContext;
 import net.buggy.components.list.CellFactory;
@@ -19,8 +21,12 @@ import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 
+import static net.buggy.shoplist.model.ModelHelper.MIN_OVERDUE_AGE_PERCENT;
+
 public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
 
+    public static final int MIN_OVERDUE_COLOR = Color.argb(255, 255, 230, 95);
+    public static final int MAX_OVERDUE_COLOR = Color.argb(255, 255, 95, 95);
     private final Listener listener;
 
     public SelectableShopItemCellFactory(Listener listener) {
@@ -64,6 +70,24 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
                 SelectableShopItemCellFactory.this.listener.onEditClick(shopItem);
             }
         });
+
+        final TextView ageField = (TextView) view.findViewById(
+                R.id.cell_selectable_shop_item_age_field);
+        String ageText = ModelHelper.getAgeText(product.getLastBuyDate(), view.getContext());
+        ageField.setText(ageText);
+
+        final View overdueIndicator = view.findViewById(
+                R.id.cell_selectable_shop_item_overdue_indicator);
+        int agePercent = ModelHelper.ageToPercent(product);
+        if (agePercent < MIN_OVERDUE_AGE_PERCENT) {
+            overdueIndicator.setVisibility(View.INVISIBLE);
+        } else {
+            overdueIndicator.setVisibility(View.VISIBLE);
+
+            float overdueScale = (Math.max(agePercent, 100) - MIN_OVERDUE_AGE_PERCENT) / 25f;
+            final int color = ViewUtils.pickFromColorScale(MIN_OVERDUE_COLOR, MAX_OVERDUE_COLOR, overdueScale);
+            overdueIndicator.setBackgroundColor(color);
+        }
 
         final View separator = view.findViewById(
                 R.id.cell_selectable_shop_item_separator);

@@ -45,6 +45,7 @@ import net.buggy.shoplist.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -150,6 +151,10 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 @Override
                 public void removed(ShopItem item) {
                     dataStorage.removeShopItem(item);
+
+                    final Product product = item.getProduct();
+                    product.setLastBuyDate(new Date());
+                    dataStorage.saveProduct(product);
                 }
 
                 @Override

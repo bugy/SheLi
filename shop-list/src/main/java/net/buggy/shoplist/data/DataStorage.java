@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Entity;
+import net.buggy.shoplist.model.PeriodType;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.model.UnitOfMeasure;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -78,6 +80,9 @@ public class DataStorage implements Serializable {
             product.setNote(storedProduct.note);
             product.setId(storedProduct.getId());
             product.setDefaultUnits(storedProduct.unitOfMeasure);
+            product.setPeriodCount(storedProduct.periodCount);
+            product.setPeriodType(storedProduct.periodType);
+            product.setLastBuyDate(storedProduct.lastBuyDate);
 
             Set<Category> productCategories = new LinkedHashSet<>();
             for (StoredCategory storedCategory : storedProduct.getCategories()) {
@@ -290,6 +295,15 @@ public class DataStorage implements Serializable {
         @Column(name = "UnitOfMeasure")
         private UnitOfMeasure unitOfMeasure;
 
+        @Column(name = "PeriodCount")
+        private Integer periodCount;
+
+        @Column(name = "PeriodType")
+        private PeriodType periodType;
+
+        @Column(name = "LastBuyDate")
+        private Date lastBuyDate;
+
         private final List<StoredProductCategoryLink> deletedLinks = new ArrayList<>();
         private final List<StoredProductCategoryLink> newLinks = new ArrayList<>();
 
@@ -309,6 +323,9 @@ public class DataStorage implements Serializable {
             this.name = product.getName();
             this.note = product.getNote();
             this.unitOfMeasure = product.getDefaultUnits();
+            this.periodCount = product.getPeriodCount();
+            this.periodType = product.getPeriodType();
+            this.lastBuyDate = product.getLastBuyDate();
 
             Set<Long> categoryIds = new LinkedHashSet<>();
             for (Category category : product.getCategories()) {

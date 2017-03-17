@@ -24,12 +24,18 @@ import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.CategoryComparator;
 import net.buggy.shoplist.components.CategoryCellFactory;
+import net.buggy.shoplist.components.WheelPickerUtils;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
+import net.buggy.shoplist.model.PeriodType;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.UnitOfMeasure;
 import net.buggy.shoplist.units.views.ViewRenderer;
+import net.buggy.shoplist.utils.CollectionUtils;
+import net.buggy.shoplist.utils.PeriodTypeStringifier;
+import net.buggy.shoplist.utils.SimpleStringifier;
 import net.buggy.shoplist.utils.StringUtils;
+import net.buggy.shoplist.utils.UnitOfMeasureStringifier;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -131,6 +137,38 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             unitsField.setSelectedItem(product.getDefaultUnits(), false);
             unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
 
+            final EditText periodCountField = (EditText) parentView.findViewById(
+                    R.id.unit_edit_product_period_count);
+            setTextWithoutAnimation(periodCountField, getPeriodCountString(product.getPeriodCount()));
+            periodCountField.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WheelPickerUtils.selectValue(
+                            CollectionUtils.range(1, 15),
+                            product.getPeriodCount(),
+                            1,
+                            new SimpleStringifier<Integer>(),
+                            activity.getString(R.string.edit_product_period_count_label),
+                            activity,
+                            new WheelPickerUtils.Listener<Integer>() {
+                                @Override
+                                public void valueSelected(Integer newValue) {
+                                    periodCountField.setText(getPeriodCountString(newValue));
+                                }
+                            }
+                    );
+                }
+            });
+
+
+            @SuppressWarnings("unchecked")
+            final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
+                    parentView.findViewById(R.id.unit_edit_product_period_type);
+            periodTypeField.setValues(Arrays.asList(PeriodType.values()));
+            periodTypeField.setSelectedItem(product.getPeriodType(), false);
+            periodTypeField.setStringConverter(new PeriodTypeStringifier(activity));
+
+
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -168,6 +206,12 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
                     final UnitOfMeasure unitOfMeasure = unitsField.getSelectedItem();
                     product.setDefaultUnits(unitOfMeasure);
+
+                    final Integer periodCount = parsePeriodCount(periodCountField.getText().toString());
+                    product.setPeriodCount(periodCount);
+
+                    final PeriodType periodType = periodTypeField.getSelectedItem();
+                    product.setPeriodType(periodType);
 
                     activity.stopUnit(EditProductUnit.this);
 
@@ -214,6 +258,26 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                     R.id.unit_edit_product_categories_list);
             ListDecorator.decorateList(categoriesList);
             categoriesList.setAdapter(categoriesAdapter);
+        }
+    }
+
+    private static String getPeriodCountString(Integer count) {
+        if (count == null) {
+            return "";
+        }
+
+        return String.valueOf(count);
+    }
+
+    private static Integer parsePeriodCount(String countString) {
+        if ((countString == null) || (countString.trim().isEmpty())) {
+            return null;
+        }
+
+        try {
+            return Integer.parseInt(countString);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 

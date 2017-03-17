@@ -31,9 +31,10 @@ public class QuantityClickListener implements View.OnClickListener {
         quantityEditor.editQuantity(shopItem.getProduct(),
                 shopItem.getQuantity(),
                 view.getContext(),
-                new QuantityEditor.Listener() {
+                new WheelPickerUtils.Listener<BigDecimal>() {
+
                     @Override
-                    public void quantitySelected(BigDecimal newValue) {
+                    public void valueSelected(BigDecimal newValue) {
                         quantityView.setText(StringUtils.toString(newValue));
 
                         shopItem.setQuantity(newValue);

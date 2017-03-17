@@ -19,6 +19,7 @@ import net.buggy.shoplist.components.SelectableShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
+import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.EditProductUnit.ProductEditedEvent;
@@ -246,6 +247,18 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             public int compare(ShopItem i1, ShopItem i2) {
                 final Product p1 = i1.getProduct();
                 final Product p2 = i2.getProduct();
+
+                final int age1 = ModelHelper.ageToPercent(p1);
+                final int age2 = ModelHelper.ageToPercent(p2);
+                if (age1 >= ModelHelper.MIN_OVERDUE_AGE_PERCENT) {
+                    if (age2 >= ModelHelper.MIN_OVERDUE_AGE_PERCENT) {
+                        return age1 - age2;
+                    }
+
+                    return -1;
+                } else if (age2 >= ModelHelper.MIN_OVERDUE_AGE_PERCENT) {
+                    return 1;
+                }
 
                 return productComparator.compare(p1, p2);
             }
