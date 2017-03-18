@@ -97,7 +97,9 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
                             if (!ModelHelper.isUnique(category, name, activity)) {
                                 final Toast toast = Toast.makeText(
                                         getHostingActivity(),
-                                        getHostingActivity().getResources().getString(R.string.category_already_exists),
+                                        getHostingActivity().getResources().getString(
+                                                R.string.category_already_exists,
+                                                name),
                                         Toast.LENGTH_LONG);
                                 toast.show();
                                 return;

@@ -193,7 +193,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
         private void addCategory(String name, Context context, DataStorage dataStorage) {
             if (!ModelHelper.isUnique(null, name, (ShopListActivity) context)) {
                 final Toast toast = Toast.makeText(context,
-                        context.getResources().getString(R.string.category_already_exists),
+                        context.getResources().getString(R.string.category_already_exists, name),
                         Toast.LENGTH_LONG);
                 toast.show();
                 return;
