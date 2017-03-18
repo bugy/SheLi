@@ -28,28 +28,6 @@
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingEnd="12dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingStart="12dp">
-
-            <net.buggy.components.text.MultilineEditText
-                android:id="@+id/unit_edit_product_note_field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/edit_product_note_label"
-                android:imeOptions="actionDone"
-                android:inputType="textAutoComplete|textMultiLine"
-                android:maxLength="100"
-                android:maxLines="5"
-                android:scrollHorizontally="false"
-                tools:text="Some very long line with many text and this note should be in multiple lines." />
-        </android.support.design.widget.TextInputLayout>
-
         <net.buggy.components.spinners.MaterialSpinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

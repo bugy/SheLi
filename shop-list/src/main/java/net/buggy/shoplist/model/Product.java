@@ -10,7 +10,6 @@ import java.util.Set;
 public class Product extends Entity implements Serializable {
 
     private String name;
-    private String note;
     private UnitOfMeasure defaultUnits;
     private Integer periodCount;
     private PeriodType periodType = PeriodType.WEEKS;
@@ -27,14 +26,6 @@ public class Product extends Entity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public Set<Category> getCategories() {

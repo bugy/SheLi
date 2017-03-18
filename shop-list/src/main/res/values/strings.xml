@@ -2,7 +2,6 @@
     <string name="app_name">ShopList</string>
     <string name="edit_product_name_field_label">Name</string>
     <string name="edit_product_units_field_label">Units of measure</string>
-    <string name="edit_product_note_label">Note</string>
     <string name="edit_product_categories_label">Linked categories</string>
     <string name="edit_product_save_button_label">Save</string>
     <string name="edit_product_delete_button_description">Delete product</string>
@@ -41,10 +40,8 @@
     <string name="unit_edit_category_new_category">new category</string>
     <string name="unit_edit_category_empty_name_not_allowed">Empty name is not allowed</string>
     <string name="cell_selectable_shop_item_comment_hint">Comment</string>
-    <string name="cell_shop_item_info_dialog_title">%s note</string>
     <string name="unit_view_shop_item_name_field_label">Name</string>
     <string name="unit_view_shop_item_comment_label">Comment</string>
-    <string name="unit_view_shop_item_note_label">Note</string>
     <string name="unit_view_shop_item_title">%s info</string>
     <string name="unit_view_shop_item_quantity_field_label">Quantity</string>
     <string name="unit_view_shop_item_units_field_label">Units of measure</string>

@@ -73,11 +73,6 @@ public class ViewShopItemUnit extends Unit<ShopListActivity> {
             }
             unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
 
-            final TextView noteField = (TextView) parentView.findViewById(R.id.unit_view_shop_item_note_field);
-            if (product.getNote() != null) {
-                setTextWithoutAnimation(noteField, product.getNote());
-            }
-
             final EditText commentField = (EditText) parentView.findViewById(
                     R.id.unit_view_shop_item_comment_field);
             if (shopItem.getComment() != null) {

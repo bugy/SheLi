@@ -92,27 +92,6 @@
                 tools:text="buy a couple" />
         </android.support.design.widget.TextInputLayout>
 
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingEnd="12dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingStart="12dp">
-
-            <EditText
-                android:id="@+id/unit_view_shop_item_note_field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:hint="@string/unit_view_shop_item_note_label"
-                android:textColor="@color/color_text"
-                tools:text="Some very long line with many text and this note should be in multiple lines." />
-        </android.support.design.widget.TextInputLayout>
-
-
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

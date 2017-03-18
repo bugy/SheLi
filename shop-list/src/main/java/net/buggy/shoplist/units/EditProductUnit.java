@@ -124,11 +124,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            final EditText noteField = (EditText) parentView.findViewById(R.id.unit_edit_product_note_field);
-            if (product.getNote() != null) {
-                setTextWithoutAnimation(noteField, product.getNote());
-            }
-
             @SuppressWarnings("unchecked")
             final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
                     parentView.findViewById(R.id.unit_edit_product_units_field);
@@ -200,9 +195,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
                     product.setCategories(categoriesAdapter.getSelectedItems());
                     product.setName(name);
-
-                    final String note = noteField.getText().toString().trim();
-                    product.setNote(note);
 
                     final UnitOfMeasure unitOfMeasure = unitsField.getSelectedItem();
                     product.setDefaultUnits(unitOfMeasure);

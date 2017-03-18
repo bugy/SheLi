@@ -77,7 +77,6 @@ public class DataStorage implements Serializable {
         for (StoredProduct storedProduct : storedProducts) {
             final Product product = new Product();
             product.setName(storedProduct.name);
-            product.setNote(storedProduct.note);
             product.setId(storedProduct.getId());
             product.setDefaultUnits(storedProduct.unitOfMeasure);
             product.setPeriodCount(storedProduct.periodCount);
@@ -289,9 +288,6 @@ public class DataStorage implements Serializable {
         @Column(name = "Name")
         private String name;
 
-        @Column(name = "Note")
-        private String note;
-
         @Column(name = "UnitOfMeasure")
         private UnitOfMeasure unitOfMeasure;
 
@@ -321,7 +317,6 @@ public class DataStorage implements Serializable {
 
         public void fillFrom(Product product) {
             this.name = product.getName();
-            this.note = product.getNote();
             this.unitOfMeasure = product.getDefaultUnits();
             this.periodCount = product.getPeriodCount();
             this.periodType = product.getPeriodType();

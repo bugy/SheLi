@@ -69,7 +69,7 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
 
         final TextView commentField = (TextView) view.findViewById(
                 R.id.cell_to_buy_shop_item_comment_field);
-        updateCommentField(shopItem, product, commentField);
+        updateCommentField(shopItem, commentField);
 
         final CheckableImageButton checkButton = (CheckableImageButton)
                 view.findViewById(R.id.cell_to_buy_shop_item_check_field);
@@ -128,25 +128,12 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
         }
     }
 
-    private void updateCommentField(ShopItem shopItem, Product product, TextView commentField) {
+    private void updateCommentField(ShopItem shopItem, TextView commentField) {
         String comment = shopItem.getComment();
-        boolean ellipsize = false;
-        if (Strings.isNullOrEmpty(shopItem.getComment())) {
-            if (!Strings.isNullOrEmpty(product.getNote())) {
-                comment = product.getNote();
-            }
-        } else if (!Strings.isNullOrEmpty(product.getNote())) {
-            ellipsize = true;
-            comment += " ";
-        }
 
         if (!Strings.isNullOrEmpty(comment)) {
             if (comment.length() > 30) {
                 comment = comment.substring(0, 30);
-                ellipsize = true;
-            }
-
-            if (ellipsize) {
                 comment += "...";
             }
         }
