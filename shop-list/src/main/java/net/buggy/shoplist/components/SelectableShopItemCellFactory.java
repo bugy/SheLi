@@ -84,7 +84,7 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
         } else {
             overdueIndicator.setVisibility(View.VISIBLE);
 
-            float overdueScale = (Math.max(agePercent, 100) - MIN_OVERDUE_AGE_PERCENT) / 25f;
+            float overdueScale = (Math.min(agePercent, 100) - MIN_OVERDUE_AGE_PERCENT) / 25f;
             final int color = ViewUtils.pickFromColorScale(MIN_OVERDUE_COLOR, MAX_OVERDUE_COLOR, overdueScale);
             overdueIndicator.setBackgroundColor(color);
         }

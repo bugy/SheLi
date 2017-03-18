@@ -252,7 +252,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                 final int age2 = ModelHelper.ageToPercent(p2);
                 if (age1 >= ModelHelper.MIN_OVERDUE_AGE_PERCENT) {
                     if (age2 >= ModelHelper.MIN_OVERDUE_AGE_PERCENT) {
-                        return age1 - age2;
+                        return age2 - age1;
                     }
 
                     return -1;
