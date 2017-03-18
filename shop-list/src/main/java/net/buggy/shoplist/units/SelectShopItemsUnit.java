@@ -60,7 +60,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
     }
 
     @Override
-    public void start() {
+    public void initialize() {
         addRenderer(ACTIVITY_VIEW_ID, new MainViewRenderer());
         addRenderer(TOOLBAR_VIEW_ID, new ToolbarRenderer());
     }

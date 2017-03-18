@@ -40,7 +40,7 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
     }
 
     @Override
-    public void start() {
+    public void initialize() {
         addRenderer(TOOLBAR_VIEW_ID, new ViewRenderer<ShopListActivity, ViewGroup>() {
             @Override
             public void renderTo(ViewGroup parentView, ShopListActivity activity) {

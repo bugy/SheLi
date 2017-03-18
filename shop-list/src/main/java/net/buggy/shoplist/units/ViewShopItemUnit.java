@@ -34,7 +34,7 @@ public class ViewShopItemUnit extends Unit<ShopListActivity> {
     }
 
     @Override
-    public void start() {
+    public void initialize() {
         addRenderer(TOOLBAR_VIEW_ID, new ToolbarRenderer(shopItem.getProduct().getName()));
 
         MainViewRenderer mainViewRenderer = new MainViewRenderer();

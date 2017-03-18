@@ -22,6 +22,7 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
 
     private transient final Map<Integer, ViewRenderer<A, ViewGroup>> renderers = new ConcurrentHashMap<>();
     private transient final List<Integer> claimedViews = new CopyOnWriteArrayList<>();
+    private transient boolean initialized = false;
 
     private transient final Map<ViewRenderer, SparseArray<Parcelable>> savedStates = new ConcurrentHashMap<>();
 
@@ -41,15 +42,26 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
         return hostingActivity;
     }
 
-    public abstract void start();
+    protected abstract void initialize();
+
+    public void start() {
+        if (!initialized) {
+            initialize();
+            initialized = true;
+        }
+
+        for (Integer viewId : renderers.keySet()) {
+            hostingActivity.claimView(viewId, this);
+            if (!claimedViews.contains(viewId)) {
+                claimedViews.add(viewId);
+            }
+        }
+
+        displayUnit();
+    }
 
     protected <T extends ViewGroup> void addRenderer(int viewId, ViewRenderer<A, T> viewRenderer) {
         renderers.put(viewId, (ViewRenderer<A, ViewGroup>) viewRenderer);
-
-        hostingActivity.claimView(viewId, this);
-        claimedViews.add(viewId);
-
-        renderView(viewId, viewRenderer);
     }
 
     public void viewReclaimed(int viewId) {

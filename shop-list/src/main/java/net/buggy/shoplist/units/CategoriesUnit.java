@@ -35,7 +35,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
     private transient FactoryBasedAdapter<Category> adapter;
 
     @Override
-    public void start() {
+    public void initialize() {
         addRenderer(TOOLBAR_VIEW_ID, new InflatingViewRenderer<ShopListActivity, ViewGroup>(
                 R.layout.unit_categories_toolbar));
 

@@ -43,7 +43,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
     private transient String searchedText;
 
     @Override
-    public void start() {
+    public void initialize() {
         addRenderer(MAIN_VIEW_ID, new MainViewRenderer());
         addRenderer(TOOLBAR_VIEW_ID, new ToolbarRenderer());
     }

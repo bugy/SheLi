@@ -62,7 +62,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
     private transient ImageButton cleanCheckedButton;
 
     @Override
-    public void start() {
+    public void initialize() {
         addRenderer(ShopListActivity.TOOLBAR_VIEW_ID, new ToolbarRenderer());
         addRenderer(ShopListActivity.OVERLAY_VIEW_ID, new SearchOverlayRenderer());
         addRenderer(ShopListActivity.MAIN_VIEW_ID, new MainViewRenderer());

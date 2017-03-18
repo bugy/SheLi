@@ -65,7 +65,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
     }
 
     @Override
-    public void start() {
+    public void initialize() {
         String productName;
         if (newProduct) {
             productName = getHostingActivity().getString(R.string.unit_edit_product_new_product);

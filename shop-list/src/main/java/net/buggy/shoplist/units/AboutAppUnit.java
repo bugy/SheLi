@@ -15,7 +15,7 @@ import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
 
 public class AboutAppUnit extends Unit<ShopListActivity> {
     @Override
-    public void start() {
+    public void initialize() {
         addRenderer(MAIN_VIEW_ID, new MainViewRenderer());
 
         final InflatingViewRenderer<ShopListActivity, ViewGroup> toolbarRenderer =

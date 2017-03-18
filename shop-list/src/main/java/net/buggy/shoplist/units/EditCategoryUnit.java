@@ -46,7 +46,7 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
     }
 
     @Override
-    public void start() {
+    public void initialize() {
         final ShopListActivity activity = getHostingActivity();
         final DataStorage dataStorage = activity.getDataStorage();
         final List<Product> products = dataStorage.getProducts();
