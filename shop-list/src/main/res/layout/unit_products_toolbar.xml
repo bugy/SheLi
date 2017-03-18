@@ -18,12 +18,4 @@
         android:textSize="@dimen/title_font_size"
         style="@style/App_TitleTextViewStyle" />
 
-    <net.buggy.shoplist.components.CategoriesSpinner
-        android:id="@+id/unit_products_category_spinner"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:dropDownVerticalOffset="?attr/actionBarSize"
-        android:spinnerMode="dropdown" />
-
 </LinearLayout>
