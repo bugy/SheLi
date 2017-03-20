@@ -358,7 +358,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
-                        startSearch(overlayColor);
+                        startSearch(overlayColor, searchField.getText().toString());
                     } else {
                         finishSearch();
                     }
@@ -447,7 +447,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             searchField.setText("");
         }
 
-        private void startSearch(int overlayColor) {
+        private void startSearch(int overlayColor, String searchText) {
             parentView.setBackgroundColor(overlayColor);
             parentView.setClickable(true);
 
@@ -482,7 +482,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             });
             searchPanel.startAnimation(animation);
 
-            updateSearchProducts(searchListAdapter, "");
+            updateSearchProducts(searchListAdapter, searchText);
         }
     }
 
