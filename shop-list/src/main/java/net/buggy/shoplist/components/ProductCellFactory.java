@@ -22,7 +22,13 @@ public class ProductCellFactory extends CellFactory<Product, ViewGroup> {
     public ViewGroup createEmptyCell(final Context context, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        return (ViewGroup) inflater.inflate(R.layout.cell_product, parent, false);
+        final ViewGroup view = (ViewGroup) inflater.inflate(R.layout.cell_product, parent, false);
+
+        final TagFlagContainer categoriesContainer = (TagFlagContainer) view.findViewById(
+                R.id.cell_product_categories);
+        categoriesContainer.setMaxCount(6);
+
+        return view;
     }
 
     @Override
