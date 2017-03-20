@@ -201,7 +201,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         private void initCleanButton(RelativeLayout parentView) {
             cleanCheckedButton = (ImageButton) parentView.findViewById(
                     R.id.unit_shopitem_list_clean_checked_button);
-            cleanCheckedButton.setEnabled(false);
+            cleanCheckedButton.setEnabled(!adapter.getSelectedItems().isEmpty());
             cleanCheckedButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
