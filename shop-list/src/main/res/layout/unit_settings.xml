@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <net.buggy.components.spinners.MaterialSpinner
+        android:id="@+id/unit_settings_language_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingStart="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/unit_settings_apply_button"
+        style="@style/Widget.Design.FloatingActionButton.AtBottom"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_check_white_48dp" />
+
+
+</android.support.design.widget.CoordinatorLayout>

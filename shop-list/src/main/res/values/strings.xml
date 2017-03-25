@@ -23,22 +23,25 @@
     <string name="category_already_exists">%s already exists</string>
     <string name="categories_unit_already_exists_on_edit">%s already exists, won\'t save</string>
     <string name="products_unit_already_exists">%s already exists</string>
+    <string name="products_unit_delete_from_cart">Delete it from the cart?</string>
     <string name="shop_item_already_exists">%s already exists</string>
     <string name="fast_creation_add_button_hint">Add</string>
     <string name="unit_products_title">Products</string>
+    <string name="unit_settings_title">Settings</string>
     <string name="unit_about_title">About</string>
     <string name="unit_categories_title">Categories</string>
     <string name="quantity_editor_title">%s quantity</string>
     <string name="logo_image_description">Logo image</string>
     <string name="unit_about_us">We, Anna and Iaroslav, are always glad to get your feedback</string>
     <string name="unit_about_app">The ShopList can help you in daily shopping</string>
-    <string name="version_pattern">v%s</string>
+    <string name="version_pattern" translatable="false">v%s</string>
     <string name="unit_edit_category_name_label">Name</string>
     <string name="unit_edit_category_color_label">Color</string>
     <string name="unit_edit_category_products_label">Linked products</string>
     <string name="unit_edit_category_title">Edit %s</string>
     <string name="unit_edit_category_new_category">new category</string>
     <string name="unit_edit_category_empty_name_not_allowed">Empty name is not allowed</string>
+    <string name="unit_edit_product_empty_name_not_allowed">Empty name is not allowed</string>
     <string name="cell_selectable_shop_item_comment_hint">Comment</string>
     <string name="unit_view_shop_item_name_field_label">Name</string>
     <string name="unit_view_shop_item_comment_label">Comment</string>
@@ -63,9 +66,32 @@
     <string name="period_type_weeks">Weeks</string>
     <string name="period_type_months">Months</string>
     <string name="period_type_years">Years</string>
+    <plurals name="period_type_days">
+        <item quantity="one">Day</item>
+        <item quantity="other">Days</item>
+    </plurals>
+    <plurals name="period_type_months">
+        <item quantity="one">Month</item>
+        <item quantity="other">Months</item>
+    </plurals>
+    <plurals name="period_type_weeks">
+        <item quantity="one">Week</item>
+        <item quantity="other">Weeks</item>
+    </plurals>
+    <plurals name="period_type_years">
+        <item quantity="one">Year</item>
+        <item quantity="other">Years</item>
+    </plurals>
+    <string name="today">today</string>
     <string name="days_ago">%sd ago</string>
     <string name="weeks_ago">%sw ago</string>
     <string name="months_ago">%sm ago</string>
     <string name="years_ago">%sy ago</string>
     <string name="long_ago">long ago</string>
+    <string name="categories_spinner_all">All</string>
+    <string name="language_en" translatable="false">English</string>
+    <string name="language_ru" translatable="false">Русский</string>
+    <string name="unit_settings_language_hint">App language</string>
+    <string name="unit_settings_system_language">System language</string>
+    <string name="material_spinner_default_null_string">None</string>
 </resources>

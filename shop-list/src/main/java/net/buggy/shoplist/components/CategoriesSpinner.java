@@ -1,17 +1,14 @@
 package net.buggy.shoplist.components;
 
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
-import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import net.buggy.components.TagFlag;
 import net.buggy.shoplist.R;
@@ -22,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class CategoriesSpinner extends Spinner {
+public class CategoriesSpinner extends AppCompatSpinner {
 
-    private static final String ALL_CATEGORIES = "All";
+    private String ALL_CATEGORIES;
 
     private Listener listener;
 
@@ -32,32 +29,36 @@ public class CategoriesSpinner extends Spinner {
 
     public CategoriesSpinner(Context context) {
         super(context);
+
+        init(context);
     }
 
     public CategoriesSpinner(Context context, int mode) {
         super(context, mode);
+
+        init(context);
     }
 
     public CategoriesSpinner(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        init(context);
     }
 
     public CategoriesSpinner(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        init(context);
     }
 
     public CategoriesSpinner(Context context, AttributeSet attrs, int defStyleAttr, int mode) {
         super(context, attrs, defStyleAttr, mode);
+
+        init(context);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CategoriesSpinner(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, int mode) {
-        super(context, attrs, defStyleAttr, defStyleRes, mode);
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    public CategoriesSpinner(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, int mode, Resources.Theme popupTheme) {
-        super(context, attrs, defStyleAttr, defStyleRes, mode, popupTheme);
+    private void init(Context context) {
+        ALL_CATEGORIES = context.getString(R.string.categories_spinner_all);
     }
 
     public void setCategories(List<Category> categories) {
@@ -69,7 +70,7 @@ public class CategoriesSpinner extends Spinner {
         final ArrayAdapter<String> categoryAdapter = createCategoryAdapter(categoriesMap);
 
         this.setAdapter(categoryAdapter);
-        this.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 final String selectedName = (String) parent.getItemAtPosition(position);

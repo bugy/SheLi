@@ -1,5 +1,6 @@
 package net.buggy.shoplist;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -23,9 +24,12 @@ import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.ListDecorator;
 import net.buggy.components.list.MenuCellFactory;
 import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.model.Language;
+import net.buggy.shoplist.model.Settings;
 import net.buggy.shoplist.navigation.AboutAppUnitNavigator;
 import net.buggy.shoplist.navigation.CategoriesListUnitNavigator;
 import net.buggy.shoplist.navigation.ProductUnitNavigator;
+import net.buggy.shoplist.navigation.SettingsUnitNavigator;
 import net.buggy.shoplist.navigation.ShopListUnitNavigator;
 import net.buggy.shoplist.navigation.UnitNavigator;
 import net.buggy.shoplist.units.Unit;
@@ -38,6 +42,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -70,6 +75,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                 new ShopListUnitNavigator(this),
                 new ProductUnitNavigator(this),
                 new CategoriesListUnitNavigator(this),
+                new SettingsUnitNavigator(this),
                 new AboutAppUnitNavigator(this)
         );
     }
@@ -80,8 +86,6 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
         ViewUtils.addFont(getApplicationContext(), "decorated", "fonts/MarckScript-Regular.ttf");
         ViewUtils.addFont(getApplicationContext(), "main", "fonts/Neucha.ttf");
-
-        dataStorage = initDataStorage();
 
         setContentView(R.layout.activity_shop_list);
 
@@ -98,6 +102,19 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         }
 
         initMenu();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newContext) {
+        final Settings settings = getDataStorage().getSettings();
+        final Language language = settings.getLanguage();
+        if (language != null) {
+            Locale locale = new Locale(language.getLocale());
+            Locale.setDefault(locale);
+            newContext = ViewUtils.wrap(newContext, locale);
+        }
+
+        super.attachBaseContext(newContext);
     }
 
     private void initMenu() {
@@ -311,10 +328,21 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     }
 
     private DataStorage initDataStorage() {
-        return new DataStorage();
+        final DataStorage dataStorage = new DataStorage();
+
+        if (dataStorage.isFirstLaunch()) {
+            final Settings settings = new Settings();
+            dataStorage.saveSettings(settings);
+        }
+
+        return dataStorage;
     }
 
     public DataStorage getDataStorage() {
+        if (dataStorage == null) {
+            dataStorage = initDataStorage();
+        }
+
         return dataStorage;
     }
 

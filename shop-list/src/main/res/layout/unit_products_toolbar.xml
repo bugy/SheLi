@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/unit_products_title"
-        android:textSize="@dimen/title_font_size"
         style="@style/App_TitleTextViewStyle" />
 
 </LinearLayout>

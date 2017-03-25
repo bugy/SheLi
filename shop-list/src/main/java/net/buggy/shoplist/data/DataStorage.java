@@ -1,6 +1,8 @@
 package net.buggy.shoplist.data;
 
 
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -11,8 +13,10 @@ import com.google.common.collect.ImmutableList;
 
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Entity;
+import net.buggy.shoplist.model.Language;
 import net.buggy.shoplist.model.PeriodType;
 import net.buggy.shoplist.model.Product;
+import net.buggy.shoplist.model.Settings;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.model.UnitOfMeasure;
 
@@ -30,10 +34,36 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("HardCodedStringLiteral")
 public class DataStorage implements Serializable {
 
+    private final boolean firstLaunch;
+
     public DataStorage() {
+        firstLaunch = checkFirstLaunch();
+
         cleanDb();
+    }
+
+    private boolean checkFirstLaunch() {
+        final List<StoredMetadata> metadataList = new Select().from(StoredMetadata.class).execute();
+        if (metadataList.isEmpty()) {
+            final StoredMetadata storedMetadata = new StoredMetadata();
+            storedMetadata.firstLaunch = false;
+            storedMetadata.save();
+
+            return true;
+        }
+
+        final StoredMetadata metadata = metadataList.get(0);
+        final boolean firstLaunch = (metadata.firstLaunch != null) && metadata.firstLaunch;
+        if (firstLaunch) {
+            metadata.firstLaunch = false;
+            metadata.save();
+        }
+
+        return firstLaunch;
+
     }
 
     private void cleanDb() {
@@ -43,6 +73,10 @@ public class DataStorage implements Serializable {
                 StoredShopItem.delete(StoredShopItem.class, item.getId());
             }
         }
+    }
+
+    public boolean isFirstLaunch() {
+        return firstLaunch;
     }
 
     private Map<Long, ShopItem> loadShopItems() {
@@ -152,7 +186,9 @@ public class DataStorage implements Serializable {
                 StoredProduct.class,
                 StoredShopItem.class,
                 StoredCategory.class,
-                StoredProductCategoryLink.class);
+                StoredProductCategoryLink.class,
+                StoredSettings.class,
+                StoredMetadata.class);
     }
 
     public void saveProduct(Product product) {
@@ -227,6 +263,58 @@ public class DataStorage implements Serializable {
 
         storedCategory.fillFrom(category);
         storedCategory.save();
+    }
+
+    public Settings getSettings() {
+
+        StoredSettings storedSettings = loadSettingsInstance();
+        if (storedSettings == null) {
+            storedSettings = new StoredSettings();
+            storedSettings.fillFrom(new Settings());
+            storedSettings.save();
+        }
+
+        final Settings settings = new Settings();
+        settings.setId(storedSettings.getId());
+        settings.setLanguage(storedSettings.language);
+
+        return settings;
+    }
+
+    private StoredSettings loadSettingsInstance() {
+        List<StoredSettings> storedSettingsList = new Select().from(StoredSettings.class).execute();
+
+        if (storedSettingsList.size() == 1) {
+            return storedSettingsList.get(0);
+
+        } else if (storedSettingsList.isEmpty()) {
+            return null;
+
+        } else {
+            final int lastIndex = storedSettingsList.size() - 1;
+            List<StoredSettings> invalidSettings = storedSettingsList.subList(0, lastIndex);
+            Log.w("DataStorage", "getSettings: more than 1 settings instance found. " +
+                    "Deleting " + invalidSettings.size());
+            for (StoredSettings invalidSetting : invalidSettings) {
+                invalidSetting.delete();
+            }
+
+            return storedSettingsList.get(lastIndex);
+        }
+    }
+
+    public void saveSettings(Settings settings) {
+        StoredSettings storedSettings = loadSettingsInstance();
+        if (storedSettings == null) {
+            storedSettings = new StoredSettings();
+        }
+
+        storedSettings.fillFrom(settings);
+        storedSettings.save();
+
+        if (settings.getId() == null) {
+            settings.setId(storedSettings.getId());
+        }
     }
 
     @Table(name = "Categories")
@@ -423,6 +511,25 @@ public class DataStorage implements Serializable {
                     .executeSingle();
             product = storedProduct;
         }
+    }
+
+    @Table(name = "Settings")
+    public static class StoredSettings extends Model {
+
+        @Column(name = "Language")
+        private Language language;
+
+        public void fillFrom(Settings settings) {
+            language = settings.getLanguage();
+        }
+    }
+
+    @Table(name = "Metadata")
+    public static class StoredMetadata extends Model {
+
+        @Column(name = "FirstLaunch")
+        private Boolean firstLaunch;
+
     }
 
     private static class IdComparator<T extends Entity> implements Comparator<T> {

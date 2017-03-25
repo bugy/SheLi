@@ -64,6 +64,7 @@ Used icons:
 * ic_message_black_24dp
 * ic_playlist_add (modified into: add_from_products.png)
 * ic_rate_review_black_24dp (modified into: shop_item_comment_14dp.png)
+* ic_settings_black_24dp
 * ic_shopping_cart_black_24dp
 
 ### Menu image (modified)

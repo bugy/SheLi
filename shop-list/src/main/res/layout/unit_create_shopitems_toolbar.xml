@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/unit_create_shopitems_select_products"
-        android:textSize="@dimen/title_font_size" />
+        android:text="@string/unit_create_shopitems_select_products" />
 
 </LinearLayout>

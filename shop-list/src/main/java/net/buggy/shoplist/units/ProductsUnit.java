@@ -157,7 +157,8 @@ public class ProductsUnit extends Unit<ShopListActivity> {
                     if (linkedItems.isEmpty()) {
                         callback.delete();
                     } else {
-                        callback.askConfirmation("Delete it from the cart?");
+                        callback.askConfirmation(activity.getString(
+                                R.string.products_unit_delete_from_cart));
                     }
                 }
             });

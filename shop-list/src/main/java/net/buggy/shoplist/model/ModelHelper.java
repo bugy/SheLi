@@ -119,6 +119,10 @@ public class ModelHelper {
         final double daysDiff = DateUtils.daysDiff(date, new Date());
         final long daysDiffRounded = Math.round(daysDiff);
 
+        if (daysDiffRounded <= 0) {
+            return context.getString(R.string.today);
+        }
+
         if (daysDiffRounded <= 6) {
             return context.getString(R.string.days_ago, String.valueOf(daysDiffRounded));
         }

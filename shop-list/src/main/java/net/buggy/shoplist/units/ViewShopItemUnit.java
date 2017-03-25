@@ -66,6 +66,7 @@ public class ViewShopItemUnit extends Unit<ShopListActivity> {
                     parentView.findViewById(R.id.unit_view_shop_item_units_field);
             unitsField.setHint(activity.getString(R.string.unit_view_shop_item_units_field_label));
             unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
+            unitsField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
             if (shopItem.getUnitOfMeasure() != null) {
                 unitsField.setSelectedItem(shopItem.getUnitOfMeasure());
             } else if (product.getDefaultUnits() != null) {

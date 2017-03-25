@@ -131,6 +131,17 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
             unitsField.setSelectedItem(product.getDefaultUnits(), false);
             unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
+            unitsField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
+
+            @SuppressWarnings("unchecked")
+            final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
+                    parentView.findViewById(R.id.unit_edit_product_period_type);
+            periodTypeField.setValues(Arrays.asList(PeriodType.values()));
+            periodTypeField.setSelectedItem(product.getPeriodType(), false);
+            final PeriodTypeStringifier periodTypeStringifier = new PeriodTypeStringifier(activity);
+            periodTypeStringifier.setCount(product.getPeriodCount());
+            periodTypeField.setStringConverter(periodTypeStringifier);
+            periodTypeField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
 
             final EditText periodCountField = (EditText) parentView.findViewById(
                     R.id.unit_edit_product_period_count);
@@ -149,20 +160,16 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                                 @Override
                                 public void valueSelected(Integer newValue) {
                                     periodCountField.setText(getPeriodCountString(newValue));
+
+                                    final PeriodTypeStringifier periodTypeStringifier =
+                                            new PeriodTypeStringifier(activity);
+                                    periodTypeStringifier.setCount(newValue);
+                                    periodTypeField.setStringConverter(periodTypeStringifier);
                                 }
                             }
                     );
                 }
             });
-
-
-            @SuppressWarnings("unchecked")
-            final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
-                    parentView.findViewById(R.id.unit_edit_product_period_type);
-            periodTypeField.setValues(Arrays.asList(PeriodType.values()));
-            periodTypeField.setSelectedItem(product.getPeriodType(), false);
-            periodTypeField.setStringConverter(new PeriodTypeStringifier(activity));
-
 
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +178,8 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                     final String name = toName(nameField.getText());
                     if (name.isEmpty()) {
                         final Toast toast = Toast.makeText(parentView.getContext(),
-                                "Empty name is not allowed", Toast.LENGTH_LONG);
+                                activity.getString(R.string.unit_edit_product_empty_name_not_allowed),
+                                Toast.LENGTH_LONG);
                         toast.show();
                         return;
                     }

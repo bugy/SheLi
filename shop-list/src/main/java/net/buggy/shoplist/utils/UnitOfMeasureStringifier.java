@@ -1,21 +1,22 @@
 package net.buggy.shoplist.utils;
 
+import android.content.Context;
+
 import com.google.common.base.Function;
 
-import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.model.UnitOfMeasure;
 
 public class UnitOfMeasureStringifier implements Function<UnitOfMeasure, String> {
-    private final ShopListActivity activity;
+    private final Context context;
 
-    public UnitOfMeasureStringifier(ShopListActivity activity) {
-        this.activity = activity;
+    public UnitOfMeasureStringifier(Context context) {
+        this.context = context;
     }
 
     @Override
     public String apply(UnitOfMeasure unitOfMeasure) {
-        final String fullName = activity.getString(unitOfMeasure.getFullNameKey());
-        final String shortName = activity.getString(unitOfMeasure.getShortNameKey());
+        final String fullName = context.getString(unitOfMeasure.getFullNameKey());
+        final String shortName = context.getString(unitOfMeasure.getShortNameKey());
 
         return fullName + ", " + shortName;
     }
