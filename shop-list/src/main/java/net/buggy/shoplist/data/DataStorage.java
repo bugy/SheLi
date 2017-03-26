@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("HardCodedStringLiteral")
 public class DataStorage implements Serializable {
 
-    private final boolean firstLaunch;
+    private boolean firstLaunch;
 
     public DataStorage() {
         firstLaunch = checkFirstLaunch();
@@ -46,24 +46,23 @@ public class DataStorage implements Serializable {
     }
 
     private boolean checkFirstLaunch() {
-        final List<StoredMetadata> metadataList = new Select().from(StoredMetadata.class).execute();
-        if (metadataList.isEmpty()) {
-            final StoredMetadata storedMetadata = new StoredMetadata();
-            storedMetadata.firstLaunch = false;
-            storedMetadata.save();
-
-            return true;
-        }
-
-        final StoredMetadata metadata = metadataList.get(0);
-        final boolean firstLaunch = (metadata.firstLaunch != null) && metadata.firstLaunch;
-        if (firstLaunch) {
-            metadata.firstLaunch = false;
+        final StoredMetadata metadata = getMetadataInstance();
+        if (metadata.getId() == null) {
             metadata.save();
         }
 
-        return firstLaunch;
+        return (metadata.firstLaunch != null) && metadata.firstLaunch;
+    }
 
+    private StoredMetadata getMetadataInstance() {
+        final List<StoredMetadata> metadataList = new Select().from(StoredMetadata.class).execute();
+        if (metadataList.isEmpty()) {
+            final StoredMetadata storedMetadata = new StoredMetadata();
+            storedMetadata.firstLaunch = true;
+            return storedMetadata;
+        }
+
+        return metadataList.get(0);
     }
 
     private void cleanDb() {
@@ -316,6 +315,16 @@ public class DataStorage implements Serializable {
 
         final Map<Long, Category> categoryMap = loadCategories();
         return storedProduct.toProduct(categoryMap);
+    }
+
+    public void clearFirstLaunch() {
+        if (firstLaunch) {
+            firstLaunch = false;
+
+            final StoredMetadata metadata = getMetadataInstance();
+            metadata.firstLaunch = false;
+            metadata.save();
+        }
     }
 
     @Table(name = "Categories")

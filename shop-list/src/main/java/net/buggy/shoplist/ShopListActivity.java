@@ -1,7 +1,9 @@
 package net.buggy.shoplist;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,7 +26,9 @@ import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.ListDecorator;
 import net.buggy.components.list.MenuCellFactory;
 import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.model.Defaults;
 import net.buggy.shoplist.model.Language;
+import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.Settings;
 import net.buggy.shoplist.navigation.AboutAppUnitNavigator;
 import net.buggy.shoplist.navigation.CategoriesListUnitNavigator;
@@ -89,6 +93,10 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
         setContentView(R.layout.activity_shop_list);
 
+        if (getDataStorage().isFirstLaunch()) {
+            fillInitialData();
+        }
+
         if (savedInstanceState == null) {
 
             final UnitNavigator<ShopListActivity> navigator = navigators.get(0);
@@ -102,6 +110,52 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         }
 
         initMenu();
+    }
+
+    private void fillInitialData() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage(this.getString(R.string.shop_list_activity_init_data_message));
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setProgressNumberFormat(null);
+
+        final AsyncTask<String, Integer, Object> fillDataTask =
+                new AsyncTask<String, Integer, Object>() {
+                    @Override
+                    protected Object doInBackground(String... params) {
+                        final List<Product> defaultProducts =
+                                Defaults.createDefaultProducts(ShopListActivity.this);
+                        float progressPerProduct = 95 / defaultProducts.size();
+
+                        float progress = 5f;
+                        publishProgress((int) progress);
+
+                        for (Product defaultProduct : defaultProducts) {
+                            dataStorage.addProduct(defaultProduct);
+
+                            progress += progressPerProduct;
+                            publishProgress((int) progress);
+                        }
+
+                        dataStorage.clearFirstLaunch();
+
+                        return null;
+                    }
+
+                    @Override
+                    protected void onProgressUpdate(Integer... values) {
+                        int progress = values[values.length - 1];
+                        progressDialog.setProgress(progress);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        progressDialog.hide();
+                    }
+                };
+
+        fillDataTask.execute();
+        progressDialog.show();
     }
 
     @Override
@@ -327,7 +381,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         outState.putSerializable("activeUnits", ImmutableList.copyOf(activeUnits));
     }
 
-    private DataStorage initDataStorage() {
+    private DataStorage createDataStorage() {
         final DataStorage dataStorage = new DataStorage();
 
         if (dataStorage.isFirstLaunch()) {
@@ -340,7 +394,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
     public DataStorage getDataStorage() {
         if (dataStorage == null) {
-            dataStorage = initDataStorage();
+            dataStorage = createDataStorage();
         }
 
         return dataStorage;

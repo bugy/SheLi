@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cell_search_product_new">новый</string>
+    <string name="shop_list_activity_init_data_message">Добавляем самые популярные продукты</string>
     <string name="cell_selectable_shop_item_comment_hint">Комментарий</string>
     <string name="clear_selected_catetories_in_filter">Очистить</string>
     <string name="edit_product_categories_label">Категории</string>
@@ -97,4 +98,52 @@
     <string name="unit_settings_language_hint">Язык приложения</string>
     <string name="unit_settings_system_language">Язык системы</string>
     <string name="material_spinner_default_null_string">Не указано</string>
+
+    <string name="default_product_apples">Яблоки</string>
+    <string name="default_product_bacon">Бекон</string>
+    <string name="default_product_bananas">Бананы</string>
+    <string name="default_product_beans">Фасоль</string>
+    <string name="default_product_beer">Пиво</string>
+    <string name="default_product_beef">Говядина</string>
+    <string name="default_product_bread">Хлеб</string>
+    <string name="default_product_buckwheat">Гречка</string>
+    <string name="default_product_butter">Масло сливочное</string>
+    <string name="default_product_cabbage">Капуста</string>
+    <string name="default_product_carrots">Морковь</string>
+    <string name="default_product_cheese">Сыр</string>
+    <string name="default_product_chicken">Курица</string>
+    <string name="default_product_chips">Чипсы</string>
+    <string name="default_product_chocolate">Шоколад</string>
+    <string name="default_product_coffee">Кофе</string>
+    <string name="default_product_corn">Кукуруза</string>
+    <string name="default_product_cucumber">Огурцы</string>
+    <string name="default_product_eggs">Яйца</string>
+    <string name="default_product_fish">Рыба</string>
+    <string name="default_product_flour">Мука</string>
+    <string name="default_product_garlic">Чеснок</string>
+    <string name="default_product_honey">Мед</string>
+    <string name="default_product_juice">Сок</string>
+    <string name="default_product_ketchup">Кетчуп</string>
+    <string name="default_product_lemon">Лимон</string>
+    <string name="default_product_mayo">Майонез</string>
+    <string name="default_product_milk">Молоко</string>
+    <string name="default_product_mushrooms">Грибы</string>
+    <string name="default_product_onion">Лук</string>
+    <string name="default_product_oil">Масло растительное</string>
+    <string name="default_product_oranges">Апельсины</string>
+    <string name="default_product_pepper">Перец черный</string>
+    <string name="default_product_pork">Свинина</string>
+    <string name="default_product_potato">Картофель</string>
+    <string name="default_product_rice">Рис</string>
+    <string name="default_product_salt">Соль</string>
+    <string name="default_product_shampoo">Шампунь</string>
+    <string name="default_product_soap">Мыло</string>
+    <string name="default_product_spaghetti">Макароны</string>
+    <string name="default_product_sugar">Сахар</string>
+    <string name="default_product_sweets">Конфеты</string>
+    <string name="default_product_tea">Чай</string>
+    <string name="default_product_toilet_paper">Туалетная бумага</string>
+    <string name="default_product_tomatoes">Помидоры</string>
+    <string name="default_product_toothpaste">Зубная паста</string>
+    <string name="default_product_wine">Вино</string>
 </resources>
