@@ -33,7 +33,7 @@
             android:src="@drawable/search_back"
             android:visibility="gone" />
 
-        <EditText
+        <net.buggy.components.text.BackableEditText
             android:id="@+id/unit_shopitem_list_search_field"
             android:layout_width="0dp"
             android:layout_height="match_parent"
