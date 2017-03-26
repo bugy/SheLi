@@ -26,6 +26,7 @@ import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.ListDecorator;
 import net.buggy.components.list.MenuCellFactory;
 import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Defaults;
 import net.buggy.shoplist.model.Language;
 import net.buggy.shoplist.model.Product;
@@ -123,17 +124,27 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                 new AsyncTask<String, Integer, Object>() {
                     @Override
                     protected Object doInBackground(String... params) {
+                        final List<Category> defaultCategories = Defaults.createDefaultCategories(ShopListActivity.this);
+
                         final List<Product> defaultProducts =
-                                Defaults.createDefaultProducts(ShopListActivity.this);
-                        float progressPerProduct = 95 / defaultProducts.size();
+                                Defaults.createDefaultProducts(ShopListActivity.this, defaultCategories);
+
+                        float progressPerSave = 95f / (defaultProducts.size() + defaultCategories.size());
 
                         float progress = 5f;
                         publishProgress((int) progress);
 
+                        for (Category category : defaultCategories) {
+                            dataStorage.addCategory(category);
+
+                            progress += progressPerSave;
+                            publishProgress((int) progress);
+                        }
+
                         for (Product defaultProduct : defaultProducts) {
                             dataStorage.addProduct(defaultProduct);
 
-                            progress += progressPerProduct;
+                            progress += progressPerSave;
                             publishProgress((int) progress);
                         }
 
@@ -151,6 +162,8 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                     @Override
                     protected void onPostExecute(Object o) {
                         progressDialog.hide();
+
+                        recreate();
                     }
                 };
 
