@@ -55,6 +55,7 @@ Used icons:
 * ic_check_white_48dp
 * ic_check_white_48dp (modified into: clear_checked_shopitems_enabled.png, clear_checked_shopitems_disabled.png)
 * ic_close_black_36dp
+* ic_content_copy_white_24dp
 * ic_delete_forever_black_48dp
 * ic_edit_black_24dp
 * ic_edit_black_24dp (modified)

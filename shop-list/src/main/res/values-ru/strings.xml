@@ -55,6 +55,8 @@
     <string name="unit_select_shopitems_search_hint">Найти</string>
     <string name="unit_shopitem_not_specified_quantity">Не указано</string>
     <string name="unit_shopitems_list_add_hint">Добавить</string>
+    <string name="unit_shopitem_list_copied_into_clipboard">Список скопирован в буфер обмена</string>
+    <string name="unit_shopitem_list_copy_clipboard_label">Список покупок</string>
     <string name="unit_shot_items_title">Купить</string>
     <string name="unit_view_shop_item_comment_label">Комментарий</string>
     <string name="unit_view_shop_item_name_field_label">Название</string>

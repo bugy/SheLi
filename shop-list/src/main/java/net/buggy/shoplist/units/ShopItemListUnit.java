@@ -1,8 +1,13 @@
 package net.buggy.shoplist.units;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 
 import net.buggy.components.ViewUtils;
 import net.buggy.components.animation.AnimationAdapter;
@@ -36,6 +43,7 @@ import net.buggy.shoplist.components.SearchProductCellFactory.SearchedProduct;
 import net.buggy.shoplist.components.ToBuyShopItemCellFactory;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.model.Category;
+import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.views.ViewRenderer;
@@ -125,6 +133,81 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             initCheckListener();
 
             initAddItemButton(parentView);
+
+            initCopyContentButton(parentView);
+        }
+
+        private void initCopyContentButton(final RelativeLayout parentView) {
+            final ImageButton copyButton = (ImageButton) parentView.findViewById(
+                    R.id.unit_shopitem_list_copy_list_button);
+            DrawableCompat.setTintMode(copyButton.getDrawable(), PorterDuff.Mode.SRC_IN);
+
+            copyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Context context = parentView.getContext();
+
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(
+                            Context.CLIPBOARD_SERVICE);
+
+                    List<String> rows = new ArrayList<>();
+                    final List<ShopItem> items = adapter.getAllItems();
+                    for (ShopItem item : items) {
+                        if (!item.isChecked()) {
+                            String row = item.getProduct().getName();
+                            if (item.getQuantity() != null) {
+                                row += " - " + ModelHelper.buildStringQuantity(item, context);
+                            }
+
+                            if (!Strings.isNullOrEmpty(item.getComment())) {
+                                row += ", " + item.getComment();
+                            }
+
+                            rows.add(row);
+                        }
+                    }
+
+                    final String listAsString = Joiner.on("\n").join(rows);
+
+                    ClipData clip = ClipData.newPlainText(
+                            context.getString(R.string.unit_shopitem_list_copy_clipboard_label),
+                            listAsString);
+                    clipboard.setPrimaryClip(clip);
+
+                    Toast.makeText(context,
+                            R.string.unit_shopitem_list_copied_into_clipboard,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            copyButton.setEnabled(adapter.getAllItems().size() > adapter.getSelectedItems().size());
+
+            adapter.addDataListener(new FactoryBasedAdapter.DataListener<ShopItem>() {
+                @Override
+                public void added(ShopItem item) {
+                    copyButton.setEnabled(true);
+                }
+
+                @Override
+                public void removed(ShopItem item) {
+                    copyButton.setEnabled(adapter.getAllItems().size() > adapter.getSelectedItems().size());
+                }
+
+                @Override
+                public void changed(ShopItem changedItem) {
+                }
+            });
+
+            adapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<ShopItem>() {
+                @Override
+                public void selectionChanged(ShopItem item, boolean selected) {
+                    if (selected) {
+                        copyButton.setEnabled(adapter.getAllItems().size() > adapter.getSelectedItems().size());
+                    } else {
+                        copyButton.setEnabled(true);
+                    }
+                }
+            });
         }
 
         private FactoryBasedAdapter<ShopItem> initList(RelativeLayout parentView, final ShopListActivity activity, final DataStorage dataStorage) {
