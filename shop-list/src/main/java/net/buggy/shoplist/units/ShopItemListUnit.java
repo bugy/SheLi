@@ -97,8 +97,9 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
 
             final DataStorage dataStorage = getHostingActivity().getDataStorage();
             dataStorage.addProduct(product);
+            Product cleanProduct = dataStorage.findProduct(product.getId());
 
-            addShopItem(product, dataStorage);
+            addShopItem(cleanProduct, dataStorage);
             return;
         }
 
@@ -413,16 +414,15 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         }
 
         private void addItemClicked(Product product) {
-            final Set<Product> addedProducts = getAddedProducts();
-            if (addedProducts.contains(product)) {
-                Toast.makeText(activity,
-                        activity.getString(R.string.shop_item_already_exists, product.getName()),
-                        Toast.LENGTH_SHORT).show();
-                return;
-
-            }
-
             if (product.getId() != null) {
+                final Set<Product> addedProducts = getAddedProducts();
+                if (addedProducts.contains(product)) {
+                    Toast.makeText(activity,
+                            activity.getString(R.string.shop_item_already_exists, product.getName()),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 addShopItem(product, activity.getDataStorage());
                 return;
             }

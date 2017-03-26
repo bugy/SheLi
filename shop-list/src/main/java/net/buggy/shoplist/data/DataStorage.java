@@ -109,20 +109,7 @@ public class DataStorage implements Serializable {
 
         final List<StoredProduct> storedProducts = new Select().from(StoredProduct.class).execute();
         for (StoredProduct storedProduct : storedProducts) {
-            final Product product = new Product();
-            product.setName(storedProduct.name);
-            product.setId(storedProduct.getId());
-            product.setDefaultUnits(storedProduct.unitOfMeasure);
-            product.setPeriodCount(storedProduct.periodCount);
-            product.setPeriodType(storedProduct.periodType);
-            product.setLastBuyDate(storedProduct.lastBuyDate);
-
-            Set<Category> productCategories = new LinkedHashSet<>();
-            for (StoredCategory storedCategory : storedProduct.getCategories()) {
-                final Category category = categoryMap.get(storedCategory.getId());
-                productCategories.add(category);
-            }
-            product.setCategories(productCategories);
+            final Product product = storedProduct.toProduct(categoryMap);
 
             result.put(product.getId(), product);
         }
@@ -317,6 +304,20 @@ public class DataStorage implements Serializable {
         }
     }
 
+    public Product findProduct(Long id) {
+        final StoredProduct storedProduct = new Select()
+                .from(StoredProduct.class)
+                .where("Id = ?", id)
+                .executeSingle();
+
+        if (storedProduct == null) {
+            return null;
+        }
+
+        final Map<Long, Category> categoryMap = loadCategories();
+        return storedProduct.toProduct(categoryMap);
+    }
+
     @Table(name = "Categories")
     public static class StoredCategory extends Model {
         @Column(name = "Name")
@@ -443,6 +444,25 @@ public class DataStorage implements Serializable {
                 link.setCategory(storedCategory);
                 newLinks.add(link);
             }
+        }
+
+        public Product toProduct(Map<Long, Category> categoryMap) {
+            Product product = new Product();
+            product.setName(this.name);
+            product.setId(this.getId());
+            product.setDefaultUnits(this.unitOfMeasure);
+            product.setPeriodCount(this.periodCount);
+            product.setPeriodType(this.periodType);
+            product.setLastBuyDate(this.lastBuyDate);
+
+            Set<Category> productCategories = new LinkedHashSet<>();
+            for (StoredCategory storedCategory : this.getCategories()) {
+                final Category category = categoryMap.get(storedCategory.getId());
+                productCategories.add(category);
+            }
+            product.setCategories(productCategories);
+
+            return product;
         }
 
         public Long customSave() {
