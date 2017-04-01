@@ -61,6 +61,7 @@ Used icons:
 * ic_edit_black_24dp (modified)
 * ic_help_outline_black_24dp
 * ic_info_outline_black_24dp
+* ic_local_mall (modified into: to_buy_empty_screen_image.png)
 * ic_menu_white_48dp
 * ic_message_black_24dp
 * ic_playlist_add (modified into: add_from_products.png)
@@ -84,6 +85,7 @@ SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 (https://github.com/Templar
 * filter-outline (By: Austin Andrews) (modified into: category_filter_disabled.png, category_filter_enabled.png)
 * broom (By: Austin Andrews) (modified into: clear_checked_shopitems_enabled.png, clear_checked_shopitems_disabled.png)
 * rename-box
+* filter-remove-outline (By: Austin Andrews) (modified into: to_buy_empty_no_matches.png)
 
 ### MarckScript-Regular.ttf
 https://fonts.google.com/specimen/Marck+Script

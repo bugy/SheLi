@@ -13,6 +13,11 @@
     <string name="unit_shopitems_list_add_hint">Add item</string>
     <string name="unit_shopitem_list_copied_into_clipboard">The list was copied to clipboard</string>
     <string name="unit_shopitem_list_copy_clipboard_label">To buy list</string>
+    <string name="unit_shop_item_list_finished_shopping">Congratulations!\nYou have finished your shopping!</string>
+    <string name="unit_shop_item_list_need_something">Need something?</string>
+    <string name="unit_shop_item_list_check_all_products">Going to a shop?\nCheck all products</string>
+    <string name="unit_shop_item_list_list_is_empty">Your shopping list is empty</string>
+    <string name="unit_shop_item_list_no_filter_matches">No matches found for the filter</string>
     <string name="fast_creation_add_and_edit">Add and edit</string>
     <string name="unit_products_search_hint">Search</string>
     <string name="unit_products_search_icon">Search icon</string>

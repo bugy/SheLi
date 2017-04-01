@@ -21,6 +21,7 @@ import android.view.animation.Transformation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +69,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
     private transient FactoryBasedAdapter<ShopItem> adapter;
     private transient EditText searchField;
     private transient ImageButton cleanCheckedButton;
+    private Boolean showTipsOnEmpty;
 
     @Override
     public void initialize() {
@@ -135,6 +137,8 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             initAddItemButton(parentView);
 
             initCopyContentButton(parentView);
+
+            initEmptyScreen(parentView);
         }
 
         private void initCopyContentButton(final RelativeLayout parentView) {
@@ -322,6 +326,90 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                     });
                 }
             });
+        }
+    }
+
+    private void initEmptyScreen(RelativeLayout parentView) {
+        final ViewGroup defaultEmptyPanel = (ViewGroup) parentView.findViewById(
+                R.id.unit_shop_item_list_empty_stub);
+
+        if (showTipsOnEmpty == null) {
+            showTipsOnEmpty = getHostingActivity().getDataStorage().isShowTips();
+        }
+
+        adapter.addDataListener(new FactoryBasedAdapter.DataListener<ShopItem>() {
+            @Override
+            public void added(ShopItem item) {
+                showTipsOnEmpty = false;
+                getHostingActivity().getDataStorage().setShowTips(showTipsOnEmpty);
+            }
+
+            @Override
+            public void removed(ShopItem item) {
+            }
+
+            @Override
+            public void changed(ShopItem changedItem) {
+
+            }
+        });
+
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                updateEmptyScreen(defaultEmptyPanel);
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                updateEmptyScreen(defaultEmptyPanel);
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                updateEmptyScreen(defaultEmptyPanel);
+            }
+        });
+
+        updateEmptyScreen(defaultEmptyPanel);
+    }
+
+    private void updateEmptyScreen(ViewGroup emptyPanel) {
+        if (adapter.getItemCount() == 0) {
+            emptyPanel.setVisibility(View.VISIBLE);
+
+            final TextView emptyLabel = (TextView) emptyPanel.findViewById(
+                    R.id.unit_shop_item_list_empty_stub_label);
+            final ImageView emptyImage = (ImageView) emptyPanel.findViewById(
+                    R.id.unit_shop_item_list_stub_image);
+
+            final View firstLaunchPanel = emptyPanel.findViewById(
+                    R.id.unit_shop_item_list_empty_first_launch);
+            firstLaunchPanel.setVisibility(View.GONE);
+
+            final Context context = emptyPanel.getContext();
+            final String text;
+            final int imageId;
+
+            if (adapter.getAllItems().isEmpty()) {
+                if (showTipsOnEmpty) {
+                    text = context.getString(R.string.unit_shop_item_list_list_is_empty);
+                    firstLaunchPanel.setVisibility(View.VISIBLE);
+                } else {
+                    text = context.getString(R.string.unit_shop_item_list_finished_shopping);
+                }
+                imageId = R.drawable.to_buy_empty_screen_image;
+            } else {
+                text = context.getString(R.string.unit_shop_item_list_no_filter_matches);
+                imageId = R.drawable.to_buy_empty_no_matches;
+            }
+
+            emptyLabel.setText(text);
+            emptyImage.setImageResource(imageId);
+
+        } else {
+            emptyPanel.setVisibility(View.GONE);
         }
     }
 

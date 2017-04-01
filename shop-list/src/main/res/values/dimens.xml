@@ -2,6 +2,7 @@
 <resources>
     <dimen name="def_font_size">16sp</dimen>
     <dimen name="large_font_size">24sp</dimen>
+    <dimen name="increased_font_size">19sp</dimen>
     <dimen name="title_font_size">18sp</dimen>
     <dimen name="small_font_size">14sp</dimen>
 

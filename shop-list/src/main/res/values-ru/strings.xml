@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="cell_search_product_new">новый</string>
     <string name="shop_list_activity_init_data_message">Добавляем самые популярные продукты и категории</string>
     <string name="cell_selectable_shop_item_comment_hint">Комментарий</string>
@@ -57,6 +57,11 @@
     <string name="unit_shopitems_list_add_hint">Добавить</string>
     <string name="unit_shopitem_list_copied_into_clipboard">Список скопирован в буфер обмена</string>
     <string name="unit_shopitem_list_copy_clipboard_label">Список покупок</string>
+    <string name="unit_shop_item_list_finished_shopping">Поздравляем!\nВы закончили с покупками!</string>
+    <string name="unit_shop_item_list_list_is_empty">Ваш список покупок пуст</string>
+    <string name="unit_shop_item_list_check_all_products">Собираетесь в магазин?\nПроверьте все продукты</string>
+    <string name="unit_shop_item_list_need_something">Нужно что-то купить?</string>
+    <string name="unit_shop_item_list_no_filter_matches">Нет совпадений для фильтра</string>
     <string name="unit_shot_items_title">Купить</string>
     <string name="unit_view_shop_item_comment_label">Комментарий</string>
     <string name="unit_view_shop_item_name_field_label">Название</string>
@@ -68,22 +73,22 @@
     <string name="period_type_months">Месяцы</string>
     <string name="period_type_years">Года</string>
     <plurals name="period_type_days">
-        <item quantity="one">День</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">День</item>
         <item quantity="few">Дня</item>
         <item quantity="many">Дней</item>
     </plurals>
     <plurals name="period_type_months">
-        <item quantity="one">Месяц</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Месяц</item>
         <item quantity="few">Месяца</item>
         <item quantity="many">Месяцев</item>
     </plurals>
     <plurals name="period_type_weeks">
-        <item quantity="one">Неделя</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Неделя</item>
         <item quantity="few">Недели</item>
         <item quantity="many">Недель</item>
     </plurals>
     <plurals name="period_type_years">
-        <item quantity="one">Год</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Год</item>
         <item quantity="few">Года</item>
         <item quantity="many">Лет</item>
     </plurals>

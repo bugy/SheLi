@@ -75,6 +75,8 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     private final Multimap<View, OutsideClickListener> outsideClickListeners =
             Multimaps.synchronizedSetMultimap(LinkedHashMultimap.<View, OutsideClickListener>create());
 
+    private boolean firstLaunch = false;
+
     public ShopListActivity() {
         navigators = ImmutableList.of(
                 new ShopListUnitNavigator(this),
@@ -398,6 +400,8 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         final DataStorage dataStorage = new DataStorage();
 
         if (dataStorage.isFirstLaunch()) {
+            this.firstLaunch = true;
+
             final Settings settings = new Settings();
             dataStorage.saveSettings(settings);
         }
@@ -411,6 +415,10 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         }
 
         return dataStorage;
+    }
+
+    public boolean isFirstLaunch() {
+        return firstLaunch;
     }
 
     public void addOutsideClickListener(View view, OutsideClickListener listener) {

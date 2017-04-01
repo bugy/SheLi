@@ -37,29 +37,28 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("HardCodedStringLiteral")
 public class DataStorage implements Serializable {
 
-    private boolean firstLaunch;
+    private StoredMetadata metadata;
 
     public DataStorage() {
-        firstLaunch = checkFirstLaunch();
+        initMetadata();
 
         cleanDb();
     }
 
-    private boolean checkFirstLaunch() {
-        final StoredMetadata metadata = getMetadataInstance();
+    private void initMetadata() {
+        metadata = getMetadataInstance();
         if (metadata.getId() == null) {
             metadata.save();
         }
-
-        return (metadata.firstLaunch != null) && metadata.firstLaunch;
     }
 
     private StoredMetadata getMetadataInstance() {
         final List<StoredMetadata> metadataList = new Select().from(StoredMetadata.class).execute();
         if (metadataList.isEmpty()) {
-            final StoredMetadata storedMetadata = new StoredMetadata();
-            storedMetadata.firstLaunch = true;
-            return storedMetadata;
+            final StoredMetadata newMetadata = new StoredMetadata();
+            newMetadata.firstLaunch = true;
+            newMetadata.showTips = true;
+            return newMetadata;
         }
 
         return metadataList.get(0);
@@ -75,7 +74,11 @@ public class DataStorage implements Serializable {
     }
 
     public boolean isFirstLaunch() {
-        return firstLaunch;
+        return metadata.firstLaunch;
+    }
+
+    public boolean isShowTips() {
+        return metadata.showTips;
     }
 
     private Map<Long, ShopItem> loadShopItems() {
@@ -318,11 +321,18 @@ public class DataStorage implements Serializable {
     }
 
     public void clearFirstLaunch() {
-        if (firstLaunch) {
-            firstLaunch = false;
+        if (metadata.firstLaunch) {
+            metadata.firstLaunch = false;
 
             final StoredMetadata metadata = getMetadataInstance();
             metadata.firstLaunch = false;
+            metadata.save();
+        }
+    }
+
+    public void setShowTips(boolean showTips) {
+        if (metadata.showTips != showTips) {
+            metadata.showTips = showTips;
             metadata.save();
         }
     }
@@ -558,6 +568,10 @@ public class DataStorage implements Serializable {
 
         @Column(name = "FirstLaunch")
         private Boolean firstLaunch;
+
+
+        @Column(name = "ShowTips")
+        private Boolean showTips;
 
     }
 
