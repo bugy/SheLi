@@ -2,7 +2,7 @@
     <string name="app_name">ShopList</string>
     <string name="shop_list_activity_init_data_message">Adding most popular products and categories</string>
     <string name="edit_product_name_field_label">Name</string>
-    <string name="edit_product_units_field_label">Units of measure</string>
+    <string name="edit_product_units_field_label">Default units of measure</string>
     <string name="edit_product_categories_label">Linked categories</string>
     <string name="edit_product_save_button_label">Save</string>
     <string name="edit_product_delete_button_description">Delete product</string>
@@ -51,11 +51,12 @@
     <string name="unit_edit_category_empty_name_not_allowed">Empty name is not allowed</string>
     <string name="unit_edit_product_empty_name_not_allowed">Empty name is not allowed</string>
     <string name="cell_selectable_shop_item_comment_hint">Comment</string>
-    <string name="unit_view_shop_item_name_field_label">Name</string>
-    <string name="unit_view_shop_item_comment_label">Comment</string>
-    <string name="unit_view_shop_item_title">%s info</string>
-    <string name="unit_view_shop_item_quantity_field_label">Quantity</string>
-    <string name="unit_view_shop_item_units_field_label">Units of measure</string>
+    <string name="unit_edit_shop_item_name_field_label">Name</string>
+    <string name="unit_edit_shop_item_comment_label">Comment</string>
+    <string name="unit_edit_shop_item_title">Edit %s</string>
+    <string name="unit_edit_shop_item_quantity_field_label">Quantity</string>
+    <string name="unit_edit_shop_item_units_field_label">Units of measure</string>
+    <string name="unit_edit_shop_item_product_info_label">Product info</string>
     <string name="cell_search_product_new">new</string>
     <string name="unit_shopitem_not_specified_quantity">Not specified</string>
     <string name="clear_selected_catetories_in_filter">Clear</string>

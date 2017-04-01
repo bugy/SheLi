@@ -126,79 +126,24 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
             @SuppressWarnings("unchecked")
             final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
-                    parentView.findViewById(R.id.unit_edit_product_units_field);
-            unitsField.setHint(activity.getString(R.string.edit_product_units_field_label));
-            unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
-            unitsField.setSelectedItem(product.getDefaultUnits(), false);
-            unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
-            unitsField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
-
+                    parentView.findViewById(R.id.merge_edit_product_units_field);
             @SuppressWarnings("unchecked")
             final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
-                    parentView.findViewById(R.id.unit_edit_product_period_type);
-            periodTypeField.setValues(Arrays.asList(PeriodType.values()));
-            periodTypeField.setSelectedItem(product.getPeriodType(), false);
-            final PeriodTypeStringifier periodTypeStringifier = new PeriodTypeStringifier(activity);
-            periodTypeStringifier.setCount(product.getPeriodCount());
-            periodTypeField.setStringConverter(periodTypeStringifier);
-            periodTypeField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
-
+                    parentView.findViewById(R.id.merge_edit_product_period_type);
             final EditText periodCountField = (EditText) parentView.findViewById(
-                    R.id.unit_edit_product_period_count);
-            setTextWithoutAnimation(periodCountField, getPeriodCountString(product.getPeriodCount()));
-            periodCountField.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    WheelPickerUtils.selectValue(
-                            CollectionUtils.range(1, 15),
-                            product.getPeriodCount(),
-                            1,
-                            new SimpleStringifier<Integer>(),
-                            activity.getString(R.string.edit_product_period_count_label),
-                            activity,
-                            new WheelPickerUtils.Listener<Integer>() {
-                                @Override
-                                public void valueSelected(Integer newValue) {
-                                    periodCountField.setText(getPeriodCountString(newValue));
+                    R.id.merge_edit_product_period_count);
 
-                                    final PeriodTypeStringifier periodTypeStringifier =
-                                            new PeriodTypeStringifier(activity);
-                                    periodTypeStringifier.setCount(newValue);
-                                    periodTypeField.setStringConverter(periodTypeStringifier);
-                                }
-                            }
-                    );
-                }
-            });
+            initEditProductFields(parentView, activity, product);
+            categoriesAdapter = initCategoriesSection(parentView, activity, selectedCategories);
 
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final String name = toName(nameField.getText());
-                    if (name.isEmpty()) {
-                        final Toast toast = Toast.makeText(parentView.getContext(),
-                                activity.getString(R.string.unit_edit_product_empty_name_not_allowed),
-                                Toast.LENGTH_LONG);
-                        toast.show();
+                    final boolean valid = validateProductName(name, product, parentView, activity);
+                    if (!valid) {
                         return;
-                    }
-
-                    final List<Product> products = activity.getDataStorage().getProducts();
-                    for (Product anotherProduct : products) {
-                        if (Objects.equal(anotherProduct, product)) {
-                            continue;
-                        }
-
-                        if (StringUtils.equalIgnoreCase(anotherProduct.getName(), name)) {
-                            final Toast toast = Toast.makeText(parentView.getContext(),
-                                    activity.getString(
-                                            R.string.products_unit_already_exists,
-                                            anotherProduct.getName()),
-                                    Toast.LENGTH_LONG);
-                            toast.show();
-                            return;
-                        }
                     }
 
                     product.setCategories(categoriesAdapter.getSelectedItems());
@@ -219,8 +164,6 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            initCategoriesSection(parentView, activity);
-
             if (newProduct && firstRender && Strings.isNullOrEmpty(product.getName())) {
                 ViewUtils.focusTextField(nameField);
             }
@@ -233,32 +176,123 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             return editable.toString().trim();
         }
 
-        private void initCategoriesSection(ViewGroup parentView, final ShopListActivity activity) {
-            final DataStorage dataStorage = activity.getDataStorage();
+    }
 
-            categoriesAdapter = new FactoryBasedAdapter<>(new CategoryCellFactory());
-            categoriesAdapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.MULTI);
-            categoriesAdapter.setSorter(new CategoryComparator());
-            categoriesAdapter.addAll(dataStorage.getCategories());
-            for (Category selectedCategory : selectedCategories) {
-                categoriesAdapter.selectItem(selectedCategory);
+    public static void initEditProductFields(
+            ViewGroup parentView, final ShopListActivity activity,
+            final Product product) {
+
+        @SuppressWarnings("unchecked")
+        final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
+                parentView.findViewById(R.id.merge_edit_product_units_field);
+        @SuppressWarnings("unchecked")
+        final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
+                parentView.findViewById(R.id.merge_edit_product_period_type);
+        final EditText periodCountField = (EditText) parentView.findViewById(
+                R.id.merge_edit_product_period_count);
+
+        unitsField.setHint(activity.getString(R.string.edit_product_units_field_label));
+        unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
+        unitsField.setSelectedItem(product.getDefaultUnits(), false);
+        unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
+        unitsField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
+
+
+        periodTypeField.setValues(Arrays.asList(PeriodType.values()));
+        periodTypeField.setSelectedItem(product.getPeriodType(), false);
+        final PeriodTypeStringifier periodTypeStringifier = new PeriodTypeStringifier(activity);
+        periodTypeStringifier.setCount(product.getPeriodCount());
+        periodTypeField.setStringConverter(periodTypeStringifier);
+        periodTypeField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
+
+        setTextWithoutAnimation(periodCountField, getPeriodCountString(product.getPeriodCount()));
+        periodCountField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WheelPickerUtils.selectValue(
+                        CollectionUtils.range(1, 15),
+                        product.getPeriodCount(),
+                        1,
+                        new SimpleStringifier<Integer>(),
+                        activity.getString(R.string.edit_product_period_count_label),
+                        activity,
+                        new WheelPickerUtils.Listener<Integer>() {
+                            @Override
+                            public void valueSelected(Integer newValue) {
+                                periodCountField.setText(getPeriodCountString(newValue));
+
+                                final PeriodTypeStringifier periodTypeStringifier =
+                                        new PeriodTypeStringifier(activity);
+                                periodTypeStringifier.setCount(newValue);
+                                periodTypeField.setStringConverter(periodTypeStringifier);
+                            }
+                        }
+                );
             }
-            categoriesAdapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<Category>() {
-                @Override
-                public void selectionChanged(Category item, boolean selected) {
-                    if (selected) {
-                        selectedCategories.add(item);
-                    } else {
-                        selectedCategories.remove(item);
-                    }
-                }
-            });
+        });
+    }
 
-            final RecyclerView categoriesList = (RecyclerView) parentView.findViewById(
-                    R.id.unit_edit_product_categories_list);
-            ListDecorator.decorateList(categoriesList);
-            categoriesList.setAdapter(categoriesAdapter);
+    public static FactoryBasedAdapter<Category> initCategoriesSection(
+            ViewGroup parentView,
+            final ShopListActivity activity,
+            final Set<Category> selectedCategories) {
+
+        final DataStorage dataStorage = activity.getDataStorage();
+
+        FactoryBasedAdapter<Category> categoriesAdapter = new FactoryBasedAdapter<>(new CategoryCellFactory());
+        categoriesAdapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.MULTI);
+        categoriesAdapter.setSorter(new CategoryComparator());
+        categoriesAdapter.addAll(dataStorage.getCategories());
+        for (Category selectedCategory : selectedCategories) {
+            categoriesAdapter.selectItem(selectedCategory);
         }
+        categoriesAdapter.addSelectionListener(new FactoryBasedAdapter.SelectionListener<Category>() {
+            @Override
+            public void selectionChanged(Category item, boolean selected) {
+                if (selected) {
+                    selectedCategories.add(item);
+                } else {
+                    selectedCategories.remove(item);
+                }
+            }
+        });
+
+        final RecyclerView categoriesList = (RecyclerView) parentView.findViewById(
+                R.id.merge_edit_product_categories_list);
+        ListDecorator.decorateList(categoriesList);
+        categoriesList.setAdapter(categoriesAdapter);
+
+        return categoriesAdapter;
+    }
+
+    public static boolean validateProductName(
+            String name, Product product, ViewGroup parentView, ShopListActivity activity) {
+
+        if (name.isEmpty()) {
+            final Toast toast = Toast.makeText(parentView.getContext(),
+                    activity.getString(R.string.unit_edit_product_empty_name_not_allowed),
+                    Toast.LENGTH_LONG);
+            toast.show();
+            return false;
+        }
+
+        final List<Product> products = activity.getDataStorage().getProducts();
+        for (Product anotherProduct : products) {
+            if (Objects.equal(anotherProduct, product)) {
+                continue;
+            }
+
+            if (StringUtils.equalIgnoreCase(anotherProduct.getName(), name)) {
+                final Toast toast = Toast.makeText(parentView.getContext(),
+                        activity.getString(
+                                R.string.products_unit_already_exists,
+                                anotherProduct.getName()),
+                        Toast.LENGTH_LONG);
+                toast.show();
+                return false;
+            }
+        }
+        return true;
     }
 
     private static String getPeriodCountString(Integer count) {
@@ -269,7 +303,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
         return String.valueOf(count);
     }
 
-    private static Integer parsePeriodCount(String countString) {
+    public static Integer parsePeriodCount(String countString) {
         if ((countString == null) || (countString.trim().isEmpty())) {
             return null;
         }

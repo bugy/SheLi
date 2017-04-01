@@ -93,9 +93,11 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
 
             return;
 
-        } else if (event instanceof ViewShopItemUnit.ShopItemEditedEvent) {
-            final ShopItem shopItem = ((ViewShopItemUnit.ShopItemEditedEvent) event).getShopItem();
+        } else if (event instanceof EditShopItemUnit.ShopItemEditedEvent) {
+            final ShopItem shopItem = ((EditShopItemUnit.ShopItemEditedEvent) event).getShopItem();
+            final Product changedProduct = ((EditShopItemUnit.ShopItemEditedEvent) event).getProduct();
 
+            getHostingActivity().getDataStorage().saveProduct(changedProduct);
             getHostingActivity().getDataStorage().saveShopItem(shopItem);
             adapter.update(shopItem);
 
@@ -254,7 +256,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             adapter.addLongClickListener(new FactoryBasedAdapter.ClickListener<ShopItem>() {
                 @Override
                 public void itemClicked(ShopItem item) {
-                    final ViewShopItemUnit unit = new ViewShopItemUnit(item);
+                    final EditShopItemUnit unit = new EditShopItemUnit(item);
                     unit.setListeningUnit(ShopItemListUnit.this);
                     activity.startUnit(unit);
                 }

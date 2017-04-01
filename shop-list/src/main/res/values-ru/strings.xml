@@ -11,7 +11,7 @@
     <string name="edit_product_save_button_label">Сохранить</string>
     <string name="categories_unit_already_exists_on_edit">%s уже существует, не сохранено</string>
     <string name="category_already_exists">%s уже существует</string>
-    <string name="edit_product_units_field_label">Единицы измерения</string>
+    <string name="edit_product_units_field_label">Единицы измерения по-умолчанию</string>
     <string name="fast_creation_add_and_edit">Создать в редакторе</string>
     <string name="fast_creation_add_button_hint">Создать</string>
     <string name="fast_creation_name_hint">Создать</string>
@@ -63,11 +63,12 @@
     <string name="unit_shop_item_list_need_something">Нужно что-то купить?</string>
     <string name="unit_shop_item_list_no_filter_matches">Нет совпадений для фильтра</string>
     <string name="unit_shot_items_title">Купить</string>
-    <string name="unit_view_shop_item_comment_label">Комментарий</string>
-    <string name="unit_view_shop_item_name_field_label">Название</string>
-    <string name="unit_view_shop_item_quantity_field_label">Количество</string>
-    <string name="unit_view_shop_item_title">Информация о %s</string>
-    <string name="unit_view_shop_item_units_field_label">Единицы измерения</string>
+    <string name="unit_edit_shop_item_comment_label">Комментарий</string>
+    <string name="unit_edit_shop_item_name_field_label">Название</string>
+    <string name="unit_edit_shop_item_quantity_field_label">Количество</string>
+    <string name="unit_edit_shop_item_title">Редактирование %s</string>
+    <string name="unit_edit_shop_item_units_field_label">Единицы измерения</string>
+    <string name="unit_edit_shop_item_product_info_label">Информация о продукте</string>
     <string name="period_type_days">Дни</string>
     <string name="period_type_weeks">Недели</string>
     <string name="period_type_months">Месяцы</string>

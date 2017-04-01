@@ -92,14 +92,17 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
 
             return;
 
-        } else if (event instanceof ViewShopItemUnit.ShopItemEditedEvent) {
-            ViewShopItemUnit.ShopItemEditedEvent shopItemEvent =
-                    (ViewShopItemUnit.ShopItemEditedEvent) event;
+        } else if (event instanceof EditShopItemUnit.ShopItemEditedEvent) {
+            EditShopItemUnit.ShopItemEditedEvent shopItemEvent =
+                    (EditShopItemUnit.ShopItemEditedEvent) event;
 
             final ShopItem shopItem = shopItemEvent.getShopItem();
             cachedItems.put(shopItem.getProduct(), shopItem);
             adapter.update(shopItem);
             adapter.selectItem(shopItem);
+
+            final Product changedProduct = shopItemEvent.getProduct();
+            getHostingActivity().getDataStorage().saveProduct(changedProduct);
 
             return;
         }
@@ -165,7 +168,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                     new SelectableShopItemCellFactory.Listener() {
                         @Override
                         public void onEditClick(ShopItem shopItem) {
-                            final ViewShopItemUnit unit = new ViewShopItemUnit(shopItem);
+                            final EditShopItemUnit unit = new EditShopItemUnit(shopItem);
                             unit.setListeningUnit(SelectShopItemsUnit.this);
                             getHostingActivity().startUnit(unit);
                         }

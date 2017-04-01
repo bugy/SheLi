@@ -4,5 +4,5 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="17dp"
     android:layout_marginStart="17dp"
-    android:id="@+id/unit_view_shop_item_title"
-    android:gravity="center"></TextView>
+    android:id="@+id/unit_edit_shop_item_title"
+    android:gravity="center" />
