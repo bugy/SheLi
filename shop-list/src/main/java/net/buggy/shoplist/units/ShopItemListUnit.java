@@ -5,9 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -146,7 +144,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         private void initCopyContentButton(final RelativeLayout parentView) {
             final ImageButton copyButton = (ImageButton) parentView.findViewById(
                     R.id.unit_shopitem_list_copy_list_button);
-            DrawableCompat.setTintMode(copyButton.getDrawable(), PorterDuff.Mode.SRC_IN);
+            ViewUtils.setColorListTint(copyButton, R.color.imagebutton_white_tint);
 
             copyButton.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -122,7 +123,14 @@ public class CategoriesFilter extends FrameLayout {
             }
         });
 
-        final LayoutInflater popupInflater = LayoutInflater.from(context.getApplicationContext());
+        final Context popupContext;
+        if (context instanceof ContextThemeWrapper) {
+            popupContext = ((ContextThemeWrapper) context).getBaseContext();
+        } else {
+            popupContext = context.getApplicationContext();
+        }
+
+        final LayoutInflater popupInflater = LayoutInflater.from(popupContext);
         final ViewGroup popupContent = (ViewGroup) popupInflater.inflate(
                 R.layout.popup_categories_filter,
                 null);

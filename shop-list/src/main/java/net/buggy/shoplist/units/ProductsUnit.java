@@ -1,8 +1,6 @@
 package net.buggy.shoplist.units;
 
-import android.graphics.PorterDuff;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +19,7 @@ import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
 import net.buggy.shoplist.components.ProductCellFactory;
-import net.buggy.shoplist.components.SearchTextField;
+import net.buggy.shoplist.components.SearchEditText;
 import net.buggy.shoplist.data.DataStorage;
 import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
@@ -195,10 +193,10 @@ public class ProductsUnit extends Unit<ShopListActivity> {
         }
 
         private void setupSearchField(RelativeLayout parentView) {
-            final SearchTextField searchTextField = (SearchTextField) parentView.findViewById(
+            final SearchEditText searchTextField = (SearchEditText) parentView.findViewById(
                     R.id.unit_products_search_field);
 
-            searchTextField.setListener(new SearchTextField.Listener() {
+            searchTextField.setListener(new SearchEditText.Listener() {
                 @Override
                 public void onTextChanged(String text) {
                     searchedText = text;
@@ -214,7 +212,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
 
             final AppCompatImageView searchIcon = (AppCompatImageView)
                     parentView.findViewById(R.id.unit_products_search_icon);
-            DrawableCompat.setTintMode(searchIcon.getDrawable(), PorterDuff.Mode.SRC_IN);
+            ViewUtils.setTint(searchIcon, R.color.color_primary_icons);
         }
     }
 

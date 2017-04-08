@@ -20,12 +20,10 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.FloatingActionButton
         style="@style/Widget.Design.FloatingActionButton.AtBottom"
         android:id="@+id/unit_select_categories_accept"
         android:src="@drawable/ic_check_white_24dp"
-        app:layout_anchorGravity="bottom|end"
-        app:layout_anchor="@id/unit_select_categories_list" />
+        android:layout_gravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -2,8 +2,6 @@ package net.buggy.shoplist.components;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -13,12 +11,13 @@ import android.widget.LinearLayout;
 
 import com.google.common.base.Strings;
 
+import net.buggy.components.ViewUtils;
 import net.buggy.shoplist.R;
 
 public class FastCreationPanel extends LinearLayout {
 
     private Listener listener;
-    private SearchTextField nameField;
+    private SearchEditText nameField;
     private boolean editAddEnabled = false;
     private ImageButton editAddButton;
 
@@ -61,14 +60,16 @@ public class FastCreationPanel extends LinearLayout {
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(R.layout.fast_creation_panel, this, true);
 
-        nameField = (SearchTextField) findViewById(R.id.fast_creation_name_field);
+        nameField = (SearchEditText) findViewById(R.id.fast_creation_name_field);
 
         final ImageButton addButton = (ImageButton) findViewById(R.id.fast_creation_add_button);
+        ViewUtils.setColorListTint(addButton, R.color.disableable_accent);
+
         editAddButton = (ImageButton) findViewById(R.id.fast_creation_add_and_edit_button);
+        ViewUtils.setColorListTint(editAddButton, R.color.disableable_accent);
 
-
-        setEnabled(addButton, false);
-        setEnabled(editAddButton, false);
+        addButton.setEnabled(false);
+        editAddButton.setEnabled(false);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,11 +91,11 @@ public class FastCreationPanel extends LinearLayout {
             }
         });
 
-        nameField.setListener(new SearchTextField.Listener() {
+        nameField.setListener(new SearchEditText.Listener() {
             @Override
             public void onTextChanged(String text) {
-                setEnabled(addButton, !Strings.isNullOrEmpty(text));
-                setEnabled(editAddButton, !Strings.isNullOrEmpty(text));
+                addButton.setEnabled(!Strings.isNullOrEmpty(text));
+                editAddButton.setEnabled(!Strings.isNullOrEmpty(text));
 
                 fireOnNameChanged(text);
             }
@@ -136,16 +137,6 @@ public class FastCreationPanel extends LinearLayout {
         }
 
         listener.onEditCreate(name);
-    }
-
-    private void setEnabled(ImageButton button, boolean enabled) {
-        button.setEnabled(enabled);
-
-        if (!enabled) {
-            button.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_IN);
-        } else {
-            button.setColorFilter(null);
-        }
     }
 
     public void setText(String text) {

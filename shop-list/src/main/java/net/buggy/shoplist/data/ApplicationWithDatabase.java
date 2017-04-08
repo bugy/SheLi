@@ -8,6 +8,10 @@ import com.activeandroid.Configuration;
 import com.activeandroid.Model;
 import com.activeandroid.serializer.BigDecimalSerializer;
 
+import net.buggy.shoplist.R;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 public class ApplicationWithDatabase extends Application{
 
     @Override
@@ -23,6 +27,12 @@ public class ApplicationWithDatabase extends Application{
 
         Configuration dbConfiguration = builder.create();
         ActiveAndroid.initialize(dbConfiguration);
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/Neucha.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
     }
 
     @Override

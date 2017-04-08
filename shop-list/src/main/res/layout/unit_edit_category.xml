@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
 
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -74,12 +73,10 @@
             android:layout_marginTop="4dp" />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/unit_edit_category_button_accept"
         style="@style/Widget.Design.FloatingActionButton.AtBottom"
         android:src="@drawable/ic_check_white_24dp"
-        app:layout_anchor="@id/unit_edit_category_products_list"
-        app:layout_anchorGravity="bottom|end" />
+        android:layout_gravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>

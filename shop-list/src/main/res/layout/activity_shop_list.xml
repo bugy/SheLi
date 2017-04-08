@@ -42,7 +42,7 @@
 
                 <ImageButton
                     android:id="@+id/toolbar_menu_button"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     android:focusable="false"

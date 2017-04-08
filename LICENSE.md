@@ -32,7 +32,12 @@ Licensed under the Apache License, Version 2.0
 
 ###com.google.guava:guava:20
 https://github.com/google/guava
-Licensed under the Apache License, Version 2.0 
+Licensed under the Apache License, Version 2.0
+
+### uk.co.chrisjenx:calligraphy:2.2.0
+https://github.com/chrisjenx/Calligraphy
+Copyright 2013 Christopher Jenkins
+Licensed under the Apache License, Version 2.0
 
 ### Material icons
 https://material.io/icons/

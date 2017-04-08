@@ -145,7 +145,7 @@ public class Defaults {
                 DefaultProduct.values(), context);
         Map<String, Category> categoryMap = new LinkedHashMap<>();
         for (Category category : categories) {
-            categoryMap.put(category.getName(), category);
+            categoryMap.put(category.getName().toLowerCase(), category);
         }
 
         for (DefaultProduct defaultProduct : localeSpecificProducts) {
@@ -158,7 +158,7 @@ public class Defaults {
                 final String categoryName = context.getString(
                         defaultProduct.getCategory().getStringId());
 
-                final Category category = categoryMap.get(categoryName);
+                final Category category = categoryMap.get(categoryName.toLowerCase());
                 if (category != null) {
                     product.setCategories(Collections.singletonList(category));
                 }

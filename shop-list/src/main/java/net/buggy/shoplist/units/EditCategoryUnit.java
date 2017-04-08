@@ -38,7 +38,7 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
     private final boolean newCategory;
     private final Category category;
     private final Set<Product> selectedProducts = new LinkedHashSet<>();
-    private ToolbarRenderer toolbarRenderer;
+    private transient ToolbarRenderer toolbarRenderer;
 
     public EditCategoryUnit(Category category, boolean newCategory) {
         this.category = category;

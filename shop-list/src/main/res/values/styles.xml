@@ -55,19 +55,19 @@
     </style>
 
     <style name="App_TextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">main</item>
+        <item name="fontPath">fonts/Neucha.ttf</item>
     </style>
 
     <style name="App_TitleTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">main</item>
+        <item name="fontPath">fonts/Neucha.ttf</item>
         <item name="android:textSize">@dimen/title_font_size</item>
     </style>
 
     <style name="App_EditTextStyle" parent="android:Widget.EditText">
-        <item name="android:fontFamily">main</item>
+        <item name="fontPath">fonts/Neucha.ttf</item>
     </style>
 
     <style name="App_ButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:fontFamily">main</item>
+        <item name="fontPath">fonts/Neucha.ttf</item>
     </style>
 </resources>

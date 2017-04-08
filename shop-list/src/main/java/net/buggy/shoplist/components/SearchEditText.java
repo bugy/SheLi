@@ -1,9 +1,7 @@
 package net.buggy.shoplist.components;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -11,39 +9,37 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import net.buggy.components.ViewUtils;
 
-public class SearchTextField extends EditText {
+public class SearchEditText extends AppCompatEditText {
 
-    private Typeface originalTypeface;
     private Listener listener;
 
-    public SearchTextField(Context context) {
+    public SearchEditText(Context context) {
         super(context);
 
         init();
     }
 
-    public SearchTextField(Context context, AttributeSet attrs) {
+    public SearchEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         init();
     }
 
-    public SearchTextField(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SearchEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         init();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public SearchTextField(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
 
-        init();
+        ViewUtils.makeHintItalic(this);
     }
 
     private void init() {
@@ -51,8 +47,6 @@ public class SearchTextField extends EditText {
         setImeOptions(EditorInfo.IME_ACTION_DONE);
         setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         setMaxLines(1);
-
-        ViewUtils.makeHintItalic(this);
 
         addTextChangedListener(new TextWatcher() {
             @Override
@@ -79,7 +73,7 @@ public class SearchTextField extends EditText {
                     final String text = getText().toString().trim();
 
                     clearFocus();
-                    ViewUtils.hideSoftKeyboard(SearchTextField.this);
+                    ViewUtils.hideSoftKeyboard(SearchEditText.this);
 
                     fireOnFinish(text);
 

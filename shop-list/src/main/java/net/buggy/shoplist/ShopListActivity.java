@@ -52,6 +52,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class ShopListActivity extends AppCompatActivity implements UnitHost {
 
     public static final int MAIN_VIEW_ID = R.id.main_activity_view;
@@ -207,7 +209,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
             newContext = ViewUtils.wrap(newContext, locale);
         }
 
-        super.attachBaseContext(newContext);
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newContext));
     }
 
     private void initMenu() {
