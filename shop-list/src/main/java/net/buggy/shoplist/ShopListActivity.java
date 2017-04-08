@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -127,26 +128,49 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                     @Override
                     protected Object doInBackground(String... params) {
                         final List<Category> defaultCategories = Defaults.createDefaultCategories(ShopListActivity.this);
+                        Map<String, Category> existingCategoriesMap = new LinkedHashMap<>();
+                        final List<Category> existingCategories = dataStorage.getCategories();
+                        for (Category category : existingCategories) {
+                            existingCategoriesMap.put(category.getName().toLowerCase(), category);
+                        }
 
-                        final List<Product> defaultProducts =
-                                Defaults.createDefaultProducts(ShopListActivity.this, defaultCategories);
-
-                        float progressPerSave = 95f / (defaultProducts.size() + defaultCategories.size());
-
-                        float progress = 5f;
+                        float progress = 2f;
                         publishProgress((int) progress);
 
-                        for (Category category : defaultCategories) {
-                            dataStorage.addCategory(category);
+                        float categoryStepProgress = 28f / defaultCategories.size();
 
-                            progress += progressPerSave;
+
+                        for (Category category : defaultCategories) {
+                            if (!existingCategoriesMap.containsKey(category.getName().toLowerCase())) {
+                                dataStorage.addCategory(category);
+                            }
+
+                            progress += categoryStepProgress;
                             publishProgress((int) progress);
                         }
 
-                        for (Product defaultProduct : defaultProducts) {
-                            dataStorage.addProduct(defaultProduct);
 
-                            progress += progressPerSave;
+                        final List<Category> actualCategories = dataStorage.getCategories();
+                        final List<Product> defaultProducts =
+                                Defaults.createDefaultProducts(ShopListActivity.this, actualCategories);
+
+                        Map<String, Product> existingProductsMap = new LinkedHashMap<>();
+                        final List<Product> existingProducts = dataStorage.getProducts();
+                        for (Product product : existingProducts) {
+                            existingProductsMap.put(product.getName().toLowerCase(), product);
+                        }
+
+                        progress += 2f;
+                        publishProgress((int) progress);
+
+                        float productStepProgress = (100f - progress) / defaultProducts.size();
+
+                        for (Product defaultProduct : defaultProducts) {
+                            if (!existingProductsMap.containsKey(defaultProduct.getName().toLowerCase())) {
+                                dataStorage.addProduct(defaultProduct);
+                            }
+
+                            progress += productStepProgress;
                             publishProgress((int) progress);
                         }
 
