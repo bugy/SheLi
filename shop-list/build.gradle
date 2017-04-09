@@ -49,5 +49,6 @@ dependencies {
     compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
     compile 'com.github.yukuku:ambilwarna:2.0.1'
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+    compile 'ch.acra:acra:4.9.0'
     compile project(':components')
 }

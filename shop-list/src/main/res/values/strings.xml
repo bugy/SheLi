@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShopList</string>
+    <string name="app_name" translatable="false">ShopList</string>
     <string name="shop_list_activity_init_data_message">Adding most popular products and categories</string>
     <string name="edit_product_name_field_label">Name</string>
     <string name="edit_product_units_field_label">Default units of measure</string>
@@ -159,4 +159,9 @@
     <string name="default_category_cereals">Cereals</string>
     <string name="default_category_sweets">Sweets</string>
     <string name="default_category_spices">Spices</string>
+    <string name="crash_dialog_send_report_button">Send a report</string>
+    <string name="crash_dialog_close">Close</string>
+    <string name="crash_dialog_restart">Restart</string>
+    <string name="crash_dialog_error_occurred">Oops, unexpected error occurred</string>
+    <string name="crash_dialog_image_description">Crash image</string>
 </resources>

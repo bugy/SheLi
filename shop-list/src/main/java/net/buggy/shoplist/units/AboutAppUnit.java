@@ -2,10 +2,12 @@ package net.buggy.shoplist.units;
 
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.buggy.components.ViewUtils;
+import net.buggy.shoplist.BuildConfig;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.units.views.InflatingViewRenderer;
@@ -35,6 +37,21 @@ public class AboutAppUnit extends Unit<ShopListActivity> {
 
             final String versionString = activity.getString(R.string.version_pattern, version);
             versionView.setText(versionString);
+
+            if (BuildConfig.DEBUG) {
+                versionView.setOnClickListener(new View.OnClickListener() {
+                    int count = 0;
+
+                    @Override
+                    public void onClick(View v) {
+                        count++;
+
+                        if (count > 3) {
+                            throw new RuntimeException("This is debug exception. To test reporting");
+                        }
+                    }
+                });
+            }
         }
     }
 }

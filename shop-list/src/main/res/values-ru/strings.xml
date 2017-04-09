@@ -162,4 +162,9 @@
     <string name="default_category_cereals">Бакалея</string>
     <string name="default_category_sweets">Сладости</string>
     <string name="default_category_spices">Специи</string>
+    <string name="crash_dialog_send_report_button">Сообщить о проблеме</string>
+    <string name="crash_dialog_close">Закрыть</string>
+    <string name="crash_dialog_restart">Перезапустить</string>
+    <string name="crash_dialog_error_occurred">Упс, извините, произошла внезапная ошибка</string>
+    <string name="crash_dialog_image_description">Картинка проблемы</string>
 </resources>

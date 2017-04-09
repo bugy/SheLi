@@ -83,6 +83,10 @@ https://github.com/yukuku/ambilwarna
 Copyright 2009-2015 Yuku
 Licensed under the Apache License, Version 2.0
 
+### ch.acra:acra:4.9.0
+http://www.acra.ch/
+Licensed under the Apache License, Version 2.0
+
 ### Material Design Icons
 https://materialdesignicons.com/
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 (https://github.com/Templarian/MaterialDesign/blob/master/license.txt)

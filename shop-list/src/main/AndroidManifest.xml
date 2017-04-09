@@ -20,6 +20,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="net.buggy.shoplist.crashes.ShopListCrashDialog"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true" />
+
         <meta-data
             android:name="AA_DB_NAME"
             android:value="ShopList.db" />
