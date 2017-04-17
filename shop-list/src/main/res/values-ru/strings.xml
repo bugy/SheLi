@@ -111,7 +111,6 @@
     <string name="default_product_bacon">Бекон</string>
     <string name="default_product_bananas">Бананы</string>
     <string name="default_product_beans">Фасоль</string>
-    <string name="default_product_beer">Пиво</string>
     <string name="default_product_beef">Говядина</string>
     <string name="default_product_bread">Хлеб</string>
     <string name="default_product_buckwheat">Гречка</string>
@@ -153,7 +152,6 @@
     <string name="default_product_toilet_paper">Туалетная бумага</string>
     <string name="default_product_tomatoes">Помидоры</string>
     <string name="default_product_toothpaste">Зубная паста</string>
-    <string name="default_product_wine">Вино</string>
     <string name="default_category_food">Продукты питания</string>
     <string name="default_category_household_chemicals">Химия</string>
     <string name="crash_dialog_send_report_button">Сообщить о проблеме</string>

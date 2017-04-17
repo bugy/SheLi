@@ -33,7 +33,6 @@ public class Defaults {
         BACON(R.string.default_product_bacon, DefaultCategory.FOOD, EN_LOCALE),
         BANANAS(R.string.default_product_bananas, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
         BEANS(R.string.default_product_beans, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
-        BEER(R.string.default_product_beer, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
         BEEF(R.string.default_product_beef, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
         BREAD(R.string.default_product_bread, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
         BUCKWHEAT(R.string.default_product_buckwheat, DefaultCategory.FOOD, RU_LOCALE),
@@ -74,8 +73,7 @@ public class Defaults {
         TEA(R.string.default_product_tea, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
         TOILET_PAPER(R.string.default_product_toilet_paper, DefaultCategory.HOUSEHOLD_CHEMICALS, RU_LOCALE, EN_LOCALE),
         TOMATOES(R.string.default_product_tomatoes, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
-        TOOTHPASTE(R.string.default_product_wine, DefaultCategory.FOOD, RU_LOCALE, EN_LOCALE),
-        WINE(R.string.default_product_toothpaste, DefaultCategory.HOUSEHOLD_CHEMICALS, RU_LOCALE, EN_LOCALE);
+        TOOTHPASTE(R.string.default_product_toothpaste, DefaultCategory.HOUSEHOLD_CHEMICALS, RU_LOCALE, EN_LOCALE);
 
         private final int stringId;
         private final DefaultCategory category;

@@ -108,7 +108,6 @@
     <string name="default_product_bacon">Bacon</string>
     <string name="default_product_bananas">Bananas</string>
     <string name="default_product_beans">Beans</string>
-    <string name="default_product_beer">Beer</string>
     <string name="default_product_beef">Beef</string>
     <string name="default_product_bread">Bread</string>
     <string name="default_product_buckwheat">Buckwheat</string>
@@ -150,7 +149,6 @@
     <string name="default_product_toilet_paper">Toilet paper</string>
     <string name="default_product_tomatoes">Tomatoes</string>
     <string name="default_product_toothpaste">Toothpaste</string>
-    <string name="default_product_wine">Wine</string>
     <string name="default_category_food">Food</string>
     <string name="default_category_household_chemicals">Household chemicals</string>
     <string name="crash_dialog_send_report_button">Send a report</string>
