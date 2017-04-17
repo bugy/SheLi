@@ -151,14 +151,8 @@
     <string name="default_product_tomatoes">Tomatoes</string>
     <string name="default_product_toothpaste">Toothpaste</string>
     <string name="default_product_wine">Wine</string>
-    <string name="default_category_fruits_and_vegetables">Fruits/Vegetables</string>
-    <string name="default_category_dairy_products">Dairy products</string>
-    <string name="default_category_meat">Meat</string>
+    <string name="default_category_food">Food</string>
     <string name="default_category_household_chemicals">Household chemicals</string>
-    <string name="default_category_beverages">Beverages</string>
-    <string name="default_category_cereals">Cereals</string>
-    <string name="default_category_sweets">Sweets</string>
-    <string name="default_category_spices">Spices</string>
     <string name="crash_dialog_send_report_button">Send a report</string>
     <string name="crash_dialog_close">Close</string>
     <string name="crash_dialog_restart">Restart</string>

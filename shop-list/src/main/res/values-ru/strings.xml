@@ -154,14 +154,8 @@
     <string name="default_product_tomatoes">Помидоры</string>
     <string name="default_product_toothpaste">Зубная паста</string>
     <string name="default_product_wine">Вино</string>
-    <string name="default_category_fruits_and_vegetables">Фрукты и овощи</string>
-    <string name="default_category_dairy_products">Молочные продукты</string>
-    <string name="default_category_meat">Мясо</string>
+    <string name="default_category_food">Продукты питания</string>
     <string name="default_category_household_chemicals">Химия</string>
-    <string name="default_category_beverages">Напитки</string>
-    <string name="default_category_cereals">Бакалея</string>
-    <string name="default_category_sweets">Сладости</string>
-    <string name="default_category_spices">Специи</string>
     <string name="crash_dialog_send_report_button">Сообщить о проблеме</string>
     <string name="crash_dialog_close">Закрыть</string>
     <string name="crash_dialog_restart">Перезапустить</string>

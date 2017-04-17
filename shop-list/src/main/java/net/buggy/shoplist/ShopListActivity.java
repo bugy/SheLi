@@ -139,7 +139,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                         float progress = 2f;
                         publishProgress((int) progress);
 
-                        float categoryStepProgress = 28f / defaultCategories.size();
+                        float categoryStepProgress = 8f / defaultCategories.size();
 
 
                         for (Category category : defaultCategories) {
