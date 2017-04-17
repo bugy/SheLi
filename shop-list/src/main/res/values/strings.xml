@@ -30,6 +30,7 @@
     </plurals>
     <string name="category_already_exists">%s already exists</string>
     <string name="categories_unit_already_exists_on_edit">%s already exists, won\'t save</string>
+    <string name="categories_unit_empty_on_edit">Empty name is not allowed</string>
     <string name="products_unit_already_exists">%s already exists</string>
     <string name="products_unit_delete_from_cart">Delete it from the cart?</string>
     <string name="shop_item_already_exists">%s already exists</string>

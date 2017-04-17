@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.base.Objects;
 
@@ -117,6 +118,16 @@ public class EditableCategoryCellFactory extends CellFactory<Category, LinearLay
 
         final String newName = nameEditable.toString();
         if (Objects.equal(newName, category.getName())) {
+            return;
+        }
+
+        if (newName.length() == 0) {
+            Toast.makeText(
+                    nameField.getContext(),
+                    R.string.categories_unit_empty_on_edit,
+                    Toast.LENGTH_SHORT)
+                    .show();
+            nameField.setText(category.getName());
             return;
         }
 

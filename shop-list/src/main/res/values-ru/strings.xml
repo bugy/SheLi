@@ -10,6 +10,7 @@
     <string name="edit_product_period_count_label">Как часто</string>
     <string name="edit_product_save_button_label">Сохранить</string>
     <string name="categories_unit_already_exists_on_edit">%s уже существует, не сохранено</string>
+    <string name="categories_unit_empty_on_edit">Название не может быть пустым</string>
     <string name="category_already_exists">%s уже существует</string>
     <string name="edit_product_units_field_label">Единицы измерения по-умолчанию</string>
     <string name="fast_creation_add_and_edit">Создать в редакторе</string>
