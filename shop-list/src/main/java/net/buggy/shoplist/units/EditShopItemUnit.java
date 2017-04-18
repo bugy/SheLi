@@ -2,6 +2,7 @@ package net.buggy.shoplist.units;
 
 
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,6 +107,9 @@ public class EditShopItemUnit extends Unit<ShopListActivity> {
             EditProductUnit.initEditProductFields(parentView, activity, product);
             categoriesAdapter = EditProductUnit.initCategoriesSection(
                     parentView, activity, selectedCategories);
+            final RecyclerView categoriesList = (RecyclerView) parentView.findViewById(
+                    R.id.merge_edit_product_categories_list);
+            categoriesList.setNestedScrollingEnabled(false);
 
             final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(
                     R.id.unit_edit_shop_item_save_button);
