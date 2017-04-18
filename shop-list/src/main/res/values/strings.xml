@@ -68,11 +68,13 @@
     <string name="unit_of_measure_liter">Liter</string>
     <string name="unit_of_measure_bottle">Bottle</string>
     <string name="unit_of_measure_pack">Pack</string>
+    <string name="unit_of_measure_piece">Piece</string>
     <string name="unit_of_measure_kg_short">kg</string>
     <string name="unit_of_measure_gram_short">g</string>
     <string name="unit_of_measure_liter_short">l</string>
     <string name="unit_of_measure_bottle_short">btl</string>
     <string name="unit_of_measure_pack_short">p</string>
+    <string name="unit_of_measure_piece_short">pc</string>
     <string name="period_type_days">Days</string>
     <string name="period_type_weeks">Weeks</string>
     <string name="period_type_months">Months</string>

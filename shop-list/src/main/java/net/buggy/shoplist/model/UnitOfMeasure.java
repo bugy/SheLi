@@ -8,7 +8,8 @@ public enum UnitOfMeasure {
     GRAM(R.string.unit_of_measure_gram, R.string.unit_of_measure_gram_short),
     LITER(R.string.unit_of_measure_liter, R.string.unit_of_measure_liter_short),
     BOTTLE(R.string.unit_of_measure_bottle, R.string.unit_of_measure_bottle_short),
-    PACK(R.string.unit_of_measure_pack, R.string.unit_of_measure_pack_short);
+    PACK(R.string.unit_of_measure_pack, R.string.unit_of_measure_pack_short),
+    PIECE(R.string.unit_of_measure_piece, R.string.unit_of_measure_piece_short);
 
     private final int fullNameKey;
     private final int shortNameKey;
