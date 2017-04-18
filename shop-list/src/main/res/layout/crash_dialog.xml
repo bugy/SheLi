@@ -54,7 +54,7 @@
                 <Button
                     android:id="@+id/crash_dialog_restart_button"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/crash_dialog_restart"
                     android:textColor="?attr/colorAccent" />
@@ -67,7 +67,7 @@
                 <Button
                     android:id="@+id/crash_dialog_close_button"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/crash_dialog_close"
                     android:textColor="?attr/colorAccent" />
@@ -80,7 +80,7 @@
                 <Button
                     android:id="@+id/crash_dialog_report_button"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:text="@string/crash_dialog_send_report_button"
