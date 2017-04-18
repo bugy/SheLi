@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,8 +126,10 @@ public class CategoriesFilter extends FrameLayout {
         final Context popupContext;
         if (context instanceof ContextThemeWrapper) {
             popupContext = ((ContextThemeWrapper) context).getBaseContext();
+        } else if (context instanceof android.support.v7.view.ContextThemeWrapper) {
+            popupContext = ((android.support.v7.view.ContextThemeWrapper) context).getBaseContext();
         } else {
-            popupContext = context.getApplicationContext();
+            popupContext = context;
         }
 
         final LayoutInflater popupInflater = LayoutInflater.from(popupContext);
