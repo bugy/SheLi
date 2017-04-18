@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.common.base.Strings;
+import com.google.common.base.Supplier;
 import com.google.common.collect.LinkedHashMultiset;
 import com.google.common.collect.Multiset;
 
@@ -25,6 +26,7 @@ import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
+import net.buggy.shoplist.model.UnitOfMeasure;
 
 import java.util.Set;
 
@@ -65,7 +67,12 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
             quantityView.setText("");
         }
 
-        quantityView.setOnClickListener(new QuantityClickListener(shopItem, listener, quantityView));
+        quantityView.setOnClickListener(new QuantityClickListener(shopItem, listener, quantityView, new Supplier<UnitOfMeasure>() {
+            @Override
+            public UnitOfMeasure get() {
+                return ModelHelper.getUnitOfMeasure(shopItem);
+            }
+        }));
 
         final TextView commentField = (TextView) view.findViewById(
                 R.id.cell_to_buy_shop_item_comment_field);

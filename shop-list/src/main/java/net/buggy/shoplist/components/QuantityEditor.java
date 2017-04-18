@@ -4,6 +4,7 @@ import android.content.Context;
 
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.model.Product;
+import net.buggy.shoplist.model.UnitOfMeasure;
 import net.buggy.shoplist.utils.BigDecimalStringifier;
 
 import java.math.BigDecimal;
@@ -16,10 +17,20 @@ public class QuantityEditor {
             Product product,
             BigDecimal currentQuantity,
             Context context,
-            final WheelPickerUtils.Listener<BigDecimal> listener) {
+            final WheelPickerUtils.Listener<BigDecimal> listener,
+            UnitOfMeasure unitsOfMeasure) {
 
-        final String title = context.getString(
-                R.string.quantity_editor_title, product.getName());
+
+        final String title;
+
+        if (unitsOfMeasure != null) {
+            final String unitsString = context.getString(unitsOfMeasure.getShortNameKey());
+            title = context.getString(
+                    R.string.quantity_editor_title_with_units, product.getName(), unitsString);
+        } else {
+            title = context.getString(
+                    R.string.quantity_editor_title, product.getName());
+        }
 
         WheelPickerUtils.selectValue(
                 getPossibleQuantities(),

@@ -19,6 +19,7 @@
     <string name="logo_image_description">Лого</string>
     <string name="products_unit_already_exists">%s уже существует</string>
     <string name="quantity_editor_title">Количество %s</string>
+    <string name="quantity_editor_title_with_units">Количество %1$s (%2$s)</string>
     <string name="shop_item_already_exists">%s уже существует</string>
     <string name="unit_about_app">ShopList призван помочь вам в закупках</string>
     <string name="unit_about_title">О приложении</string>

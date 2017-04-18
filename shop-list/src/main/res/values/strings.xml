@@ -40,6 +40,7 @@
     <string name="unit_about_title">About</string>
     <string name="unit_categories_title">Categories</string>
     <string name="quantity_editor_title">%s quantity</string>
+    <string name="quantity_editor_title_with_units">%1$s quantity (%2$s)</string>
     <string name="logo_image_description">Logo image</string>
     <string name="unit_about_us">We, Anna and Iaroslav, are always glad to get your feedback</string>
     <string name="unit_about_app">The ShopList can help you in daily shopping</string>

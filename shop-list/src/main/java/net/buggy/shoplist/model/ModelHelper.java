@@ -99,10 +99,7 @@ public class ModelHelper {
 
         final String quantityString = StringUtils.toString(shopItem.getQuantity());
 
-        UnitOfMeasure unitOfMeasure = shopItem.getUnitOfMeasure();
-        if (unitOfMeasure == null) {
-            unitOfMeasure = shopItem.getProduct().getDefaultUnits();
-        }
+        final UnitOfMeasure unitOfMeasure = getUnitOfMeasure(shopItem);
         if (unitOfMeasure == null) {
             return quantityString;
         }
@@ -165,5 +162,13 @@ public class ModelHelper {
         final double ageDays = DateUtils.daysDiff(lastBuyDate, new Date());
 
         return (int) Math.round(ageDays / periodDays * 100);
+    }
+
+    public static UnitOfMeasure getUnitOfMeasure(ShopItem shopItem) {
+        if (shopItem.getUnitOfMeasure() != null) {
+            return shopItem.getUnitOfMeasure();
+        }
+
+        return shopItem.getProduct().getDefaultUnits();
     }
 }

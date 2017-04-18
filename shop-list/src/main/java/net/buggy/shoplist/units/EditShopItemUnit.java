@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.common.base.Supplier;
+
 import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.spinners.MaterialSpinner;
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.components.QuantityClickListener;
 import net.buggy.shoplist.model.Category;
+import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.PeriodType;
 import net.buggy.shoplist.model.Product;
 import net.buggy.shoplist.model.ShopItem;
@@ -69,25 +72,31 @@ public class EditShopItemUnit extends Unit<ShopListActivity> {
             final TextView nameField = (TextView) parentView.findViewById(R.id.unit_edit_shop_item_name_field);
             setTextWithoutAnimation(nameField, product.getName());
 
+            final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
+                    parentView.findViewById(R.id.unit_edit_shop_item_units_field);
+            unitsField.setHint(activity.getString(R.string.unit_edit_shop_item_units_field_label));
+            unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
+            unitsField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
+
+            final UnitOfMeasure unitOfMeasure = ModelHelper.getUnitOfMeasure(shopItem);
+            if (unitOfMeasure != null) {
+                unitsField.setSelectedItem(unitOfMeasure);
+            }
+            unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
+
             final EditText quantityField = (EditText) parentView.findViewById(R.id.unit_edit_shop_item_quantity_field);
             if (shopItem.getQuantity() != null) {
                 setTextWithoutAnimation(quantityField, StringUtils.toString(shopItem.getQuantity()));
             } else {
                 setTextWithoutAnimation(quantityField, activity.getString(R.string.unit_shopitem_not_specified_quantity));
             }
-            quantityField.setOnClickListener(new QuantityClickListener(shopItem, null, quantityField));
-
-            final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
-                    parentView.findViewById(R.id.unit_edit_shop_item_units_field);
-            unitsField.setHint(activity.getString(R.string.unit_edit_shop_item_units_field_label));
-            unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
-            unitsField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
-            if (shopItem.getUnitOfMeasure() != null) {
-                unitsField.setSelectedItem(shopItem.getUnitOfMeasure());
-            } else if (product.getDefaultUnits() != null) {
-                unitsField.setSelectedItem(product.getDefaultUnits());
-            }
-            unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
+            quantityField.setOnClickListener(new QuantityClickListener(shopItem, null, quantityField,
+                    new Supplier<UnitOfMeasure>() {
+                        @Override
+                        public UnitOfMeasure get() {
+                            return unitsField.getSelectedItem();
+                        }
+                    }));
 
             final EditText commentField = (EditText) parentView.findViewById(
                     R.id.unit_edit_shop_item_comment_field);
