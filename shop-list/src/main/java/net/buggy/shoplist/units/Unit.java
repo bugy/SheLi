@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import net.buggy.shoplist.units.views.ViewRenderer;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +22,21 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
     private Unit<A> listeningUnit;
     private String tag;
 
-    private transient final Map<Integer, ViewRenderer<A, ViewGroup>> renderers = new ConcurrentHashMap<>();
-    private transient final List<Integer> claimedViews = new CopyOnWriteArrayList<>();
+    private transient Map<Integer, ViewRenderer<A, ViewGroup>> renderers;
+    private transient List<Integer> claimedViews;
     private transient boolean initialized = false;
 
-    private transient final Map<ViewRenderer, SparseArray<Parcelable>> savedStates = new ConcurrentHashMap<>();
+    private transient Map<ViewRenderer, SparseArray<Parcelable>> savedStates;
+
+    public Unit() {
+        initFields();
+    }
+
+    private void initFields() {
+        renderers = new ConcurrentHashMap<>();
+        claimedViews = new CopyOnWriteArrayList<>();
+        savedStates = new ConcurrentHashMap<>();
+    }
 
     public void setTag(String tag) {
         this.tag = tag;
@@ -139,5 +151,11 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
 
     public void onBackPressed() {
 
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        initFields();
+
+        stream.defaultReadObject();
     }
 }
