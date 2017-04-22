@@ -146,7 +146,7 @@ public class CategoriesFilter extends FrameLayout {
                 MATCH_PARENT,
                 MATCH_PARENT,
                 true);
-        popupWindow.setFocusable(false);
+        popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
