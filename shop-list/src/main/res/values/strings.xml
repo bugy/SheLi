@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">ShopList</string>
+    <string name="app_name" translatable="false">SheLi</string>
     <string name="shop_list_activity_init_data_message">Adding most popular products and categories</string>
     <string name="edit_product_name_field_label">Name</string>
     <string name="edit_product_units_field_label">Default units of measure</string>
@@ -43,7 +43,7 @@
     <string name="quantity_editor_title_with_units">%1$s quantity (%2$s)</string>
     <string name="logo_image_description">Logo image</string>
     <string name="unit_about_us">We, Anna and Iaroslav, are always glad to get your feedback</string>
-    <string name="unit_about_app">The ShopList can help you in daily shopping</string>
+    <string name="unit_about_app">SheLi is your assistant in weekly shopping</string>
     <string name="version_pattern" translatable="false">v%s</string>
     <string name="unit_edit_category_name_label">Name</string>
     <string name="unit_edit_category_color_label">Color</string>

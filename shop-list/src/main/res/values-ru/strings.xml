@@ -21,7 +21,7 @@
     <string name="quantity_editor_title">Количество %s</string>
     <string name="quantity_editor_title_with_units">Количество %1$s (%2$s)</string>
     <string name="shop_item_already_exists">%s уже существует</string>
-    <string name="unit_about_app">ShopList призван помочь вам в закупках</string>
+    <string name="unit_about_app">SheLi - ваша помощница в еженедельных закупках</string>
     <string name="unit_about_title">О приложении</string>
     <string name="unit_about_us">Мы, Анна и Ярослав, будем всегда рады вашим отзывам и предложениям</string>
     <string name="unit_categories_list_title">Категории %s</string>
