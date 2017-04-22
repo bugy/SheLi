@@ -44,6 +44,7 @@ public class SettingsUnit extends Unit<ShopListActivity> {
             languageField.setSelectedItem(settings.getLanguage());
             languageField.setStringConverter(new LanguageEnumStringifier(activity));
             languageField.setNullString(activity.getString(R.string.unit_settings_system_language));
+            languageField.setShowNullValue(true);
 
 
             final FloatingActionButton applyButton = (FloatingActionButton) parentView.findViewById(

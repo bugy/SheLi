@@ -108,7 +108,7 @@
     <string name="unit_edit_product_empty_name_not_allowed">Нужно указать название</string>
     <string name="unit_settings_title">Настройки</string>
     <string name="unit_settings_language_hint">Язык приложения</string>
-    <string name="unit_settings_system_language">Язык системы</string>
+    <string name="unit_settings_system_language">Автоматический</string>
     <string name="material_spinner_default_null_string">Не указано</string>
 
     <string name="default_product_apples">Яблоки</string>

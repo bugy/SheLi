@@ -203,11 +203,15 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     protected void attachBaseContext(Context newContext) {
         final Settings settings = getDataStorage().getSettings();
         final Language language = settings.getLanguage();
+
+        final Locale locale;
         if (language != null) {
-            Locale locale = new Locale(language.getLocale());
-            Locale.setDefault(locale);
-            newContext = ViewUtils.wrap(newContext, locale);
+            locale = new Locale(language.getLocale());
+        } else {
+            locale = ViewUtils.getSystemLocale();
         }
+        Locale.setDefault(locale);
+        newContext = ViewUtils.wrap(newContext, locale);
 
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newContext));
     }

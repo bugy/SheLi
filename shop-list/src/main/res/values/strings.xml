@@ -105,7 +105,7 @@
     <string name="language_en" translatable="false">English</string>
     <string name="language_ru" translatable="false">Русский</string>
     <string name="unit_settings_language_hint">App language</string>
-    <string name="unit_settings_system_language">System language</string>
+    <string name="unit_settings_system_language">Automatic</string>
     <string name="material_spinner_default_null_string">None</string>
 
     <string name="default_product_apples">Apples</string>
