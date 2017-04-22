@@ -240,9 +240,11 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 public void removed(ShopItem item) {
                     dataStorage.removeShopItem(item);
 
-                    final Product product = item.getProduct();
-                    product.setLastBuyDate(new Date());
-                    dataStorage.saveProduct(product);
+                    if (item.isChecked()) {
+                        final Product product = item.getProduct();
+                        product.setLastBuyDate(new Date());
+                        dataStorage.saveProduct(product);
+                    }
                 }
 
                 @Override
