@@ -529,6 +529,9 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                 if ((units.size() > 0) && (lastIndex == units.size())) {
                     final Unit lastOwner = units.get(units.size() - 1);
                     lastOwner.viewClaimed(entry.getKey());
+                } else {
+                    final ViewGroup view = (ViewGroup) findViewById(entry.getKey());
+                    view.removeAllViews();
                 }
             }
         }
