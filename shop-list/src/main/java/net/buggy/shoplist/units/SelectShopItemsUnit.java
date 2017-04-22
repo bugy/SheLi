@@ -110,13 +110,6 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
         super.onEvent(event);
     }
 
-    @Override
-    public void onBackPressed() {
-        final List<ShopItem> selectedItems = adapter.getSelectedItems();
-
-        fireEvent(new ShopItemsCreatedEvent(selectedItems));
-    }
-
     private void sendSelectionEventAndExit(Collection<ShopItem> shopItems) {
         ShopListActivity hostingActivity = getHostingActivity();
 
