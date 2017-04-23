@@ -1,2 +1,2 @@
-include ':shop-list', ':components'
+include ':SheLi', ':components'
 project(':components').projectDir = new File(settingsDir, '../components')

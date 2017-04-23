@@ -1,4 +1,5 @@
-shop-list
+SheLi
+
    Copyright 2016 buggygm@gmail.com
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,7 @@ shop-list
    limitations under the License.
 
 
-shop-list uses the following resources/libraries/software:
+SheLi uses the following resources/libraries/software:
 
 ###JUnit 4.12
 http://junit.org/
