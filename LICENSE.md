@@ -75,9 +75,15 @@ Used icons:
 * ic_settings_black_24dp
 * ic_shopping_cart_black_24dp
 
-### Menu image (modified)
-http://www.oxygenna.com/news/brand-new-set-of-40-material-design-background
-Free to use for any purpose
+### board-bread-breakfast-bunch (modified into menu image)
+https://www.pexels.com/photo/board-bread-breakfast-bunch-349610/
+Licensed under CC0 License
+Author: Lukas (https://www.pexels.com/u/goumbik/)
+
+### orange-pumpking-purple-eggplant-and-sunflower (modified into menu image)
+https://www.pexels.com/photo/orange-pumpking-purple-eggplant-and-sunflower-35829/
+Licensed under CC0 License
+Author: Pixabay (https://www.pexels.com/u/pixabay/)
 
 ### com.github.yukuku:ambilwarna:2.0.1 (Android Color Picker aka AmbilWarna)
 https://github.com/yukuku/ambilwarna
