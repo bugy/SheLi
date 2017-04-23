@@ -82,26 +82,21 @@
 
             <ImageView
                 android:layout_width="48dp"
-                android:layout_height="49dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="4dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:padding="6dp"
                 android:background="@drawable/menu_logo_icon_background"
                 android:contentDescription="@string/logo_image_description"
-                android:paddingBottom="5dp"
-                android:paddingEnd="5dp"
-                android:paddingLeft="7dp"
-                android:paddingRight="5dp"
-                android:paddingStart="7dp"
-                android:paddingTop="8dp"
                 android:src="@mipmap/logo" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="18dp"
-                android:layout_marginStart="18dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
                 android:gravity="center"
                 android:text="@string/app_name"
                 android:textSize="@dimen/large_font_size" />
