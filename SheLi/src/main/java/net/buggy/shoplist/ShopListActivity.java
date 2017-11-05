@@ -168,19 +168,34 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
         });
         synchronizer.start();
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState != null) {
+            restoreState(savedInstanceState);
+        }
 
+        initMenu();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (activeUnits.isEmpty()) {
             final UnitNavigator<ShopListActivity> navigator = navigators.get(0);
             currentNavigatorName = navigator.getText();
             navigator.navigate();
 
         } else {
-            restoreState(savedInstanceState);
-
             restartUnits();
         }
+    }
 
-        initMenu();
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        for (UnitDescriptor unit : activeUnits) {
+            unit.getUnit().stop();
+        }
     }
 
     @Override
@@ -623,15 +638,6 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                     "stopUnit: unit descriptor not found " + unit.getClass().getSimpleName());
             unit.stop();
         }
-    }
-
-    @Override
-    protected void onStop() {
-        for (UnitDescriptor unit : activeUnits) {
-            unit.getUnit().stop();
-        }
-
-        super.onStop();
     }
 
     private void stopUnit(UnitDescriptor descriptor) {
