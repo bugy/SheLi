@@ -1,5 +1,7 @@
 package net.buggy.shoplist.sharing;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
@@ -80,7 +82,14 @@ public class CategorySynchronizer extends DaoEntitySynchronizer<Category> {
         final EntitySynchronizationRecord<Category> synchronizationRecord = getDao().findSynchronizationRecord(
                 clientEntity.getId(), listId, Category.class);
 
-        updateServerEntity(clientEntity, serverEntity, synchronizationRecord);
+        if (synchronizationRecord != null) {
+            updateServerEntity(clientEntity, serverEntity, synchronizationRecord);
+        } else {
+            Log.w("CategorySynchronizer", "updateServerEntity: sync record not found" +
+                    ". listId=" + listId +
+                    ", externalId=" + serverEntity +
+                    ", category=" + clientEntity);
+        }
     }
 
     @Override

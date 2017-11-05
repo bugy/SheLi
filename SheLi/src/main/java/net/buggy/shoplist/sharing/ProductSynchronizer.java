@@ -98,7 +98,14 @@ public class ProductSynchronizer extends DaoEntitySynchronizer<Product> {
         final EntitySynchronizationRecord<Product> productRecord = getDao().findSynchronizationRecord(
                 clientProduct.getId(), listId, Product.class);
 
-        updateServerEntity(clientProduct, serverEntity, productRecord);
+        if (productRecord != null) {
+            updateServerEntity(clientProduct, serverEntity, productRecord);
+        } else {
+            Log.w("ProductSynchronizer", "updateServerEntity: record not found" +
+                    ". listId=" + listId +
+                    ", externalId=" + serverEntity.getKey() +
+                    ", product=" + clientProduct);
+        } 
     }
 
     @Override

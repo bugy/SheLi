@@ -1444,6 +1444,30 @@ public class FirebaseSynchronizerTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT)
+    public void testReconnectBulkSyncDeleteServerProductWithCategory() {
+        final DataSnapshot category1 = addServerCategory("category1", 255);
+        final DataSnapshot product1 = addServerProduct("product1", null, null, null, category1.getKey());
+
+        authenticateAndWaitSynchronizer();
+
+        disconnect();
+
+        product1.getRef().removeValue();
+        category1.getRef().removeValue();
+
+        authenticateAndWaitSynchronizer();
+
+        final List<Category> categories = dao.getCategories();
+        assertEquals(0, categories.size());
+        assertEquals(0, loadSyncRecords(Category.class).size());
+
+        final List<Product> products = dao.getProducts();
+        assertEquals(0, products.size());
+        assertEquals(0, loadSyncRecords(Product.class).size());
+    }
+
+
+    @Test(timeout = DEFAULT_TIMEOUT)
     public void testReconnectBulkSyncDeleteServerShopItem() {
         final DataSnapshot product1 = addServerProduct("product1", null, null, null);
         final DataSnapshot shopItem1 = addServerShopItem(product1, null, null, null);

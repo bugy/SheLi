@@ -89,7 +89,14 @@ public class ShopItemSynchronizer extends DaoEntitySynchronizer<ShopItem> {
         final EntitySynchronizationRecord<ShopItem> itemRecord =
                 getDao().findSynchronizationRecord(clientEntity.getId(), listId, ShopItem.class);
 
-        updateServerEntity(clientEntity, serverEntity, itemRecord);
+        if (itemRecord != null) {
+            updateServerEntity(clientEntity, serverEntity, itemRecord);
+        } else {
+            Log.w("ShopItemSynchronizer", "updateServerEntity: sync record not found" +
+                    ". listId=" + listId +
+                    ", externalId=" + serverEntity.getKey() +
+                    ", shopItem=" + clientEntity);
+        }
     }
 
     @Override

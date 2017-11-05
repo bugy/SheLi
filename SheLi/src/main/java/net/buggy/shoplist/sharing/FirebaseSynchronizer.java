@@ -512,7 +512,7 @@ public class FirebaseSynchronizer {
                 }
 
                 final DatabaseReference userList = FirebaseSynchronizer.this.activeUserList;
-                if (userList == null) {
+                if ((userList == null) || (stateReference.get() != State.SUBSCRIBED)) {
                     return;
                 }
 
@@ -552,7 +552,7 @@ public class FirebaseSynchronizer {
                         changedEntity.getId(), entityClass, new Date(), false);
 
                 final DatabaseReference userList = FirebaseSynchronizer.this.activeUserList;
-                if (userList == null) {
+                if ((userList == null) || (stateReference.get() != State.SUBSCRIBED)) {
                     return;
                 }
 

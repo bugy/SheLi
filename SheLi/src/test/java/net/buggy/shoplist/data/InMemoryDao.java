@@ -133,6 +133,8 @@ public class InMemoryDao implements Dao {
 
     @Override
     public void removeCategory(Category category) {
+        Set<Product> changedProducts = new LinkedHashSet<>();
+        
         if (category != null) {
             final Set<Product> existingProducts = productsTable.getRawEntities();
             for (Product existingProduct : existingProducts) {
@@ -141,6 +143,7 @@ public class InMemoryDao implements Dao {
                 final boolean removed = linkedCategories.remove(category);
                 if (removed) {
                     existingProduct.setCategories(linkedCategories);
+                    changedProducts.add(existingProduct);
                 }
             }
         }
@@ -148,6 +151,10 @@ public class InMemoryDao implements Dao {
         categoriesTable.remove(category);
 
         notifyEntityRemoved(category);
+
+        for (Product changedProduct : changedProducts) {
+            notifyEntityChanged(changedProduct);
+        }
     }
 
     @Override
