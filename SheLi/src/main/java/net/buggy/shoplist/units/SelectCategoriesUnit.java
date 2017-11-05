@@ -16,7 +16,7 @@ import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.CategoryComparator;
 import net.buggy.shoplist.components.CategoryCellFactory;
 import net.buggy.shoplist.components.FastCreationPanel;
-import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.data.Dao;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.units.views.ViewRenderer;
@@ -85,8 +85,8 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
             adapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.MULTI);
             adapter.setSorter(new CategoryComparator());
 
-            final DataStorage dataStorage = activity.getDataStorage();
-            adapter.addAll(dataStorage.getCategories());
+            final Dao dao = activity.getDao();
+            adapter.addAll(dao.getCategories());
 
             for (Category selectedCategory : selectedCategories) {
                 adapter.selectItem(selectedCategory);
@@ -103,13 +103,13 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
             creationPanel.setListener(new FastCreationPanel.Listener() {
                 @Override
                 public void onCreate(String name) {
-                    addCategory(name, parentView.getContext(), activity.getDataStorage());
+                    addCategory(name, parentView.getContext(), activity.getDao());
                 }
             });
 
         }
 
-        private void addCategory(String name, Context context, DataStorage dataStorage) {
+        private void addCategory(String name, Context context, Dao dao) {
             final List<Category> categories = adapter.getAllItems();
             for (Category category : categories) {
                 if (equalIgnoreCase(name, category.getName())) {
@@ -127,7 +127,7 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
 
             final Category category = ModelHelper.createCategory(name);
 
-            dataStorage.addCategory(category);
+            dao.addCategory(category);
 
             adapter.add(category);
             adapter.selectItem(category);

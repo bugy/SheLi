@@ -11,6 +11,7 @@ import com.activeandroid.Model;
 import com.activeandroid.serializer.BigDecimalSerializer;
 
 import net.buggy.shoplist.R;
+import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.crashes.ShopListCrashDialog;
 
 import org.acra.ACRA;
@@ -31,7 +32,7 @@ public class ApplicationWithDatabase extends Application {
 
         final Configuration.Builder builder = new Configuration.Builder(this);
 
-        for (Class<? extends Model> clazz : DataStorage.getModelClasses()) {
+        for (Class<? extends Model> clazz : SqlliteDao.getModelClasses()) {
             builder.addModelClass(clazz);
         }
         builder.addTypeSerializer(BigDecimalSerializer.class);
@@ -53,7 +54,7 @@ public class ApplicationWithDatabase extends Application {
         final ACRAConfiguration configuration;
         try {
             configuration = new ConfigurationBuilder(this)
-                    .setMailTo("buggygm@gmail.com")
+                    .setMailTo(ShopListActivity.DEVELOPER_EMAIL)
                     .setReportDialogClass(ShopListCrashDialog.class)
                     .setLogcatArguments("-t", "200", "-v", "long", "*")
                     .setCustomReportContent(

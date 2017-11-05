@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/unit_sharing_share_list_label"
+        android:textSize="@dimen/title_font_size"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingEnd="12dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingStart="12dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/unit_sharing_friends_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/unit_sharing_friends_email"
+            android:imeOptions="actionDone"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/unit_sharing_tip_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:textSize="@dimen/small_font_size"
+        android:paddingLeft="24dp"
+        android:paddingStart="24dp"
+        android:paddingRight="24dp"
+        android:paddingEnd="24dp"
+        android:text=""/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:paddingStart="12dp"
+        android:paddingRight="12dp"
+        android:paddingEnd="12dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/unit_sharing_share_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/unit_sharing_share_button"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+        <Button
+            android:id="@+id/unit_sharing_cancel_share_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:text="@string/unit_sharing_unshare_button"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+    </LinearLayout>
+</LinearLayout>

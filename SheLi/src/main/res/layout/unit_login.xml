@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/please_log_in"
+        android:textSize="@dimen/increased_font_size"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/unit_sharing_auth_google_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/unit_login_log_in_with_google"
+            android:src="@drawable/ic_google_black_36dp"/>
+
+        <ImageButton
+            android:id="@+id/unit_sharing_auth_email_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/unit_login_log_in_with_email"
+            android:src="@drawable/ic_email_outline_black_36dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

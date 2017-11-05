@@ -35,7 +35,7 @@
                         android:paddingRight="12dp"
                         android:paddingStart="12dp">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/unit_edit_shop_item_name_field"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                             android:paddingEnd="8dp"
                             android:paddingRight="8dp">
 
-                            <EditText
+                            <android.support.design.widget.TextInputEditText
                                 android:id="@+id/unit_edit_shop_item_quantity_field"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                         android:paddingRight="12dp"
                         android:paddingStart="12dp">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/unit_edit_shop_item_comment_field"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

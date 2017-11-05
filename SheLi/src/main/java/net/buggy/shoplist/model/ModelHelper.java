@@ -2,6 +2,8 @@ package net.buggy.shoplist.model;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.LinkedHashMultiset;
@@ -9,13 +11,15 @@ import com.google.common.collect.Multiset;
 
 import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
-import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.data.Dao;
 import net.buggy.shoplist.utils.DateUtils;
 import net.buggy.shoplist.utils.StringUtils;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -43,9 +47,9 @@ public class ModelHelper {
     }
 
     public static void saveCategoryLinkedProducts(
-            Category category, Set<Product> linkedProducts, DataStorage dataStorage) {
+            Category category, Set<Product> linkedProducts, Dao dao) {
 
-        final List<Product> allProducts = dataStorage.getProducts();
+        final List<Product> allProducts = dao.getProducts();
 
         for (Product product : allProducts) {
             final boolean unlinked = !linkedProducts.contains(product)
@@ -55,17 +59,17 @@ public class ModelHelper {
 
             if (unlinked) {
                 product.getCategories().remove(category);
-                dataStorage.saveProduct(product);
+                dao.saveProduct(product);
             } else if (linkedProducts.contains(product) && linked) {
                 product.getCategories().add(category);
-                dataStorage.saveProduct(product);
+                dao.saveProduct(product);
             }
         }
     }
 
     public static boolean isUnique(Category category, String name, ShopListActivity activity) {
-        final DataStorage dataStorage = activity.getDataStorage();
-        final List<Category> categories = dataStorage.getCategories();
+        final Dao dao = activity.getDao();
+        final List<Category> categories = dao.getCategories();
 
         for (Category anotherCategory : categories) {
             if (Objects.equal(anotherCategory, category)) {
@@ -73,7 +77,6 @@ public class ModelHelper {
             }
 
             if (StringUtils.equalIgnoreCase(anotherCategory.getName(), name)) {
-
                 return false;
             }
         }
@@ -170,5 +173,38 @@ public class ModelHelper {
         }
 
         return shopItem.getProduct().getDefaultUnits();
+    }
+
+    @Nullable
+    public static String normalizeName(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        return name.trim().toLowerCase();
+    }
+
+    public static <T extends Entity> Map<Long, T> mapIds(Collection<T> entities) {
+        final Map<Long, T> result = new LinkedHashMap<>();
+
+        for (T entity : entities) {
+            result.put(entity.getId(), entity);
+        }
+
+        return result;
+    }
+
+    @NonNull
+    public static <T extends Entity> EntitySynchronizationRecord<T> createSyncRecord(
+            Long internalId, String externalId, String listId, Date modificationDate, Class<T> entityClass) {
+
+        final EntitySynchronizationRecord<T> synchronizationRecord = new EntitySynchronizationRecord<>();
+        synchronizationRecord.setLastChangeDate(modificationDate);
+        synchronizationRecord.setInternalId(internalId);
+        synchronizationRecord.setExternalId(externalId);
+        synchronizationRecord.setListId(listId);
+        synchronizationRecord.setDeleted(false);
+        synchronizationRecord.setEntityClass(entityClass);
+        return synchronizationRecord;
     }
 }

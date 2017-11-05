@@ -1,6 +1,8 @@
 package net.buggy.shoplist.model;
 
 
+import com.google.common.collect.ImmutableSet;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +31,7 @@ public class Product extends Entity implements Serializable {
     }
 
     public Set<Category> getCategories() {
-        return categories;
+        return ImmutableSet.copyOf(categories);
     }
 
     public void setCategories(Collection<Category> categories) {

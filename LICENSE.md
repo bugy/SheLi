@@ -65,6 +65,9 @@ Used icons:
 * ic_delete_forever_black_48dp
 * ic_edit_black_24dp
 * ic_edit_black_24dp (modified)
+* ic_email_outline_black_36dp
+* ic_exit_to_app_white_24dp
+* ic_google_black_36dp
 * ic_help_outline_black_24dp
 * ic_info_outline_black_24dp
 * ic_local_mall (modified into: to_buy_empty_screen_image.png)
@@ -73,6 +76,7 @@ Used icons:
 * ic_playlist_add (modified into: add_from_products.png)
 * ic_rate_review_black_24dp (modified into: shop_item_comment_14dp.png)
 * ic_settings_black_24dp
+* ic_share_variant_black_24dp
 * ic_shopping_cart_black_24dp
 
 ### board-bread-breakfast-bunch (modified into menu image)

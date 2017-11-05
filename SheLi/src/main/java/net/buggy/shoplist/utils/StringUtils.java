@@ -42,4 +42,12 @@ public class StringUtils {
     public static String toString(BigDecimal bigDecimal) {
         return BIG_DECIMAL_FORMAT.format(bigDecimal);
     }
+
+    public static String lowerFirstLetter(String string) {
+        if ((string == null) || (string.isEmpty())) {
+            return string;
+        }
+
+        return Character.toLowerCase(string.charAt(0)) + string.substring(1);
+    }
 }

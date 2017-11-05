@@ -15,10 +15,16 @@
     <color name="color_floating_background" tools:override="true">
         @color/background_floating_material_light
     </color>
+
+    <color name="foreground_for_toolbar" tools:override="true">@android:color/white</color>
+    <color name="foreground_for_toolbar_disabled" tools:override="true">#80ffffff</color>
+
     <color name="color_disabled_background">#E4E4E4</color>
     <color name="color_disabled_foreground">#bbbbbb</color>
     <color name="color_empty_screen_text">#cccccc</color>
     <color name="color_overlay">#70505050</color>
+
+    <color name="color_error">#FFFF0000</color>
 
     <color name="unit_shopitem_list_selected_background">#f1f1f1</color>
 

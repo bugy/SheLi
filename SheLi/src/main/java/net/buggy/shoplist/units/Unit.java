@@ -2,6 +2,7 @@ package net.buggy.shoplist.units;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Parcelable;
 import android.util.SparseArray;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
 
     private transient Map<ViewRenderer, SparseArray<Parcelable>> savedStates;
 
+    private List<StateListener> stateListeners; 
+
     public Unit() {
         initFields();
     }
@@ -36,6 +39,7 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
         renderers = new ConcurrentHashMap<>();
         claimedViews = new CopyOnWriteArrayList<>();
         savedStates = new ConcurrentHashMap<>();
+        stateListeners = new CopyOnWriteArrayList<>();
     }
 
     public void setTag(String tag) {
@@ -55,6 +59,16 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
     }
 
     protected abstract void initialize();
+
+    protected void deinitialize() {
+
+    }
+
+    public final void stop() {
+        deinitialize();
+
+        fireUnitStopped();
+    }
 
     public void start() {
         if (!initialized) {
@@ -83,6 +97,7 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
 
         if (shown) {
             clearParentViews();
+            fireUnitHidden();
         }
     }
 
@@ -104,6 +119,26 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
             final ViewRenderer<A, ViewGroup> renderer = entry.getValue();
 
             renderView(viewId, renderer);
+        }
+
+        fireUnitShown();
+    }
+
+    private void fireUnitShown() {
+        for (StateListener listener : stateListeners) {
+            listener.shown();
+        }
+    }
+
+    private void fireUnitHidden() {
+        for (StateListener listener : stateListeners) {
+            listener.hidden();
+        }
+    }
+
+    private void fireUnitStopped() {
+        for (StateListener listener : stateListeners) {
+            listener.stopped();
         }
     }
 
@@ -130,10 +165,30 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
         }
     }
 
+    public void setListeningUnit(Unit<A> listeningUnit) {
+        this.listeningUnit = listeningUnit;
+    }
+
+    public void onBackPressed() {
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        throw new IllegalStateException("Shouldn't be called without explicit subscription");
+    }
+
     public void fireEvent(Object event) {
         if (listeningUnit != null) {
             listeningUnit.onEvent(event);
         }
+    }
+
+    public void addStateListener(StateListener stateListener) {
+        stateListeners.add(stateListener);
+    }
+
+    public void removeStateListener(StateListener stateListener) {
+        stateListeners.remove(stateListener);
     }
 
     protected void onEvent(Object event) {
@@ -145,17 +200,23 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
         throw new UnsupportedOperationException("Handling of event " + eventType + " is not supported");
     }
 
-    public void setListeningUnit(Unit<A> listeningUnit) {
-        this.listeningUnit = listeningUnit;
-    }
-
-    public void onBackPressed() {
-
-    }
-
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         initFields();
 
         stream.defaultReadObject();
+    }
+
+    public static abstract class StateListener {
+        public void hidden() {
+
+        }
+
+        public void shown() {
+
+        }
+
+        public void stopped() {
+
+        }
     }
 }

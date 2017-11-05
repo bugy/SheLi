@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/unit_sharing_verification_unverified_label"
+        android:textSize="@dimen/increased_font_size"/>
+
+    <Button
+        android:id="@+id/unit_sharing_verification_refresh_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/unit_sharing_verification_refresh_screen"/>
+
+    <Button
+        android:id="@+id/unit_sharing_verification_send_verification_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/unit_sharing_verification_resend_verification"/>
+
+</LinearLayout>

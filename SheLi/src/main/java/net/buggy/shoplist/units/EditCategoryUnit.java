@@ -19,7 +19,7 @@ import net.buggy.shoplist.R;
 import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
 import net.buggy.shoplist.components.SelectableProductCellFactory;
-import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.data.Dao;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
@@ -48,8 +48,8 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
     @Override
     public void initialize() {
         final ShopListActivity activity = getHostingActivity();
-        final DataStorage dataStorage = activity.getDataStorage();
-        final List<Product> products = dataStorage.getProducts();
+        final Dao dao = activity.getDao();
+        final List<Product> products = dao.getProducts();
         for (Product product : products) {
             if (product.getCategories().contains(category)) {
                 selectedProducts.add(product);
@@ -185,8 +185,8 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
             adapter = new FactoryBasedAdapter<>(new SelectableProductCellFactory());
             adapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.MULTI);
             adapter.setSorter(new ProductComparator());
-            final DataStorage dataStorage = activity.getDataStorage();
-            adapter.addAll(dataStorage.getProducts());
+            final Dao dao = activity.getDao();
+            adapter.addAll(dao.getProducts());
 
             for (Product selectedProduct : selectedProducts) {
                 adapter.selectItem(selectedProduct);

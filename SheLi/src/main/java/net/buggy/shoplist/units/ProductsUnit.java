@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.google.common.base.Objects;
-
 import net.buggy.components.ViewUtils;
 import net.buggy.components.list.FactoryBasedAdapter;
 import net.buggy.components.list.ListDecorator;
@@ -20,7 +18,8 @@ import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
 import net.buggy.shoplist.components.ProductCellFactory;
 import net.buggy.shoplist.components.SearchEditText;
-import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.data.Dao;
+import net.buggy.shoplist.data.UiThreadEntityListener;
 import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.Product;
@@ -28,17 +27,14 @@ import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.views.InflatingViewRenderer;
 import net.buggy.shoplist.units.views.ViewRenderer;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
+import static net.buggy.shoplist.units.UnitsHelper.addTemporalDaoListener;
 
 public class ProductsUnit extends Unit<ShopListActivity> {
-
-    private transient FactoryBasedAdapter<Product> adapter;
-    private transient String searchedText;
 
     @Override
     public void initialize() {
@@ -48,18 +44,16 @@ public class ProductsUnit extends Unit<ShopListActivity> {
 
     @Override
     protected void onEvent(Object event) {
-        final DataStorage dataStorage = getHostingActivity().getDataStorage();
+        final Dao dao = getHostingActivity().getDao();
 
         if (event instanceof EditProductUnit.ProductEditedEvent) {
             final Product product = ((EditProductUnit.ProductEditedEvent) event).getProduct();
 
             if (product.getId() == null) {
-                dataStorage.addProduct(product);
-                adapter.add(product);
+                dao.addProduct(product);
 
             } else {
-                dataStorage.saveProduct(product);
-                adapter.update(product);
+                dao.saveProduct(product);
             }
 
             return;
@@ -68,18 +62,11 @@ public class ProductsUnit extends Unit<ShopListActivity> {
         super.onEvent(event);
     }
 
-    private List<ShopItem> findLinkedItems(DataStorage dataStorage, Product product) {
-        final List<ShopItem> shopItems = dataStorage.getShopItems();
-        final List<ShopItem> linkedItems = new ArrayList<>();
-        for (ShopItem shopItem : shopItems) {
-            if (Objects.equal(product, shopItem.getProduct())) {
-                linkedItems.add(shopItem);
-            }
-        }
-        return linkedItems;
-    }
-
     private class MainViewRenderer extends ViewRenderer<ShopListActivity, RelativeLayout> {
+
+        private transient FactoryBasedAdapter<Product> adapter;
+        private transient String searchedText;
+
         @Override
         public void renderTo(RelativeLayout parentView, final ShopListActivity activity) {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
@@ -99,8 +86,8 @@ public class ProductsUnit extends Unit<ShopListActivity> {
             adapter.setSelectionMode(FactoryBasedAdapter.SelectionMode.SINGLE);
             adapter.setSorter(new ProductComparator());
 
-            final DataStorage dataStorage = activity.getDataStorage();
-            adapter.addAll(dataStorage.getProducts());
+            final Dao dao = activity.getDao();
+            adapter.addAll(dao.getProducts());
 
             final RecyclerView productsList = (RecyclerView) parentView.findViewById(R.id.unit_products_list);
             ListDecorator.decorateList(productsList);
@@ -125,12 +112,12 @@ public class ProductsUnit extends Unit<ShopListActivity> {
 
                 @Override
                 public void removed(Product item) {
-                    final List<ShopItem> linkedItems = findLinkedItems(dataStorage, item);
+                    final List<ShopItem> linkedItems = dao.findLinkedItems(item);
                     for (ShopItem linkedItem : linkedItems) {
-                        dataStorage.removeShopItem(linkedItem);
+                        dao.removeShopItem(linkedItem);
                     }
 
-                    dataStorage.removeProduct(item);
+                    dao.removeProduct(item);
                 }
 
                 @Override
@@ -151,7 +138,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
                 public void onDelete(int position, SwipeToRemoveHandler.DeletionCallback callback) {
                     final Product item = adapter.getItem(position);
 
-                    final List<ShopItem> linkedItems = findLinkedItems(dataStorage, item);
+                    final List<ShopItem> linkedItems = dao.findLinkedItems(item);
                     if (linkedItems.isEmpty()) {
                         callback.delete();
                     } else {
@@ -160,6 +147,10 @@ public class ProductsUnit extends Unit<ShopListActivity> {
                     }
                 }
             });
+
+            final UiThreadEntityListener<Product> listener = new TableAdapterEntityListener<>(
+                    adapter, getHostingActivity());
+            addTemporalDaoListener(dao, Product.class, listener, ProductsUnit.this);
         }
 
         private void setupAddButton(RelativeLayout parentView, final ShopListActivity activity) {
@@ -182,10 +173,10 @@ public class ProductsUnit extends Unit<ShopListActivity> {
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    final DataStorage dataStorage = activity.getDataStorage();
+                    final Dao dao = activity.getDao();
 
                     adapter.clear();
-                    adapter.addAll(dataStorage.getProducts());
+                    adapter.addAll(dao.getProducts());
 
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -214,6 +205,10 @@ public class ProductsUnit extends Unit<ShopListActivity> {
                     parentView.findViewById(R.id.unit_products_search_icon);
             ViewUtils.setTint(searchIcon, R.color.color_primary_icons);
         }
+
+        private void filterProducts(String searchedText) {
+            adapter.setFilter(new ProductsFilter(searchedText, Collections.<Category>emptyList()));
+        }
     }
 
     private class ToolbarRenderer extends InflatingViewRenderer<ShopListActivity, ViewGroup> {
@@ -225,9 +220,5 @@ public class ProductsUnit extends Unit<ShopListActivity> {
         public void renderTo(ViewGroup parentView, ShopListActivity activity) {
             super.renderTo(parentView, activity);
         }
-    }
-
-    private void filterProducts(String searchedText) {
-        adapter.setFilter(new ProductsFilter(searchedText, Collections.<Category>emptyList()));
     }
 }

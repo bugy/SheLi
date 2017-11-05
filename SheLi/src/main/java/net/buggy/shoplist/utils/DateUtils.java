@@ -3,7 +3,9 @@ package net.buggy.shoplist.utils;
 
 import com.google.common.base.Preconditions;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DateUtils {
 
@@ -24,4 +26,12 @@ public class DateUtils {
         return (double) differenceMs / MS_IN_DAY;
     }
 
+    public static Date date(int year, int month, int day) {
+        final GregorianCalendar calendar = new GregorianCalendar();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_YEAR, day);
+
+        return calendar.getTime();
+    }
 }

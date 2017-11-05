@@ -2,6 +2,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="cell_search_product_new">новый</string>
     <string name="shop_list_activity_init_data_message">Добавляем самые популярные продукты и категории</string>
+    <string name="shop_list_activity_init_data_confirm_title">Данные по-умолчанию</string>
+    <string name="shop_list_activity_init_data_confirm_message">
+        Добавить самые популярные продукты и категории?
+    </string>
+    <string name="shop_activity_synchronization_start_failed">
+        Не удалось настроить синхронизацию, попробуйте авторизоваться повторно
+    </string>
     <string name="cell_selectable_shop_item_comment_hint">Комментарий</string>
     <string name="clear_selected_catetories_in_filter">Очистить</string>
     <string name="edit_product_categories_label">Категории</string>
@@ -17,12 +24,14 @@
     <string name="fast_creation_add_button_hint">Создать</string>
     <string name="fast_creation_name_hint">Создать</string>
     <string name="logo_image_description">Лого</string>
+    <string name="toolbar_menu_button">Меню</string>
     <string name="products_unit_already_exists">%s уже существует</string>
     <string name="quantity_editor_title">Количество %s</string>
     <string name="quantity_editor_title_with_units">Количество %1$s (%2$s)</string>
     <string name="shop_item_already_exists">%s уже существует</string>
     <string name="unit_about_app">SheLi - ваша помощница в еженедельных закупках</string>
     <string name="unit_about_title">О приложении</string>
+    <string name="unit_about_logo_description">SheLi лого</string>
     <string name="unit_about_us">Мы, Анна и Ярослав, будем всегда рады вашим отзывам и предложениям</string>
     <string name="unit_categories_list_title">Категории %s</string>
     <string name="unit_categories_title">Категории</string>
@@ -163,4 +172,46 @@
     <string name="crash_dialog_restart">Перезапустить</string>
     <string name="crash_dialog_error_occurred">Упс, извините, произошла внезапная ошибка</string>
     <string name="crash_dialog_image_description">Картинка проблемы</string>
+    <string name="unit_auth_log_out">Выйти</string>
+    <string name="please_log_in">Пожалуйста авторизуйтесь:</string>
+    <string name="unit_sharing_title">Синхронизация данных</string>
+    <string name="unit_sharing_friends_email">E-mail друга</string>
+    <string name="unit_sharing_share_button">Объединить</string>
+    <string name="unit_sharing_unshare_button">Разъединить</string>
+    <string name="unit_auth_authorized_label">Неавторизован</string>
+    <string name="unit_login_log_in_with_google">Авторизоваться через Google</string>
+    <string name="unit_login_log_in_with_email">Авторизоваться через E-mail</string>
+    <string name="unit_login_auth_failed">Не удалось авторизоваться</string>
+    <string name="unit_auth_email_log_in">Авторизоваться</string>
+    <string name="unit_auth_email_register">Зарегистрировать</string>
+    <string name="unit_auth_email_address_field">E-mail адрес</string>
+    <string name="unit_auth_email_password_field">Пароль</string>
+    <string name="unit_auth_email_registration_error_default">Не удалось зарегистрировать</string>
+    <string name="unit_auth_email_registration_error_already_registered">E-mail уже зарегистрирован</string>
+    <string name="unit_auth_email_registration_error_invalid_email">Неправильный формат E-mail</string>
+    <string name="unit_auth_email_registration_error_weak_password">Пароль должен быть не менее 6 символов</string>
+    <string name="unit_auth_email_login_error_default">Не удалось авторизоваться</string>
+    <string name="unit_auth_email_login_error_user_not_exists">Пользователь не зарегистрирован</string>
+    <string name="unit_auth_email_empty_email">Необходимо указать E-mail</string>
+    <string name="unit_auth_email_empty_password">Необходимо указать пароль</string>
+    <string name="unit_auth_email_verification_sent">Подтверждение отправлено на E-mail</string>
+    <string name="unit_sharing_verification_unverified_label">
+        Подтверждение отправлено Вам на почту, подтвердите свой адрес и обновите экран
+    </string>
+    <string name="unit_auth_email_verification_failed">Не удалось отправить подтверждение</string>
+    <string name="unit_sharing_verification_refresh_screen">Обновить</string>
+    <string name="unit_sharing_verification_resend_verification">Отправить подтверждение повторно</string>
+    <string name="unit_sharing_share_list_label">Объединение данных</string>
+    <string name="unit_auth_google_login_progress_text">Авторизация через Google</string>
+    <string name="unit_sharing_empty_email">Необходимо указать E-mail</string>
+    <string name="unit_sharing_sending_request">Отправка запроса</string>
+    <string name="unit_sharing_cancelling_share">Отмена объединения</string>
+    <string name="unit_sharing_loading_information">Загрузка данных</string>
+    <string name="unit_sharing_failed_to_save">Не удалось сохранить</string>
+    <string name="unit_sharing_sharing_active">Объединение активно</string>
+    <string name="unit_sharing_request_is_sent">Запрос отправлен</string>
+    <string name="unit_sharing_incoming_share_request">Входящий запрос</string>
+    <string name="unit_sharing_failed_to_share_list">Не удалось объединить, пожалуйста обновите экран</string>
+    <string name="unit_sharing_failed_to_load_request">Не удалось загрузить информацию</string>
+    <string name="unit_sharing_failed_to_load_user_information">Не удалось загрузить информацию</string>
 </resources>

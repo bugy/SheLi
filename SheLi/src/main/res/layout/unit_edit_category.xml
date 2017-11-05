@@ -20,7 +20,7 @@
             android:paddingRight="12dp"
             android:paddingStart="12dp">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/unit_edit_category_name_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

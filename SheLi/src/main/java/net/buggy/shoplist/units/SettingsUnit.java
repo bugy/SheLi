@@ -34,7 +34,7 @@ public class SettingsUnit extends Unit<ShopListActivity> {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_settings, parentView, true);
 
-            final Settings settings = activity.getDataStorage().getSettings();
+            final Settings settings = activity.getDao().getSettings();
 
             @SuppressWarnings("unchecked")
             final MaterialSpinner<Language> languageField = (MaterialSpinner<Language>)
@@ -55,7 +55,7 @@ public class SettingsUnit extends Unit<ShopListActivity> {
                 public void onClick(View v) {
                     settings.setLanguage(languageField.getSelectedItem());
 
-                    activity.getDataStorage().saveSettings(settings);
+                    activity.getDao().saveSettings(settings);
 
                     activity.recreate();
                 }

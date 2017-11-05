@@ -16,7 +16,8 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/logo" />
+            android:src="@mipmap/logo"
+            android:contentDescription="@string/unit_about_logo_description"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -59,13 +60,42 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:autoLink="web"
-        android:text="GitHub: https://github.com/bugy/SheLi" />
+        android:text="GitHub: https://github.com/bugy/SheLi"
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:autoLink="email"
-        android:text="email: buggygm@gmail.com" />
+        android:text="email: buggygm@gmail.com"
+        tools:ignore="HardcodedText"/>
+
+    <LinearLayout
+        android:id="@+id/unit_about_debug_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/unit_about_exception_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exception"
+            tools:ignore="ButtonStyle,HardcodedText"/>
+
+        <Button
+            android:id="@+id/unit_about_send_logs_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            tools:ignore="ButtonStyle,HardcodedText"
+            android:text="Send logs"/>
+
+    </LinearLayout>
 
 </LinearLayout>

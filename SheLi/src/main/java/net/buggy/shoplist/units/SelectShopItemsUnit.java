@@ -16,7 +16,8 @@ import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.ProductComparator;
 import net.buggy.shoplist.components.CategoriesFilter;
 import net.buggy.shoplist.components.SelectableShopItemCellFactory;
-import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.data.Dao;
+import net.buggy.shoplist.data.UiThreadEntityListener;
 import net.buggy.shoplist.filters.ProductsFilter;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
@@ -34,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static net.buggy.components.list.FactoryBasedAdapter.SelectionMode.MULTI;
+import static net.buggy.shoplist.units.UnitsHelper.addTemporalDaoListener;
 
 public class SelectShopItemsUnit extends Unit<ShopListActivity> {
 
@@ -84,7 +86,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             ProductEditedEvent productEvent = (ProductEditedEvent) event;
             final Product product = productEvent.getProduct();
 
-            getHostingActivity().getDataStorage().addProduct(product);
+            getHostingActivity().getDao().addProduct(product);
 
             final ShopItem newItem = getOrCreateShopItem(product);
             adapter.add(newItem);
@@ -102,7 +104,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             adapter.selectItem(shopItem);
 
             final Product changedProduct = shopItemEvent.getProduct();
-            getHostingActivity().getDataStorage().saveProduct(changedProduct);
+            getHostingActivity().getDao().saveProduct(changedProduct);
 
             return;
         }
@@ -155,7 +157,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
         }
 
         private void initAdapter() {
-            final DataStorage dataStorage = getHostingActivity().getDataStorage();
+            final Dao dao = getHostingActivity().getDao();
 
             final SelectableShopItemCellFactory factory = new SelectableShopItemCellFactory(
                     new SelectableShopItemCellFactory.Listener() {
@@ -170,7 +172,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             adapter.setSelectionMode(MULTI);
             adapter.setSorter(createComparator());
 
-            final List<Product> products = dataStorage.getProducts();
+            final List<Product> products = dao.getProducts();
             for (Product product : products) {
                 ShopItem shopItem = getOrCreateShopItem(product);
 
@@ -208,13 +210,51 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                     adapter.selectItem(changedItem);
                 }
             });
+
+            final UiThreadEntityListener<Product> listener = new UiThreadEntityListener<Product>(
+                    getHostingActivity()) {
+                @Override
+                public void entityAddedUi(Product newEntity) {
+                    final ShopItem shopItem = getOrCreateShopItem(newEntity);
+
+                    if (!existingItems.contains(shopItem)) {
+                        if (!adapter.getAllItems().contains(shopItem)) {
+                            adapter.add(shopItem);
+                        }
+                    }
+                }
+
+                @Override
+                public void entityChangedUi(Product changedEntity) {
+                    final ShopItem shopItem = getOrCreateShopItem(changedEntity);
+
+                    if (!existingItems.contains(shopItem)) {
+                        shopItem.setProduct(changedEntity);
+
+                        if (!adapter.getAllItems().contains(shopItem)) {
+                            adapter.add(shopItem);
+                        } else {
+                            adapter.update(shopItem);
+                        }
+                    }
+                }
+
+                @Override
+                public void entityRemovedUi(Product removedEntity) {
+                    final ShopItem shopItem = cachedItems.get(removedEntity);
+                    if (shopItem != null) {
+                        adapter.remove(shopItem);
+                    }
+                }
+            };
+            addTemporalDaoListener(dao, Product.class, listener, SelectShopItemsUnit.this);
         }
     }
 
     private class ToolbarRenderer extends ViewRenderer<ShopListActivity, RelativeLayout> {
         @Override
         public void renderTo(RelativeLayout parentView, ShopListActivity activity) {
-            final DataStorage dataStorage = activity.getDataStorage();
+            final Dao dao = activity.getDao();
 
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_create_shopitems_toolbar, parentView, true);
@@ -222,7 +262,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             final CategoriesFilter categoriesFilter = (CategoriesFilter) parentView.findViewById(
                     R.id.unit_create_shopitems_toolbar_categories_filter);
             categoriesFilter.setPopupAnchor(parentView);
-            categoriesFilter.setCategories(dataStorage.getCategories());
+            categoriesFilter.setCategories(dao.getCategories());
 
             categoriesFilter.addListener(new CategoriesFilter.Listener() {
                 @Override

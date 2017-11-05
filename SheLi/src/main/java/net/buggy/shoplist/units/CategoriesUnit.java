@@ -16,7 +16,8 @@ import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.compare.CategoryComparator;
 import net.buggy.shoplist.components.EditableCategoryCellFactory;
 import net.buggy.shoplist.components.FastCreationPanel;
-import net.buggy.shoplist.data.DataStorage;
+import net.buggy.shoplist.data.Dao;
+import net.buggy.shoplist.data.UiThreadEntityListener;
 import net.buggy.shoplist.model.Category;
 import net.buggy.shoplist.model.ModelHelper;
 import net.buggy.shoplist.model.Product;
@@ -29,6 +30,7 @@ import java.util.Set;
 
 import static net.buggy.shoplist.ShopListActivity.MAIN_VIEW_ID;
 import static net.buggy.shoplist.ShopListActivity.TOOLBAR_VIEW_ID;
+import static net.buggy.shoplist.units.UnitsHelper.addTemporalDaoListener;
 
 public class CategoriesUnit extends Unit<ShopListActivity> {
 
@@ -48,11 +50,9 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
             final EditCategoryUnit.CategoryEditedEvent categoryEvent =
                     (EditCategoryUnit.CategoryEditedEvent) event;
 
-            final DataStorage dataStorage = getHostingActivity().getDataStorage();
+            final Dao dao = getHostingActivity().getDao();
             final Category category = categoryEvent.getCategory();
-            dataStorage.saveCategory(category);
-
-            adapter.update(category);
+            dao.saveCategory(category);
 
             final Runnable relinkRunnable = new Runnable() {
                 @Override
@@ -60,7 +60,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                     ModelHelper.saveCategoryLinkedProducts(
                             categoryEvent.getCategory(),
                             categoryEvent.getCategoryProducts(),
-                            dataStorage);
+                            dao);
                 }
             };
 
@@ -96,8 +96,8 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
             adapter = new FactoryBasedAdapter<>(cellFactory);
             adapter.setSorter(new CategoryComparator());
 
-            final DataStorage dataStorage = activity.getDataStorage();
-            adapter.addAll(dataStorage.getCategories());
+            final Dao dao = activity.getDao();
+            adapter.addAll(dao.getCategories());
 
             final RecyclerView categoriesView = (RecyclerView) parentView.findViewById(R.id.unit_categories_list);
             ListDecorator.decorateList(categoriesView);
@@ -116,7 +116,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                 public void onDelete(int position, SwipeToRemoveHandler.DeletionCallback callback) {
                     final Category category = adapter.getItem(position);
 
-                    final List<Product> products = dataStorage.getProducts();
+                    final List<Product> products = dao.getProducts();
                     final Set<Product> matchingProducts = new LinkedHashSet<>();
                     for (Product product : products) {
                         if (product.getCategories().contains(category)) {
@@ -143,7 +143,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
 
                 @Override
                 public void removed(Category item) {
-                    dataStorage.removeCategory(item);
+                    dao.removeCategory(item);
                 }
 
                 @Override
@@ -161,7 +161,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                         return;
                     }
 
-                    dataStorage.saveCategory(changedItem);
+                    dao.saveCategory(changedItem);
                 }
             });
 
@@ -172,11 +172,15 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                 @Override
                 public void onRefresh() {
                     adapter.clear();
-                    adapter.addAll(dataStorage.getCategories());
+                    adapter.addAll(dao.getCategories());
 
                     swipeRefreshLayout.setRefreshing(false);
                 }
             });
+
+            final UiThreadEntityListener<Category> listener = new TableAdapterEntityListener<>(
+                    adapter, getHostingActivity());
+            addTemporalDaoListener(dao, Category.class, listener, CategoriesUnit.this);
         }
 
         private void initAddCategory(final ViewGroup parentView, final ShopListActivity activity) {
@@ -185,12 +189,12 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
             creationPanel.setListener(new FastCreationPanel.Listener() {
                 @Override
                 public void onCreate(String name) {
-                    addCategory(name, parentView.getContext(), activity.getDataStorage());
+                    addCategory(name, parentView.getContext(), activity.getDao());
                 }
             });
         }
 
-        private void addCategory(String name, Context context, DataStorage dataStorage) {
+        private void addCategory(String name, Context context, Dao dao) {
             if (!ModelHelper.isUnique(null, name, (ShopListActivity) context)) {
                 final Toast toast = Toast.makeText(context,
                         context.getResources().getString(R.string.category_already_exists, name),
@@ -201,9 +205,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
 
             final Category category = ModelHelper.createCategory(name);
 
-            dataStorage.addCategory(category);
-
-            adapter.add(category);
+            dao.addCategory(category);
         }
     }
 }

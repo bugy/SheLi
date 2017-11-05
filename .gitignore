@@ -1,6 +1,8 @@
 *.iml
 .gradle
 /local.properties
+SheLi/shoplist.jks
+SheLi/google-services.json
 /.idea
 /.idea
 .DS_Store
