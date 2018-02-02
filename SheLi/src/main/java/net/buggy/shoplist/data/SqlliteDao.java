@@ -11,6 +11,7 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -28,6 +29,7 @@ import net.buggy.shoplist.model.Settings;
 import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.model.UnitOfMeasure;
 import net.buggy.shoplist.utils.CollectionUtils;
+import net.buggy.shoplist.utils.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -151,11 +153,9 @@ public class SqlliteDao implements Serializable, Dao {
 
     @Override
     public void addProduct(Product product) {
-        final List<Model> existingProducts = new Select()
-                .from(StoredProduct.class)
-                .where("name = ?  COLLATE NOCASE", product.getName())
-                .execute();
-        if (!existingProducts.isEmpty()) {
+        final StoredProduct existingProduct = findEntityByName(
+                product.getName(), StoredProduct.class);
+        if (existingProduct != null) {
             throw new IllegalStateException(
                     "Product with the name " + product.getName() + " already exists");
         }
@@ -241,11 +241,9 @@ public class SqlliteDao implements Serializable, Dao {
 
     @Override
     public void addCategory(Category category) {
-        final List<Model> existingCategories = new Select()
-                .from(StoredCategory.class)
-                .where("name = ?  COLLATE NOCASE", category.getName())
-                .execute();
-        if (!existingCategories.isEmpty()) {
+        final StoredCategory existingCategory = findEntityByName(
+                category.getName(), StoredCategory.class);
+        if (existingCategory != null) {
             throw new IllegalStateException("Category with name " + category.getName() + " already exists");
         }
 
@@ -483,23 +481,9 @@ public class SqlliteDao implements Serializable, Dao {
     @Nullable
     @Override
     public Product findProductByName(String name) {
-        final List<StoredProduct> products = new Select()
-                .from(StoredProduct.class)
-                .where("name = ?  COLLATE NOCASE", (name != null)
-                        ? name.trim().toLowerCase()
-                        : null)
-                .execute();
+        final StoredProduct storedProduct = findEntityByName(name, StoredProduct.class);
 
-
-        if (products.size() == 0) {
-            return null;
-        }
-
-        if (products.size() > 1) {
-            Log.e("SqlliteDao", "findProductByName: more than 1 product found, name=" + name);
-        }
-
-        return products.get(0).toProduct();
+        return storedProduct != null ? storedProduct.toProduct() : null; 
     }
 
     @Nullable
@@ -560,16 +544,36 @@ public class SqlliteDao implements Serializable, Dao {
     @Nullable
     @Override
     public Category findCategoryByName(String name) {
-        final StoredCategory category = new Select()
-                .from(StoredCategory.class)
-                .where("name = ? COLLATE NOCASE", name)
-                .executeSingle();
+        final StoredCategory storedCategory = findEntityByName(name, StoredCategory.class);
 
-        if (category == null) {
-            return null;
+        return storedCategory != null ? storedCategory.toModel() : null;
+    }
+
+    @Nullable
+    private <T extends Model & Named> T findEntityByName(String name, Class<T> clazz) {
+        boolean canSearchIgnoreCase = canSqlSearchIgnoreCase(name);
+
+        if (canSearchIgnoreCase) {
+            return new Select()
+                    .from(clazz)
+                    .where("name = ? COLLATE NOCASE", name)
+                    .executeSingle();
         }
 
-        return category.toModel();
+        final List<T> existingCategories = new Select()
+                .from(clazz)
+                .execute();
+        for (T entity : existingCategories) {
+            if (StringUtils.equalIgnoreCase(entity.getName(), name)) {
+                return entity;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean canSqlSearchIgnoreCase(String value) {
+        return (value == null) || CharMatcher.ascii().matchesAllOf(value);
     }
 
     @Override
@@ -696,7 +700,7 @@ public class SqlliteDao implements Serializable, Dao {
     }
 
     @Table(name = "Categories")
-    public static class StoredCategory extends Model {
+    public static class StoredCategory extends Model implements Named {
         @Column(name = "Name")
         private String name;
 
@@ -725,6 +729,11 @@ public class SqlliteDao implements Serializable, Dao {
             category.setName(name);
             category.setColor(color);
             return category;
+        }
+
+        @Override
+        public String getName() {
+            return name;
         }
     }
 
@@ -758,7 +767,7 @@ public class SqlliteDao implements Serializable, Dao {
     }
 
     @Table(name = "Products")
-    public static class StoredProduct extends Model {
+    public static class StoredProduct extends Model implements Named {
         @Column(name = "Name")
         private String name;
 
@@ -844,8 +853,8 @@ public class SqlliteDao implements Serializable, Dao {
                     category = categoryMap.get(storedCategory.getId());
                 } else {
                     category = storedCategory.toModel();
-                } 
-                
+                }
+
                 productCategories.add(category);
             }
 
@@ -878,6 +887,12 @@ public class SqlliteDao implements Serializable, Dao {
 
             return result;
         }
+
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 
     @NonNull
@@ -893,6 +908,10 @@ public class SqlliteDao implements Serializable, Dao {
         return storedCategories;
     }
 
+    private interface Named {
+        String getName();
+    }
+    
     @Table(name = "ShopItems")
     public static class StoredShopItem extends Model {
         @Column(name = "Product")
