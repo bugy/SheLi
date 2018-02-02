@@ -259,9 +259,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                     dao.removeShopItem(item);
 
                     if (item.isChecked()) {
-                        final Product product = item.getProduct();
-                        product.setLastBuyDate(new Date());
-                        dao.saveProduct(product);
+                        updateProductBuyDate(item, dao);
                     }
                 }
 
@@ -327,10 +325,14 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             cleanCheckedButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final Dao dao = getHostingActivity().getDao();
+                    
                     final List<ShopItem> selectedItems = adapter.getSelectedItems();
                     for (ShopItem selectedItem : selectedItems) {
-                        getHostingActivity().getDao().removeShopItem(selectedItem);
+                        dao.removeShopItem(selectedItem);
+                        updateProductBuyDate(selectedItem, dao);
                     }
+
                     cleanCheckedButton.setEnabled(false);
                 }
             });
@@ -366,6 +368,12 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
             });
         }
 
+    }
+
+    private void updateProductBuyDate(ShopItem item, Dao dao) {
+        final Product product = item.getProduct();
+        product.setLastBuyDate(new Date());
+        dao.saveProduct(product);
     }
 
     private void initEmptyScreen(RelativeLayout parentView) {
