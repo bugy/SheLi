@@ -196,10 +196,10 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
                 @Override
                 public void selectionChanged(Product item, boolean selected) {
                     if (selected) {
-                        item.getCategories().add(category);
+                        item.addCategory(category);
                         selectedProducts.add(item);
                     } else {
-                        item.getCategories().remove(category);
+                        item.removeCategory(category);
                         selectedProducts.remove(item);
                     }
                 }

@@ -58,10 +58,10 @@ public class ModelHelper {
                     && !product.getCategories().contains(category);
 
             if (unlinked) {
-                product.getCategories().remove(category);
+                product.removeCategory(category);
                 dao.saveProduct(product);
             } else if (linkedProducts.contains(product) && linked) {
-                product.getCategories().add(category);
+                product.addCategory(category);
                 dao.saveProduct(product);
             }
         }

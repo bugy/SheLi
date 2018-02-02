@@ -34,6 +34,14 @@ public class Product extends Entity implements Serializable {
         return ImmutableSet.copyOf(categories);
     }
 
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
+
+    public void removeCategory(Category category) {
+        categories.remove(category);
+    }
+
     public void setCategories(Collection<Category> categories) {
         this.categories.clear();
 
