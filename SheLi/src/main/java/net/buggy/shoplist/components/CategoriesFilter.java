@@ -38,7 +38,6 @@ public class CategoriesFilter extends FrameLayout {
 
     private FactoryBasedAdapter<Category> categoriesAdapter;
     private View popupAnchor;
-    private Context popupContext;
     private final List<CategoriesFilter.Listener> listeners = new CopyOnWriteArrayList<>();
     private PopupWindow popupWindow;
 
@@ -69,7 +68,6 @@ public class CategoriesFilter extends FrameLayout {
 
     private void init(final Context context) {
         popupAnchor = this;
-        popupContext = context;
 
         inflate(context, R.layout.categories_filter, this);
 
@@ -180,12 +178,21 @@ public class CategoriesFilter extends FrameLayout {
         categoriesAdapter.addAll(categories);
     }
 
-    public void setPopupAnchor(View view) {
-        this.popupAnchor = view;
+    public void selectCategories(Collection<Category> categories) {
+        final List<Category> selectedItems = categoriesAdapter.getSelectedItems();
+        for (Category selectedItem : selectedItems) {
+            if (!categories.contains(selectedItem)) {
+                categoriesAdapter.deselectItem(selectedItem);
+            }
+        }
+
+        for (Category category : categories) {
+            categoriesAdapter.selectItem(category);
+        }
     }
 
-    public void setPopupContext(Context popupContext) {
-        this.popupContext = popupContext;
+    public void setPopupAnchor(View view) {
+        this.popupAnchor = view;
     }
 
     public void addListener(CategoriesFilter.Listener listener) {

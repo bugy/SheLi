@@ -26,6 +26,7 @@ import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.units.EditProductUnit.ProductEditedEvent;
 import net.buggy.shoplist.units.views.ViewRenderer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,7 +46,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
     private transient FactoryBasedAdapter<ShopItem> adapter;
 
     private final Set<ShopItem> existingItems;
-    private List<Category> selectedCategories;
+    private final List<Category> selectedCategories = new ArrayList<>();
 
     private final Map<Product, ShopItem> cachedItems = new ConcurrentHashMap<>();
     private final Set<ShopItem> selectedItems = Collections.newSetFromMap(new ConcurrentHashMap<ShopItem, Boolean>());
@@ -263,15 +264,19 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
                     R.id.unit_create_shopitems_toolbar_categories_filter);
             categoriesFilter.setPopupAnchor(parentView);
             categoriesFilter.setCategories(dao.getCategories());
+            categoriesFilter.selectCategories(selectedCategories);
 
             categoriesFilter.addListener(new CategoriesFilter.Listener() {
                 @Override
                 public void categoriesSelected(List<Category> categories) {
-                    selectedCategories = categories;
+                    selectedCategories.clear();
+                    selectedCategories.addAll(categories);
 
-                    filterProducts(selectedCategories);
+                    filterProducts(categories);
                 }
             });
+
+            filterProducts(selectedCategories);
         }
     }
 

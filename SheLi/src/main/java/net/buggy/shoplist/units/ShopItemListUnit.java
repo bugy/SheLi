@@ -73,6 +73,8 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
     private transient ImageButton cleanCheckedButton;
     private Boolean showTipsOnEmpty;
 
+    private final List<Category> filterCategories = new ArrayList<>();
+
     @Override
     public void initialize() {
         addRenderer(ShopListActivity.TOOLBAR_VIEW_ID, new ToolbarRenderer());
@@ -475,13 +477,19 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                     R.id.unit_shop_item_list_toolbar_categories_filter);
             categoriesFilter.setPopupAnchor(parentView);
             categoriesFilter.setCategories(activity.getDao().getCategories());
+            categoriesFilter.selectCategories(filterCategories);
 
             categoriesFilter.addListener(new CategoriesFilter.Listener() {
                 @Override
                 public void categoriesSelected(List<Category> categories) {
+                    filterCategories.clear();
+                    filterCategories.addAll(categories);
+                    
                     filterShopItems(categories);
                 }
             });
+
+            filterShopItems(filterCategories);
         }
     }
 
