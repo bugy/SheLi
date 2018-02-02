@@ -99,7 +99,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
             final Dao dao = activity.getDao();
             adapter.addAll(dao.getCategories());
 
-            final RecyclerView categoriesView = (RecyclerView) parentView.findViewById(R.id.unit_categories_list);
+            final RecyclerView categoriesView = parentView.findViewById(R.id.unit_categories_list);
             ListDecorator.decorateList(categoriesView);
             categoriesView.setAdapter(adapter);
 
@@ -165,8 +165,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)
-                    parentView.findViewById(R.id.unit_categories_swipe_refresh);
+            final SwipeRefreshLayout swipeRefreshLayout = parentView.findViewById(R.id.unit_categories_swipe_refresh);
             swipeRefreshLayout.setColorSchemeResources(R.color.color_primary);
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -184,8 +183,7 @@ public class CategoriesUnit extends Unit<ShopListActivity> {
         }
 
         private void initAddCategory(final ViewGroup parentView, final ShopListActivity activity) {
-            final FastCreationPanel creationPanel = (FastCreationPanel)
-                    parentView.findViewById(R.id.unit_categories_creation_panel);
+            final FastCreationPanel creationPanel = parentView.findViewById(R.id.unit_categories_creation_panel);
             creationPanel.setListener(new FastCreationPanel.Listener() {
                 @Override
                 public void onCreate(String name) {

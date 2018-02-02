@@ -50,10 +50,10 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
 
         view.setSelected(cell.isSelected());
 
-        final TextView itemNameField = (TextView) view.findViewById(R.id.cell_selectable_shop_item_name_field);
+        final TextView itemNameField = view.findViewById(R.id.cell_selectable_shop_item_name_field);
         itemNameField.setText(product.getName());
 
-        final TextView commentField = (TextView) view.findViewById(
+        final TextView commentField = view.findViewById(
                 R.id.cell_selectable_shop_item_comment_field);
 
         String comment = buildComment(shopItem, view.getContext());
@@ -63,7 +63,7 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
             commentField.setText(comment);
         }
 
-        final ImageButton editButton = (ImageButton) view.findViewById(R.id.cell_selectable_shop_item_edit_button);
+        final ImageButton editButton = view.findViewById(R.id.cell_selectable_shop_item_edit_button);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +71,7 @@ public class SelectableShopItemCellFactory extends CellFactory<ShopItem, ViewGro
             }
         });
 
-        final TextView ageField = (TextView) view.findViewById(
+        final TextView ageField = view.findViewById(
                 R.id.cell_selectable_shop_item_age_field);
         String ageText = ModelHelper.getAgeText(product.getLastBuyDate(), view.getContext());
         ageField.setText(ageText);

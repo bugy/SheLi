@@ -89,7 +89,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
             final Dao dao = activity.getDao();
             adapter.addAll(dao.getProducts());
 
-            final RecyclerView productsList = (RecyclerView) parentView.findViewById(R.id.unit_products_list);
+            final RecyclerView productsList = parentView.findViewById(R.id.unit_products_list);
             ListDecorator.decorateList(productsList);
             productsList.setAdapter(adapter);
 
@@ -154,7 +154,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
         }
 
         private void setupAddButton(RelativeLayout parentView, final ShopListActivity activity) {
-            final FloatingActionButton buttonAdd = (FloatingActionButton) parentView.findViewById(
+            final FloatingActionButton buttonAdd = parentView.findViewById(
                     R.id.unit_products_list_button_add);
             buttonAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -167,8 +167,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
         }
 
         private void setupSwipeToRefresh(RelativeLayout parentView, final ShopListActivity activity) {
-            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)
-                    parentView.findViewById(R.id.unit_products_swipe_refresh);
+            final SwipeRefreshLayout swipeRefreshLayout = parentView.findViewById(R.id.unit_products_swipe_refresh);
             swipeRefreshLayout.setColorSchemeResources(R.color.color_primary);
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -184,7 +183,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
         }
 
         private void setupSearchField(RelativeLayout parentView) {
-            final SearchEditText searchTextField = (SearchEditText) parentView.findViewById(
+            final SearchEditText searchTextField = parentView.findViewById(
                     R.id.unit_products_search_field);
 
             searchTextField.setListener(new SearchEditText.Listener() {
@@ -201,8 +200,7 @@ public class ProductsUnit extends Unit<ShopListActivity> {
             });
 
 
-            final AppCompatImageView searchIcon = (AppCompatImageView)
-                    parentView.findViewById(R.id.unit_products_search_icon);
+            final AppCompatImageView searchIcon = parentView.findViewById(R.id.unit_products_search_icon);
             ViewUtils.setTint(searchIcon, R.color.color_primary_icons);
         }
 

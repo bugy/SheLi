@@ -28,15 +28,15 @@ public class SearchProductCellFactory extends CellFactory<SearchProductCellFacto
         final SearchedProduct searchedProduct = cell.getData();
         final Product product = searchedProduct.getProduct();
 
-        final TextView nameView = (TextView) view.findViewById(
+        final TextView nameView = view.findViewById(
                 R.id.cell_search_product_name);
         nameView.setText(product.getName());
 
-        final TextView newTextView = (TextView) view.findViewById(
+        final TextView newTextView = view.findViewById(
                 R.id.cell_search_product_new_text);
         final View spacer = view.findViewById(
                 R.id.cell_search_product_left_spacer);
-        final ImageView alreadyAddedImage = (ImageView) view.findViewById(
+        final ImageView alreadyAddedImage = view.findViewById(
                 R.id.cell_search_product_added_image);
 
         if (product.getId() == null) {

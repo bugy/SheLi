@@ -160,7 +160,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         }
 
         private void initCopyContentButton(final RelativeLayout parentView) {
-            final ImageButton copyButton = (ImageButton) parentView.findViewById(
+            final ImageButton copyButton = parentView.findViewById(
                     R.id.unit_shopitem_list_copy_list_button);
             ViewUtils.setColorListTint(copyButton, R.color.imagebutton_white_tint);
 
@@ -233,7 +233,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         }
 
         private FactoryBasedAdapter<ShopItem> initList(RelativeLayout parentView, final ShopListActivity activity, final Dao dao) {
-            final RecyclerView itemsList = (RecyclerView) parentView.findViewById(R.id.shopping_list);
+            final RecyclerView itemsList = parentView.findViewById(R.id.shopping_list);
             ListDecorator.decorateList(itemsList);
 
             final int backgroundColor = ViewUtils.resolveColor(R.color.color_underground, parentView.getContext());
@@ -280,8 +280,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)
-                    parentView.findViewById(R.id.unit_shop_item_list_swipe_refresh);
+            final SwipeRefreshLayout swipeRefreshLayout = parentView.findViewById(R.id.unit_shop_item_list_swipe_refresh);
             swipeRefreshLayout.setColorSchemeResources(R.color.color_primary);
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -311,7 +310,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         }
 
         private void initAddItemButton(RelativeLayout parentView) {
-            final ImageButton addItemButton = (ImageButton) parentView.findViewById(
+            final ImageButton addItemButton = parentView.findViewById(
                     R.id.unit_shopitem_list_add_item_button);
             addItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -322,7 +321,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         }
 
         private void initCleanButton(RelativeLayout parentView) {
-            cleanCheckedButton = (ImageButton) parentView.findViewById(
+            cleanCheckedButton = parentView.findViewById(
                     R.id.unit_shopitem_list_clean_checked_button);
             cleanCheckedButton.setEnabled(!adapter.getSelectedItems().isEmpty());
             cleanCheckedButton.setOnClickListener(new View.OnClickListener() {
@@ -370,7 +369,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
     }
 
     private void initEmptyScreen(RelativeLayout parentView) {
-        final ViewGroup defaultEmptyPanel = (ViewGroup) parentView.findViewById(
+        final ViewGroup defaultEmptyPanel = parentView.findViewById(
                 R.id.unit_shop_item_list_empty_stub);
 
         if (showTipsOnEmpty == null) {
@@ -419,9 +418,9 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
         if (adapter.getItemCount() == 0) {
             emptyPanel.setVisibility(View.VISIBLE);
 
-            final TextView emptyLabel = (TextView) emptyPanel.findViewById(
+            final TextView emptyLabel = emptyPanel.findViewById(
                     R.id.unit_shop_item_list_empty_stub_label);
-            final ImageView emptyImage = (ImageView) emptyPanel.findViewById(
+            final ImageView emptyImage = emptyPanel.findViewById(
                     R.id.unit_shop_item_list_stub_image);
 
             final View firstLaunchPanel = emptyPanel.findViewById(
@@ -473,7 +472,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                     parentView,
                     true);
 
-            final CategoriesFilter categoriesFilter = (CategoriesFilter) parentView.findViewById(
+            final CategoriesFilter categoriesFilter = parentView.findViewById(
                     R.id.unit_shop_item_list_toolbar_categories_filter);
             categoriesFilter.setPopupAnchor(parentView);
             categoriesFilter.setCategories(activity.getDao().getCategories());
@@ -534,7 +533,7 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                     parentView,
                     true);
 
-            final ImageButton addShopItemButton = (ImageButton) parentView.findViewById(R.id.unit_shopitem_list_add_products_button);
+            final ImageButton addShopItemButton = parentView.findViewById(R.id.unit_shopitem_list_add_products_button);
             addShopItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -554,20 +553,20 @@ public class ShopItemListUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            searchList = (RecyclerView) parentView.findViewById(
+            searchList = parentView.findViewById(
                     R.id.unit_shopitem_list_search_list);
             ListDecorator.decorateList(searchList);
             searchList.setAdapter(searchListAdapter);
 
-            searchPanel = (ViewGroup) parentView.findViewById(
+            searchPanel = parentView.findViewById(
                     R.id.unit_shopitem_list_search_panel);
 
             originalLeftMargin = ((ViewGroup.MarginLayoutParams) searchPanel.getLayoutParams()).leftMargin;
 
-            backButton = (ImageButton) parentView.findViewById(
+            backButton = parentView.findViewById(
                     R.id.unit_shopitem_list_search_back_button);
 
-            searchField = (EditText) parentView.findViewById(
+            searchField = parentView.findViewById(
                     R.id.unit_shopitem_list_search_field);
             final int overlayColor = ViewUtils.resolveColor(R.color.color_overlay, activity);
             searchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {

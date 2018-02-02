@@ -48,7 +48,7 @@ public class EditableCategoryCellFactory extends CellFactory<Category, LinearLay
                          final ChangeListener<Category> listener) {
         final Category category = cell.getData();
 
-        final EditText nameField = (EditText) view.findViewById(R.id.cell_category_editable_name_field);
+        final EditText nameField = view.findViewById(R.id.cell_category_editable_name_field);
         nameField.setText(category.getName());
         nameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -74,7 +74,7 @@ public class EditableCategoryCellFactory extends CellFactory<Category, LinearLay
             }
         });
 
-        final TagFlag colorFlag = (TagFlag) view.findViewById(R.id.cell_category_editable_color_field);
+        final TagFlag colorFlag = view.findViewById(R.id.cell_category_editable_color_field);
         colorFlag.setColor(ModelHelper.getColor(category));
         colorFlag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +101,7 @@ public class EditableCategoryCellFactory extends CellFactory<Category, LinearLay
         });
 
 
-        final ImageButton editButton = (ImageButton) view.findViewById(
+        final ImageButton editButton = view.findViewById(
                 R.id.cell_category_editable_edit_button);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override

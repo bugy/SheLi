@@ -47,7 +47,7 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
                 final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
                 inflater.inflate(R.layout.unit_select_categories_toolbar, parentView, true);
 
-                final TextView titleField = (TextView) parentView.findViewById(R.id.unit_select_categories_title);
+                final TextView titleField = parentView.findViewById(R.id.unit_select_categories_title);
                 final String titlePattern = activity.getString(R.string.unit_categories_list_title);
                 titleField.setText(String.format(titlePattern, productName));
             }
@@ -65,7 +65,7 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
 
             initAddCategory(parentView, activity);
 
-            final ImageButton acceptButton = (ImageButton) parentView.findViewById(R.id.unit_select_categories_accept);
+            final ImageButton acceptButton = parentView.findViewById(R.id.unit_select_categories_accept);
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -92,14 +92,13 @@ public class SelectCategoriesUnit extends Unit<ShopListActivity> {
                 adapter.selectItem(selectedCategory);
             }
 
-            final RecyclerView categoriesView = (RecyclerView) parentView.findViewById(R.id.unit_select_categories_list);
+            final RecyclerView categoriesView = parentView.findViewById(R.id.unit_select_categories_list);
             ListDecorator.decorateList(categoriesView);
             categoriesView.setAdapter(adapter);
         }
 
         private void initAddCategory(final ViewGroup parentView, final ShopListActivity activity) {
-            final FastCreationPanel creationPanel = (FastCreationPanel)
-                    parentView.findViewById(R.id.unit_select_categories_creation_panel);
+            final FastCreationPanel creationPanel = parentView.findViewById(R.id.unit_select_categories_creation_panel);
             creationPanel.setListener(new FastCreationPanel.Listener() {
                 @Override
                 public void onCreate(String name) {

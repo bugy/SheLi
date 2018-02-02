@@ -27,10 +27,10 @@ public class CategoryCellFactory extends CellFactory<Category, LinearLayout> {
     public void fillCell(Cell<Category> cell, LinearLayout view, CellContext<Category> cellContext, ChangeListener<Category> listener) {
         final Category category = cell.getData();
 
-        final TextView nameField = (TextView) view.findViewById(R.id.cell_category_name_field);
+        final TextView nameField = view.findViewById(R.id.cell_category_name_field);
         nameField.setText(category.getName());
 
-        final TagFlag colorFlag = (TagFlag) view.findViewById(
+        final TagFlag colorFlag = view.findViewById(
                 R.id.cell_category_color_flag);
         final int color = ModelHelper.getColor(category);
         colorFlag.setColor(color);

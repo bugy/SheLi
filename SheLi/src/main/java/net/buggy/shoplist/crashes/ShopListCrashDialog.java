@@ -21,7 +21,7 @@ public class ShopListCrashDialog extends BaseCrashReportDialog {
 
         setContentView(R.layout.crash_dialog);
 
-        final Button reportButton = (Button) findViewById(
+        final Button reportButton = findViewById(
                 R.id.crash_dialog_report_button);
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,7 +32,7 @@ public class ShopListCrashDialog extends BaseCrashReportDialog {
             }
         });
 
-        final Button closeButton = (Button) findViewById(
+        final Button closeButton = findViewById(
                 R.id.crash_dialog_close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +44,7 @@ public class ShopListCrashDialog extends BaseCrashReportDialog {
         });
 
 
-        final Button restartButton = (Button) findViewById(
+        final Button restartButton = findViewById(
                 R.id.crash_dialog_restart_button);
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +61,7 @@ public class ShopListCrashDialog extends BaseCrashReportDialog {
             }
         });
 
-        final ImageView image = (ImageView) findViewById(
+        final ImageView image = findViewById(
                 R.id.crash_dialog_image);
         ViewUtils.setTint(image, R.color.color_primary_icons);
     }

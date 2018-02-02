@@ -29,9 +29,9 @@ public class UsernameToolbarRenderer extends ViewRenderer<ShopListActivity, View
         final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
         inflater.inflate(R.layout.unit_auth_toolbar, parentView, true);
 
-        final ImageButton logOutButton = (ImageButton) parentView.findViewById(
+        final ImageButton logOutButton = parentView.findViewById(
                 R.id.unit_sharing_logout_button);
-        final TextView usernameLabel = (TextView) parentView.findViewById(
+        final TextView usernameLabel = parentView.findViewById(
                 R.id.unit_sharing_username_label);
 
         ViewUtils.setColorListTint(logOutButton, R.color.disableable_color_for_toolbar);

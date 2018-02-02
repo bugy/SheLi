@@ -45,7 +45,7 @@ public class AboutAppUnit extends Unit<ShopListActivity> {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_about, parentView, true);
 
-            final TextView versionView = (TextView) parentView.findViewById(R.id.unit_about_version);
+            final TextView versionView = parentView.findViewById(R.id.unit_about_version);
 
             String version = ViewUtils.getVersion(activity);
 
@@ -58,11 +58,11 @@ public class AboutAppUnit extends Unit<ShopListActivity> {
         }
 
         private void initDebugPanel(ViewGroup parentView, final ShopListActivity activity) {
-            final ViewGroup debugPanel = (ViewGroup) parentView.findViewById(
+            final ViewGroup debugPanel = parentView.findViewById(
                     R.id.unit_about_debug_panel);
-            final Button exceptionButton = (Button) parentView.findViewById(
+            final Button exceptionButton = parentView.findViewById(
                     R.id.unit_about_exception_button);
-            final Button sendLogsButton = (Button) parentView.findViewById(
+            final Button sendLogsButton = parentView.findViewById(
                     R.id.unit_about_send_logs_button);
 
             debugPanel.setVisibility(View.VISIBLE);

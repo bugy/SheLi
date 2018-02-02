@@ -36,9 +36,7 @@ public class SettingsUnit extends Unit<ShopListActivity> {
 
             final Settings settings = activity.getDao().getSettings();
 
-            @SuppressWarnings("unchecked")
-            final MaterialSpinner<Language> languageField = (MaterialSpinner<Language>)
-                    parentView.findViewById(R.id.unit_settings_language_field);
+            @SuppressWarnings("unchecked") final MaterialSpinner<Language> languageField = parentView.findViewById(R.id.unit_settings_language_field);
             languageField.setValues(Arrays.asList(Language.values()));
             languageField.setHint(activity.getString(R.string.unit_settings_language_hint));
             languageField.setSelectedItem(settings.getLanguage());
@@ -47,7 +45,7 @@ public class SettingsUnit extends Unit<ShopListActivity> {
             languageField.setShowNullValue(true);
 
 
-            final FloatingActionButton applyButton = (FloatingActionButton) parentView.findViewById(
+            final FloatingActionButton applyButton = parentView.findViewById(
                     R.id.unit_settings_apply_button);
 
             applyButton.setOnClickListener(new View.OnClickListener() {

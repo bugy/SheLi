@@ -141,7 +141,7 @@ public class GoogleAuthUnit extends Unit<ShopListActivity> {
         public void renderTo(ViewGroup parentView, final ShopListActivity activity) {
             super.renderTo(parentView, activity);
 
-            final TextView progressPanelText = (TextView) parentView.findViewById(
+            final TextView progressPanelText = parentView.findViewById(
                     R.id.progress_panel_text);
             progressPanelText.setText(R.string.unit_auth_google_login_progress_text);
         }

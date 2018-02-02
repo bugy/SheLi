@@ -71,10 +71,10 @@ public class CategoriesFilter extends FrameLayout {
 
         inflate(context, R.layout.categories_filter, this);
 
-        final ImageButton categoriesFilterButton = (ImageButton) this.findViewById(
+        final ImageButton categoriesFilterButton = this.findViewById(
                 R.id.categories_filter_filter_button);
 
-        final RelativeLayout activeCategoriesContainer = (RelativeLayout) this.findViewById(
+        final RelativeLayout activeCategoriesContainer = this.findViewById(
                 R.id.categories_filter_categories_container);
         final int filterButtonHeight = categoriesFilterButton.getDrawable().getIntrinsicHeight();
 
@@ -135,7 +135,7 @@ public class CategoriesFilter extends FrameLayout {
                 R.layout.popup_categories_filter,
                 null);
 
-        final RecyclerView categoriesList = (RecyclerView) popupContent.findViewById(
+        final RecyclerView categoriesList = popupContent.findViewById(
                 R.id.popup_categories_filter_categories_list);
         ListDecorator.decorateList(categoriesList);
         categoriesList.setAdapter(categoriesAdapter);

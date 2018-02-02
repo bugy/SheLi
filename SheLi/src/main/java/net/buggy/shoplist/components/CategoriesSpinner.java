@@ -123,7 +123,7 @@ public class CategoriesSpinner extends AppCompatSpinner {
             }
 
             private void updateColor(View view, int position) {
-                final TagFlag categoryFlag = (TagFlag) view.findViewById(R.id.category_spinner_item_color);
+                final TagFlag categoryFlag = view.findViewById(R.id.category_spinner_item_color);
 
                 if (position == 0) {
                     categoryFlag.setVisibility(View.INVISIBLE);

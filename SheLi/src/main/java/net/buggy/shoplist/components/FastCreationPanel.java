@@ -60,12 +60,12 @@ public class FastCreationPanel extends LinearLayout {
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(R.layout.fast_creation_panel, this, true);
 
-        nameField = (SearchEditText) findViewById(R.id.fast_creation_name_field);
+        nameField = findViewById(R.id.fast_creation_name_field);
 
-        final ImageButton addButton = (ImageButton) findViewById(R.id.fast_creation_add_button);
+        final ImageButton addButton = findViewById(R.id.fast_creation_add_button);
         ViewUtils.setColorListTint(addButton, R.color.disableable_accent);
 
-        editAddButton = (ImageButton) findViewById(R.id.fast_creation_add_and_edit_button);
+        editAddButton = findViewById(R.id.fast_creation_add_and_edit_button);
         ViewUtils.setColorListTint(editAddButton, R.color.disableable_accent);
 
         addButton.setEnabled(false);

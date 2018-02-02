@@ -69,11 +69,10 @@ public class EditShopItemUnit extends Unit<ShopListActivity> {
 
             final Product product = shopItem.getProduct();
 
-            final TextView nameField = (TextView) parentView.findViewById(R.id.unit_edit_shop_item_name_field);
+            final TextView nameField = parentView.findViewById(R.id.unit_edit_shop_item_name_field);
             setTextWithoutAnimation(nameField, product.getName());
 
-            final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
-                    parentView.findViewById(R.id.unit_edit_shop_item_units_field);
+            final MaterialSpinner<UnitOfMeasure> unitsField = parentView.findViewById(R.id.unit_edit_shop_item_units_field);
             unitsField.setHint(activity.getString(R.string.unit_edit_shop_item_units_field_label));
             unitsField.setValues(Arrays.asList(UnitOfMeasure.values()));
             unitsField.setNullString(activity.getString(R.string.material_spinner_default_null_string));
@@ -84,7 +83,7 @@ public class EditShopItemUnit extends Unit<ShopListActivity> {
             }
             unitsField.setStringConverter(new UnitOfMeasureStringifier(activity));
 
-            final EditText quantityField = (EditText) parentView.findViewById(R.id.unit_edit_shop_item_quantity_field);
+            final EditText quantityField = parentView.findViewById(R.id.unit_edit_shop_item_quantity_field);
             if (shopItem.getQuantity() != null) {
                 setTextWithoutAnimation(quantityField, StringUtils.toString(shopItem.getQuantity()));
             } else {
@@ -98,29 +97,25 @@ public class EditShopItemUnit extends Unit<ShopListActivity> {
                         }
                     }));
 
-            final EditText commentField = (EditText) parentView.findViewById(
+            final EditText commentField = parentView.findViewById(
                     R.id.unit_edit_shop_item_comment_field);
             if (shopItem.getComment() != null) {
                 setTextWithoutAnimation(commentField, shopItem.getComment());
             }
 
-            @SuppressWarnings("unchecked")
-            final MaterialSpinner<UnitOfMeasure> defaultUnitsField = (MaterialSpinner<UnitOfMeasure>)
-                    parentView.findViewById(R.id.merge_edit_product_units_field);
-            @SuppressWarnings("unchecked")
-            final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
-                    parentView.findViewById(R.id.merge_edit_product_period_type);
-            final EditText periodCountField = (EditText) parentView.findViewById(
+            @SuppressWarnings("unchecked") final MaterialSpinner<UnitOfMeasure> defaultUnitsField = parentView.findViewById(R.id.merge_edit_product_units_field);
+            @SuppressWarnings("unchecked") final MaterialSpinner<PeriodType> periodTypeField = parentView.findViewById(R.id.merge_edit_product_period_type);
+            final EditText periodCountField = parentView.findViewById(
                     R.id.merge_edit_product_period_count);
 
             EditProductUnit.initEditProductFields(parentView, activity, product);
             categoriesAdapter = EditProductUnit.initCategoriesSection(
                     parentView, activity, selectedCategories);
-            final RecyclerView categoriesList = (RecyclerView) parentView.findViewById(
+            final RecyclerView categoriesList = parentView.findViewById(
                     R.id.merge_edit_product_categories_list);
             categoriesList.setNestedScrollingEnabled(false);
 
-            final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(
+            final FloatingActionButton saveButton = parentView.findViewById(
                     R.id.unit_edit_shop_item_save_button);
 
             saveButton.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +164,7 @@ public class EditShopItemUnit extends Unit<ShopListActivity> {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_edit_product_toolbar, parentView, true);
 
-            final TextView titleField = (TextView) parentView.findViewById(R.id.unit_edit_product_title);
+            final TextView titleField = parentView.findViewById(R.id.unit_edit_product_title);
             final String titleText = activity.getString(R.string.unit_edit_shop_item_title, productName);
             titleField.setText(titleText);
         }

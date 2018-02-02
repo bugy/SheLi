@@ -55,15 +55,15 @@ public class EmailAuthUnit extends Unit<ShopListActivity> {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_auth_email, parentView, true);
 
-            logInButton = (Button) parentView.findViewById(
+            logInButton = parentView.findViewById(
                     R.id.unit_auth_email_login_button);
-            registerButton = (Button) parentView.findViewById(
+            registerButton = parentView.findViewById(
                     R.id.unit_auth_email_register_button);
-            addressField = (EditText) parentView.findViewById(
+            addressField = parentView.findViewById(
                     R.id.unit_auth_email_address);
-            passwordField = (EditText) parentView.findViewById(
+            passwordField = parentView.findViewById(
                     R.id.unit_auth_email_password);
-            errorLabel = (TextView) parentView.findViewById(
+            errorLabel = parentView.findViewById(
                     R.id.unit_auth_email_error_label);
 
             refresh();

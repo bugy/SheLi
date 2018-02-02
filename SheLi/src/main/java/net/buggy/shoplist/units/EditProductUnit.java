@@ -104,7 +104,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
 
             inflater.inflate(R.layout.unit_edit_product, parentView, true);
 
-            final EditText nameField = (EditText) parentView.findViewById(R.id.edit_product_name_field);
+            final EditText nameField = parentView.findViewById(R.id.edit_product_name_field);
             setTextWithoutAnimation(nameField, product.getName());
             nameField.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -124,19 +124,15 @@ public class EditProductUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            @SuppressWarnings("unchecked")
-            final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
-                    parentView.findViewById(R.id.merge_edit_product_units_field);
-            @SuppressWarnings("unchecked")
-            final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
-                    parentView.findViewById(R.id.merge_edit_product_period_type);
-            final EditText periodCountField = (EditText) parentView.findViewById(
+            @SuppressWarnings("unchecked") final MaterialSpinner<UnitOfMeasure> unitsField = parentView.findViewById(R.id.merge_edit_product_units_field);
+            @SuppressWarnings("unchecked") final MaterialSpinner<PeriodType> periodTypeField = parentView.findViewById(R.id.merge_edit_product_period_type);
+            final EditText periodCountField = parentView.findViewById(
                     R.id.merge_edit_product_period_count);
 
             initEditProductFields(parentView, activity, product);
             categoriesAdapter = initCategoriesSection(parentView, activity, selectedCategories);
 
-            final FloatingActionButton saveButton = (FloatingActionButton) parentView.findViewById(R.id.unit_edit_product_save_button);
+            final FloatingActionButton saveButton = parentView.findViewById(R.id.unit_edit_product_save_button);
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -182,13 +178,9 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             ViewGroup parentView, final ShopListActivity activity,
             final Product product) {
 
-        @SuppressWarnings("unchecked")
-        final MaterialSpinner<UnitOfMeasure> unitsField = (MaterialSpinner<UnitOfMeasure>)
-                parentView.findViewById(R.id.merge_edit_product_units_field);
-        @SuppressWarnings("unchecked")
-        final MaterialSpinner<PeriodType> periodTypeField = (MaterialSpinner<PeriodType>)
-                parentView.findViewById(R.id.merge_edit_product_period_type);
-        final EditText periodCountField = (EditText) parentView.findViewById(
+        @SuppressWarnings("unchecked") final MaterialSpinner<UnitOfMeasure> unitsField = parentView.findViewById(R.id.merge_edit_product_units_field);
+        @SuppressWarnings("unchecked") final MaterialSpinner<PeriodType> periodTypeField = parentView.findViewById(R.id.merge_edit_product_period_type);
+        final EditText periodCountField = parentView.findViewById(
                 R.id.merge_edit_product_period_count);
 
         unitsField.setHint(activity.getString(R.string.edit_product_units_field_label));
@@ -257,7 +249,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             }
         });
 
-        final RecyclerView categoriesList = (RecyclerView) parentView.findViewById(
+        final RecyclerView categoriesList = parentView.findViewById(
                 R.id.merge_edit_product_categories_list);
         ListDecorator.decorateList(categoriesList);
         categoriesList.setAdapter(categoriesAdapter);
@@ -329,7 +321,7 @@ public class EditProductUnit extends Unit<ShopListActivity> {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_edit_product_toolbar, parentView, true);
 
-            titleField = (TextView) parentView.findViewById(R.id.unit_edit_product_title);
+            titleField = parentView.findViewById(R.id.unit_edit_product_title);
             updateTitle();
         }
 

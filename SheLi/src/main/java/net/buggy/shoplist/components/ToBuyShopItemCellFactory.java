@@ -43,7 +43,7 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
         final ViewGroup view = (ViewGroup) inflater.inflate(
                 R.layout.cell_to_buy_shop_item, parent, false);
 
-        final TagFlagContainer categoriesContainer = (TagFlagContainer) view.findViewById(
+        final TagFlagContainer categoriesContainer = view.findViewById(
                 R.id.cell_to_buy_shop_item_categories);
         categoriesContainer.setTagWidth(ViewUtils.dpToPx(5, context));
 
@@ -57,10 +57,10 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
         final ShopItem shopItem = cell.getData();
         final Product product = cell.getData().getProduct();
 
-        final TextView itemNameField = (TextView) view.findViewById(R.id.cell_to_buy_shop_item_name_field);
+        final TextView itemNameField = view.findViewById(R.id.cell_to_buy_shop_item_name_field);
         itemNameField.setText(product.getName());
 
-        final TextView quantityView = (TextView) view.findViewById(R.id.cell_to_buy_shop_item_quantity_field);
+        final TextView quantityView = view.findViewById(R.id.cell_to_buy_shop_item_quantity_field);
         if (shopItem.getQuantity() != null) {
             quantityView.setText(buildStringQuantity(shopItem, view.getContext()));
         } else {
@@ -74,12 +74,11 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
             }
         }));
 
-        final TextView commentField = (TextView) view.findViewById(
+        final TextView commentField = view.findViewById(
                 R.id.cell_to_buy_shop_item_comment_field);
         updateCommentField(shopItem, commentField);
 
-        final CheckableImageButton checkButton = (CheckableImageButton)
-                view.findViewById(R.id.cell_to_buy_shop_item_check_field);
+        final CheckableImageButton checkButton = view.findViewById(R.id.cell_to_buy_shop_item_check_field);
         checkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +90,7 @@ public class ToBuyShopItemCellFactory extends CellFactory<ShopItem, ViewGroup> {
             }
         });
 
-        final TagFlagContainer categoriesContainer = (TagFlagContainer) view.findViewById(
+        final TagFlagContainer categoriesContainer = view.findViewById(
                 R.id.cell_to_buy_shop_item_categories);
         final Set<Category> categories = product.getCategories();
         final int categoriesMarginDp = Math.max(8 - categories.size(), 1);

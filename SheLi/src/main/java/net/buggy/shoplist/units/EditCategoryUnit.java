@@ -79,7 +79,7 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
 
             final TagFlag colorFlag = initColorFlag(parentView);
 
-            final FloatingActionButton acceptButton = (FloatingActionButton) parentView.findViewById(
+            final FloatingActionButton acceptButton = parentView.findViewById(
                     R.id.unit_edit_category_button_accept);
             acceptButton.setOnClickListener(
                     new View.OnClickListener() {
@@ -116,7 +116,7 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
         }
 
         private EditText initNameField(ViewGroup parentView) {
-            final EditText nameField = (EditText) parentView.findViewById(R.id.unit_edit_category_name_field);
+            final EditText nameField = parentView.findViewById(R.id.unit_edit_category_name_field);
             nameField.setText(category.getName());
 
             if (!newCategory) {
@@ -141,7 +141,7 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
         }
 
         private TagFlag initColorFlag(ViewGroup parentView) {
-            final TagFlag colorFlag = (TagFlag) parentView.findViewById(R.id.unit_edit_category_color_field);
+            final TagFlag colorFlag = parentView.findViewById(R.id.unit_edit_category_color_field);
             colorFlag.setColor(ModelHelper.getColor(category));
             colorFlag.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -205,7 +205,7 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            final RecyclerView productListView = (RecyclerView) parentView.findViewById(
+            final RecyclerView productListView = parentView.findViewById(
                     R.id.unit_edit_category_products_list);
             ListDecorator.decorateList(productListView);
             productListView.setAdapter(adapter);
@@ -230,7 +230,7 @@ public class EditCategoryUnit extends Unit<ShopListActivity> {
         public void renderTo(ViewGroup parentView, ShopListActivity activity) {
             super.renderTo(parentView, activity);
 
-            titleView = (TextView) parentView.findViewById(R.id.unit_edit_category_title);
+            titleView = parentView.findViewById(R.id.unit_edit_category_title);
             titleView.setText(getTitle());
         }
 

@@ -141,7 +141,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
 
             initAdapter();
 
-            final RecyclerView productsList = (RecyclerView) parentView.findViewById(R.id.unit_select_shopitems_list);
+            final RecyclerView productsList = parentView.findViewById(R.id.unit_select_shopitems_list);
             ListDecorator.decorateList(productsList);
 
             productsList.setAdapter(adapter);
@@ -260,7 +260,7 @@ public class SelectShopItemsUnit extends Unit<ShopListActivity> {
             final LayoutInflater inflater = LayoutInflater.from(parentView.getContext());
             inflater.inflate(R.layout.unit_create_shopitems_toolbar, parentView, true);
 
-            final CategoriesFilter categoriesFilter = (CategoriesFilter) parentView.findViewById(
+            final CategoriesFilter categoriesFilter = parentView.findViewById(
                     R.id.unit_create_shopitems_toolbar_categories_filter);
             categoriesFilter.setPopupAnchor(parentView);
             categoriesFilter.setCategories(dao.getCategories());

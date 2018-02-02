@@ -148,7 +148,7 @@ public class SharingUnit extends Unit<ShopListActivity> {
         @Override
         public void renderTo(final ViewGroup parentView, final ShopListActivity activity) {
             super.renderTo(parentView, activity);
-            swipeRefreshLayout = (SwipeRefreshLayout) parentView.findViewById(
+            swipeRefreshLayout = parentView.findViewById(
                     R.id.unit_sharing_container_refresh_layout);
 
             swipeRefreshLayout.setColorSchemeResources(R.color.color_primary);
@@ -159,11 +159,11 @@ public class SharingUnit extends Unit<ShopListActivity> {
                 }
             });
 
-            loginPanel = (ViewGroup) parentView.findViewById(
+            loginPanel = parentView.findViewById(
                     R.id.unit_sharing_container_login_panel);
-            verificationPanel = (ViewGroup) parentView.findViewById(
+            verificationPanel = parentView.findViewById(
                     R.id.unit_sharing_container_verification_panel);
-            sharePanel = (ViewGroup) parentView.findViewById(
+            sharePanel = parentView.findViewById(
                     R.id.unit_sharing_container_share_panel);
 
             refresh();
@@ -234,9 +234,9 @@ public class SharingUnit extends Unit<ShopListActivity> {
             public void renderTo(ViewGroup parentView, ShopListActivity activity) {
                 super.renderTo(parentView, activity);
 
-                logInGoogleButton = (ImageButton) parentView.findViewById(
+                logInGoogleButton = parentView.findViewById(
                         R.id.unit_sharing_auth_google_button);
-                logInWithEmailButton = (ImageButton) parentView.findViewById(
+                logInWithEmailButton = parentView.findViewById(
                         R.id.unit_sharing_auth_email_button);
 
                 logInGoogleButton.setOnClickListener(new View.OnClickListener() {
@@ -298,13 +298,13 @@ public class SharingUnit extends Unit<ShopListActivity> {
             public void renderTo(ViewGroup parentView, final ShopListActivity activity) {
                 super.renderTo(parentView, activity);
 
-                friendsEmailField = (EditText) activity.findViewById(
+                friendsEmailField = activity.findViewById(
                         R.id.unit_sharing_friends_email);
-                unitSharingTipLabel = (TextView) activity.findViewById(
+                unitSharingTipLabel = activity.findViewById(
                         R.id.unit_sharing_tip_label);
-                shareButton = (Button) activity.findViewById(
+                shareButton = activity.findViewById(
                         R.id.unit_sharing_share_button);
-                cancelShareButton = (Button) activity.findViewById(
+                cancelShareButton = activity.findViewById(
                         R.id.unit_sharing_cancel_share_button);
 
                 friendsEmailField.setEnabled(false);
@@ -902,9 +902,9 @@ public class SharingUnit extends Unit<ShopListActivity> {
             public void renderTo(ViewGroup parentView, final ShopListActivity activity) {
                 super.renderTo(parentView, activity);
 
-                verifyEmailButton = (Button) parentView.findViewById(
+                verifyEmailButton = parentView.findViewById(
                         R.id.unit_sharing_verification_send_verification_button);
-                refreshScreenButton = (Button) parentView.findViewById(
+                refreshScreenButton = parentView.findViewById(
                         R.id.unit_sharing_verification_refresh_button);
 
                 verifyEmailButtonText = verifyEmailButton.getText();

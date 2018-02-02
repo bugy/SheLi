@@ -28,11 +28,11 @@ public class CategoriesFilterCellFactory extends CellFactory<Category, ViewGroup
     public void fillCell(Cell<Category> cell, ViewGroup view, CellContext<Category> cellContext, final ChangeListener<Category> listener) {
         final Category category = cell.getData();
 
-        final TextView nameField = (TextView) view.findViewById(
+        final TextView nameField = view.findViewById(
                 R.id.cell_categories_filter_name);
         nameField.setText(category.getName());
 
-        final CheckBox checkBox = (CheckBox) view.findViewById(
+        final CheckBox checkBox = view.findViewById(
                 R.id.cell_categories_filter_checkbox);
         checkBox.setChecked(cell.isSelected());
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -42,7 +42,7 @@ public class CategoriesFilterCellFactory extends CellFactory<Category, ViewGroup
             }
         });
 
-        final TagFlag colorFlag = (TagFlag) view.findViewById(
+        final TagFlag colorFlag = view.findViewById(
                 R.id.cell_categories_filter_color_flag);
         colorFlag.setColor(ModelHelper.getColor(category));
     }

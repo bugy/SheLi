@@ -24,7 +24,7 @@ public class ProductCellFactory extends CellFactory<Product, ViewGroup> {
 
         final ViewGroup view = (ViewGroup) inflater.inflate(R.layout.cell_product, parent, false);
 
-        final TagFlagContainer categoriesContainer = (TagFlagContainer) view.findViewById(
+        final TagFlagContainer categoriesContainer = view.findViewById(
                 R.id.cell_product_categories);
         categoriesContainer.setMaxCount(6);
 
@@ -35,11 +35,11 @@ public class ProductCellFactory extends CellFactory<Product, ViewGroup> {
     public void fillCell(Cell<Product> cell, ViewGroup view, CellContext<Product> cellContext, ChangeListener<Product> listener) {
         final Product product = cell.getData();
 
-        final TextView itemNameField = (TextView) view.findViewById(R.id.cell_product_name_field);
+        final TextView itemNameField = view.findViewById(R.id.cell_product_name_field);
         itemNameField.setText(product.getName());
 
 
-        final TagFlagContainer categoriesContainer = (TagFlagContainer) view.findViewById(
+        final TagFlagContainer categoriesContainer = view.findViewById(
                 R.id.cell_product_categories);
         final Multiset<Integer> colors = ModelHelper.getColors(product.getCategories());
         categoriesContainer.setColors(colors);

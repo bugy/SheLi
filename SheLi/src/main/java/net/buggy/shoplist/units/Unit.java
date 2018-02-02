@@ -103,7 +103,7 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
 
     private void clearParentViews() {
         for (Integer parentViewId : renderers.keySet()) {
-            final ViewGroup parentView = (ViewGroup) hostingActivity.findViewById(parentViewId);
+            final ViewGroup parentView = hostingActivity.findViewById(parentViewId);
 
             SparseArray<Parcelable> state = new SparseArray<>();
             parentView.saveHierarchyState(state);
@@ -143,7 +143,7 @@ public abstract class Unit<A extends Activity & UnitHost> implements Serializabl
     }
 
     private <T extends ViewGroup> void renderView(Integer viewId, ViewRenderer<A, T> renderer) {
-        final T parentView = (T) hostingActivity.findViewById(viewId);
+        final T parentView = hostingActivity.findViewById(viewId);
 
         parentView.removeAllViews();
 

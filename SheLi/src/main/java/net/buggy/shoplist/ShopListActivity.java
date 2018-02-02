@@ -323,10 +323,10 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
     }
 
     private void initMenu() {
-        menuButton = (ImageButton) findViewById(R.id.toolbar_menu_button);
-        menuLayout = (DrawerLayout) findViewById(R.id.main_activity_menu_layout);
-        menuList = (RecyclerView) findViewById(R.id.main_activity_menu_list);
-        menuPanel = (ViewGroup) findViewById(R.id.main_activity_menu_panel);
+        menuButton = findViewById(R.id.toolbar_menu_button);
+        menuLayout = findViewById(R.id.main_activity_menu_layout);
+        menuList = findViewById(R.id.main_activity_menu_list);
+        menuPanel = findViewById(R.id.main_activity_menu_panel);
 
         final MenuCellFactory menuCellFactory = new MenuCellFactory();
         final FactoryBasedAdapter<MenuCellFactory.Item> menuAdapter = new FactoryBasedAdapter<>(
@@ -656,7 +656,7 @@ public class ShopListActivity extends AppCompatActivity implements UnitHost {
                     final Unit lastOwner = units.get(units.size() - 1);
                     lastOwner.viewClaimed(entry.getKey());
                 } else {
-                    final ViewGroup view = (ViewGroup) findViewById(entry.getKey());
+                    final ViewGroup view = findViewById(entry.getKey());
                     view.removeAllViews();
                 }
             }
