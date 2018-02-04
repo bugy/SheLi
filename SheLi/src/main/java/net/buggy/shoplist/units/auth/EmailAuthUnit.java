@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.common.base.Strings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -144,24 +145,18 @@ public class EmailAuthUnit extends Unit<ShopListActivity> {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.i("SharingBodyRenderer", "logInButton.onComplete: authenticated successfully");
+                    Log.i("EmailAuthUnit", "logInButton.onComplete: authenticated successfully");
                     errorLabel.setVisibility(View.GONE);
 
                 } else {
                     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
                     final Exception exception = task.getException();
 
-                    Log.w("SharingBodyRenderer",
-                            "logInButton.onComplete: couldn't authenticate the user",
-                            exception);
+                    Log.w("EmailAuthUnit",
+                          "logInButton.onComplete: couldn't authenticate the user",
+                          exception);
 
-                    final int errorTextKey;
-                    if ((exception instanceof FirebaseAuthInvalidUserException)
-                            || (exception instanceof FirebaseAuthInvalidCredentialsException)) {
-                        errorTextKey = R.string.unit_auth_email_login_error_user_not_exists;
-                    } else {
-                        errorTextKey = R.string.unit_auth_email_login_error_default;
-                    }
+                    final int errorTextKey = getErrorTextKey(exception);
 
                     errorLabel.setText(errorTextKey);
                     errorLabel.setVisibility(View.VISIBLE);
@@ -169,14 +164,33 @@ public class EmailAuthUnit extends Unit<ShopListActivity> {
 
                 refresh();
             }
+
+            private int getErrorTextKey(Exception exception) {
+                if (exception instanceof FirebaseAuthException) {
+                    FirebaseAuthException authException = (FirebaseAuthException) exception;
+                    final String errorCode = authException.getErrorCode();
+
+                    if ("ERROR_WRONG_PASSWORD".equals(errorCode)) {
+                        return R.string.unit_auth_email_login_error_wrong_password;
+                    } else if ("ERROR_INVALID_EMAIL".equals(errorCode)) {
+                        return R.string.unit_auth_email_login_error_user_not_exists;
+                    }
+                }
+
+                if (exception instanceof FirebaseAuthInvalidUserException) {
+                    return R.string.unit_auth_email_login_error_user_not_exists;
+                }
+
+                return R.string.unit_auth_email_login_error_default;
+            }
         }
 
         private class RegistrationListener implements OnCompleteListener<AuthResult> {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.i("SharingBodyRenderer",
-                            "registerButton.onComplete: email registered");
+                    Log.i("EmailAuthUnit",
+                          "registerButton.onComplete: email registered");
 
                     errorLabel.setVisibility(View.GONE);
 
@@ -186,9 +200,9 @@ public class EmailAuthUnit extends Unit<ShopListActivity> {
                     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
                     final Exception exception = task.getException();
 
-                    Log.w("SharingBodyRenderer",
-                            "registerButton.onComplete: couldn't register the email",
-                            exception);
+                    Log.w("EmailAuthUnit",
+                          "registerButton.onComplete: couldn't register the email",
+                          exception);
 
                     final int errorTextKey;
                     if (exception instanceof FirebaseAuthUserCollisionException) {
