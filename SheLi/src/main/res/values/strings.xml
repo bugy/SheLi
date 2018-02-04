@@ -108,7 +108,10 @@
     <string name="days_ago">%sd ago</string>
     <string name="weeks_ago">%sw ago</string>
     <string name="months_ago">%sm ago</string>
-    <string name="years_ago">%sy ago</string>
+    <plurals name="years_ago">
+        <item quantity="one">%dy ago</item>
+        <item quantity="other">%dy ago</item>
+    </plurals>
     <string name="long_ago">long ago</string>
     <string name="categories_spinner_all">All</string>
     <string name="language_en" translatable="false">English</string>

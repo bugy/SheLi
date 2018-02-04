@@ -89,7 +89,11 @@ public class ModelHelper {
         category.setName(name);
 
         final Random random = new Random();
-        final int color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        final int color = Color.argb(
+                255,
+                random.nextInt(256),
+                random.nextInt(256),
+                random.nextInt(256));
         category.setColor(color);
 
         return category;
@@ -139,7 +143,8 @@ public class ModelHelper {
 
         int yearsRounded = (int) Math.round(daysDiff / 365);
         if (yearsRounded <= 5) {
-            return context.getString(R.string.years_ago, String.valueOf(yearsRounded));
+            return context.getResources().getQuantityString(
+                    R.plurals.years_ago, yearsRounded, yearsRounded);
         }
 
         return context.getString(R.string.long_ago);
@@ -196,9 +201,14 @@ public class ModelHelper {
 
     @NonNull
     public static <T extends Entity> EntitySynchronizationRecord<T> createSyncRecord(
-            Long internalId, String externalId, String listId, Date modificationDate, Class<T> entityClass) {
+            Long internalId,
+            String externalId,
+            String listId,
+            Date modificationDate,
+            Class<T> entityClass) {
 
-        final EntitySynchronizationRecord<T> synchronizationRecord = new EntitySynchronizationRecord<>();
+        final EntitySynchronizationRecord<T> synchronizationRecord =
+                new EntitySynchronizationRecord<>();
         synchronizationRecord.setLastChangeDate(modificationDate);
         synchronizationRecord.setInternalId(internalId);
         synchronizationRecord.setExternalId(externalId);

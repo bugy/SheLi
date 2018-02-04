@@ -110,7 +110,11 @@
     <string name="days_ago">%sд назад</string>
     <string name="weeks_ago">%sн назад</string>
     <string name="months_ago">%sм назад</string>
-    <string name="years_ago">%sл назад</string>
+    <plurals name="years_ago">
+        <item quantity="one">%dг назад</item>
+        <item quantity="few">%dг назад</item>
+        <item quantity="many">%dл назад</item>
+    </plurals>
     <string name="long_ago">очень давно</string>
     <string name="categories_spinner_all">All</string>
     <string name="products_unit_delete_from_cart">Удалить из списка покупок?</string>
