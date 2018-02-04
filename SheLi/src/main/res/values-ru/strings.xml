@@ -192,6 +192,7 @@
     <string name="unit_auth_email_registration_error_weak_password">Пароль должен быть не менее 6 символов</string>
     <string name="unit_auth_email_login_error_default">Не удалось авторизоваться</string>
     <string name="unit_auth_email_login_error_user_not_exists">Пользователь не зарегистрирован</string>
+    <string name="unit_auth_email_login_error_wrong_password">Неверный пароль</string>
     <string name="unit_auth_email_empty_email">Необходимо указать E-mail</string>
     <string name="unit_auth_email_empty_password">Необходимо указать пароль</string>
     <string name="unit_auth_email_verification_sent">Подтверждение отправлено на E-mail</string>

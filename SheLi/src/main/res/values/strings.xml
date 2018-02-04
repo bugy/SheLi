@@ -189,6 +189,7 @@
     <string name="unit_auth_email_registration_error_weak_password">Password should be at least 6 characters</string>
     <string name="unit_auth_email_login_error_default">Login failed</string>
     <string name="unit_auth_email_login_error_user_not_exists">The user is not registered</string>
+    <string name="unit_auth_email_login_error_wrong_password">Wrong password</string>
     <string name="unit_auth_email_empty_email">Email shouldn\'t be empty</string>
     <string name="unit_auth_email_empty_password">Password shouldn\'t be empty</string>
     <string name="unit_auth_email_verification_sent">Verification email was sent</string>
