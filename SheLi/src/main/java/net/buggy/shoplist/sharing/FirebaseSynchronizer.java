@@ -7,9 +7,11 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -33,6 +35,7 @@ import net.buggy.shoplist.model.ShopItem;
 import net.buggy.shoplist.utils.ExecutorServiceMonitoringDecorator;
 import net.buggy.shoplist.utils.StringUtils;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -93,8 +96,8 @@ public class FirebaseSynchronizer {
     private final EntitySynchronizer<ShopItem> shopItemSynchronizer;
     private final FailureCallback failureCallback;
 
-    private final Map<Class<? extends Entity>, BiMap<Long, EntitySynchronizationRecord>> synchronizationRecords =
-            new ConcurrentHashMap<>();
+    private final Map<Class<? extends Entity>, BiMap<Long, EntitySynchronizationRecord>>
+            synchronizationRecords = new ConcurrentHashMap<>();
 
     public FirebaseSynchronizer(Dao dao, FailureCallback failureCallback) {
         this(dao, FirebaseAuth.getInstance(), FirebaseDatabase.getInstance(), failureCallback);
@@ -140,7 +143,7 @@ public class FirebaseSynchronizer {
                     waitEmailVerification(currentUser);
                 } else {
                     Log.i("FirebaseSynchronizer", "onAuthStateChanged: subscribing");
-                    subscribe();
+                    subscribeOnFirebase();
                 }
             }
         };
@@ -156,45 +159,8 @@ public class FirebaseSynchronizer {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                user.reload().addOnCompleteListener(BACKGROUND_SERVICE, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e("FirebaseSynchronizer", "onComplete: failed to reload user", task.getException());
-                            return;
-                        }
-
-                        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if (currentUser == null) {
-                            Log.i("FirebaseSynchronizer", "waitEmailVerification.run:" +
-                                    "current user is null, stopping await");
-                            return;
-                        }
-
-                        if (!currentUser.getUid().equals(user.getUid())) {
-                            Log.w("FirebaseSynchronizer", "waitEmailVerification.run:" +
-                                    "current user was changed, stopping await");
-                            return;
-                        }
-
-                        if (!currentUser.isEmailVerified()) {
-                            Log.d("FirebaseSynchronizer", "waitEmailVerification.run:" +
-                                    "email still not verified, waiting");
-                            waitEmailVerification(user);
-                            return;
-                        }
-
-                        if (stateReference.get() != State.UNSUBSCRIBED) {
-                            Log.w("FirebaseSynchronizer", "waitEmailVerification.run:" +
-                                    "subscription is already in progress");
-                            return;
-                        }
-
-                        Log.i("FirebaseSynchronizer", "waitEmailVerification.run:" +
-                                " email verified, subscribing");
-                        subscribe();
-                    }
-                });
+                user.reload()
+                    .addOnCompleteListener(BACKGROUND_SERVICE, new EmailVerificationListener(user));
             }
         }, RELOAD_EMAIL_DELAY);
     }
@@ -258,9 +224,9 @@ public class FirebaseSynchronizer {
         }
     }
 
-    private synchronized void subscribe() {
+    private synchronized void subscribeOnFirebase() {
         if (stateReference.get() == State.SUBSCRIBED) {
-            Log.w("FirebaseSynchronizer", "subscribe: already subscribed");
+            Log.w("FirebaseSynchronizer", "subscribeOnFirebase: already subscribed");
             return;
         }
 
@@ -286,9 +252,10 @@ public class FirebaseSynchronizer {
 
                 DatabaseReference currentUserList = activeUserList;
                 if (currentUserList != null) {
-                    Log.i("FirebaseSynchronizer", "onDataChange: unsubscribing from the old list" +
-                            ". oldListId=" + currentUserList.getKey()
-                            + ", newListId=" + listId);
+                    Log.i("FirebaseSynchronizer",
+                          "onDataChange: unsubscribing from the old list"
+                                  + ". oldListId=" + currentUserList.getKey()
+                                  + ", newListId=" + listId);
                     unsubscribe();
                     stateReference.set(State.INITIALIZING);
                 }
@@ -321,8 +288,8 @@ public class FirebaseSynchronizer {
                 }
 
                 Log.e("FirebaseSynchronizer",
-                        "onCancelled: database error." + databaseError.getMessage(),
-                        databaseError.toException());
+                      "onCancelled: database error." + databaseError.getMessage(),
+                      databaseError.toException());
 
                 failureCallback.synchronizationStartFailed(databaseError.toException());
             }
@@ -331,8 +298,9 @@ public class FirebaseSynchronizer {
 
         final ValueListenerPair oldPair = userListListener.get();
         if (oldPair != null) {
-            Log.w("FirebaseSynchronizer", "subscribe: userListListener wasn't null" +
-                    ". nodeId=" + oldPair.node.getKey());
+            Log.w("FirebaseSynchronizer",
+                  "subscribeOnFirebase: userListListener wasn't null"
+                          + ". nodeId=" + oldPair.node.getKey());
             oldPair.node.removeEventListener(oldPair.valueListener);
         }
         userListListener.set(new ValueListenerPair(userListNode, valueEventListener));
@@ -369,21 +337,18 @@ public class FirebaseSynchronizer {
             @Override
             public void run() {
                 try {
-                    FirebaseSynchronizer.this.synchronizationRecords.clear();
-                    final List<EntitySynchronizationRecord<Entity>> synchronizationRecords =
-                            dao.loadSynchronizationRecords(null, userList.getKey());
-                    for (EntitySynchronizationRecord<Entity> record : synchronizationRecords) {
-                        cacheSyncRecord(record);
-                    }
+                    loadAndCacheSyncRecords(userList.getKey());
 
-
-                    final Future<Boolean> categoriesBulkFuture = bulkSynchronizeEntities(userList, categoriesSynchronizer);
+                    final Future<Boolean> categoriesBulkFuture =
+                            bulkSynchronizeEntities(userList, categoriesSynchronizer);
                     waitFirebaseFuture(categoriesBulkFuture);
 
-                    final Future<Boolean> productsBulkFuture = bulkSynchronizeEntities(userList, productSynchronizer);
+                    final Future<Boolean> productsBulkFuture =
+                            bulkSynchronizeEntities(userList, productSynchronizer);
                     waitFirebaseFuture(productsBulkFuture);
 
-                    final Future<Boolean> shopItemsBulkFuture = bulkSynchronizeEntities(userList, shopItemSynchronizer);
+                    final Future<Boolean> shopItemsBulkFuture =
+                            bulkSynchronizeEntities(userList, shopItemSynchronizer);
                     waitFirebaseFuture(shopItemsBulkFuture);
 
                     subscribeOnServerChanges(userList, categoriesSynchronizer);
@@ -393,7 +358,9 @@ public class FirebaseSynchronizer {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (Exception exception) {
-                    Log.e("FirebaseSynchronizer", "startSynchronization: bulk synchronization failed", exception);
+                    Log.e("FirebaseSynchronizer",
+                          "startSynchronization: bulk synchronization failed",
+                          exception);
                     stateReference.set(State.UNSUBSCRIBED);
 
                     failureCallback.synchronizationStartFailed(exception);
@@ -405,108 +372,97 @@ public class FirebaseSynchronizer {
         });
     }
 
-    private void subscribeOnSynchronizationRecords() {
-        addDaoListener(EntitySynchronizationRecord.class, new EntityListener<EntitySynchronizationRecord>() {
-            @Override
-            public void entityAdded(EntitySynchronizationRecord synchronizationRecord) {
-                cacheSyncRecord(synchronizationRecord);
+    private void loadAndCacheSyncRecords(String listId) {
+        this.synchronizationRecords.clear();
+        final List<EntitySynchronizationRecord<Entity>> recordsList =
+                dao.loadSynchronizationRecords(null, listId);
+
+        for (EntitySynchronizationRecord<Entity> record : recordsList) {
+            final BiMap<Long, EntitySynchronizationRecord<Entity>> map =
+                    getRecordsMapForClass(record.getEntityClass());
+
+            final EntitySynchronizationRecord<Entity> cachedRecord =
+                    map.get(record.getInternalId());
+            if (cachedRecord != null) {
+                Log.w("FirebaseSynchronizer", "loadAndCacheSyncRecords: "
+                        + "2 records found with the same internal id. Removing the 2nd record"
+                        + ". cachedRecord=" + cachedRecord
+                        + ", record2=" + record);
+                dao.removeSynchronizationRecord(record);
+            } else {
+                map.put(record.getInternalId(), record);
             }
-
-            @Override
-            public void entityChanged(EntitySynchronizationRecord changedRecord) {
-                cacheSyncRecord(changedRecord);
-                if (!changedRecord.isDeleted()) {
-                    return;
-                }
-
-                final DatabaseReference userList = FirebaseSynchronizer.this.activeUserList;
-                if ((userList == null)
-                        || (!changedRecord.getListId().equals(userList.getKey()))) {
-                    return;
-                }
-
-                final String externalId = changedRecord.getExternalId();
-                final Class entityClass = changedRecord.getEntityClass();
-
-                final String type = StringUtils.lowerFirstLetter(entityClass.getSimpleName());
-
-                if (removingClientEntities.contains(externalId)) {
-                    Log.i("FirebaseSynchronizer", "changedSynchronizationRecord: server " + type + " deleted" +
-                            ". Client " + type + " deletion is in progress" +
-                            ". externalId=" + externalId);
-                    removingClientEntities.remove(externalId);
-                    return;
-                }
-
-                if (stateReference.get() != State.SUBSCRIBED) {
-                    Log.i("FirebaseSynchronizer", "changedSynchronizationRecord: not yet subscribed" +
-                            ", skipping " + type + " removal record" +
-                            ". externalId=" + externalId);
-                    return;
-                }
-
-                Log.i("FirebaseSynchronizer", "changedSynchronizationRecord: removing server " +
-                        type +
-                        ". externalId=" + externalId);
-
-                final String listName;
-                if (Category.class.isAssignableFrom(entityClass)) {
-                    listName = categoriesSynchronizer.getFirebaseListName();
-                } else if (Product.class.isAssignableFrom(entityClass)) {
-                    listName = productSynchronizer.getFirebaseListName();
-                } else if (ShopItem.class.isAssignableFrom(entityClass)) {
-                    listName = shopItemSynchronizer.getFirebaseListName();
-                } else {
-                    throw new IllegalStateException("Unknown entity class " + entityClass);
-                }
-
-                removeServerSnapshot(userList.child(listName), externalId);
-            }
-
-            @Override
-            public void entityRemoved(EntitySynchronizationRecord removedEntity) {
-                final String type = removedEntity.getEntityClass().getSimpleName();
-                Log.d("FirebaseSynchronizer", "removedSynchronizationRecord: removed record for " + type +
-                        ". externalId=" + removedEntity.getExternalId());
-
-                final BiMap<Long, EntitySynchronizationRecord<? extends Entity>> map =
-                        getRecordsByClass(removedEntity.getEntityClass());
-
-                map.remove(removedEntity.getInternalId());
-            }
-        });
+        }
     }
 
-    private <T extends Entity> void cacheSyncRecord(
-            EntitySynchronizationRecord<T> synchronizationRecord) {
-        if (synchronizationRecord.getId() == null) {
+    private void subscribeOnSynchronizationRecords() {
+        addDaoListener(EntitySynchronizationRecord.class, new SyncRecordChangeListener());
+    }
+
+    private <T extends Entity> void cacheSyncRecord(EntitySynchronizationRecord<T> syncRecord) {
+        if (syncRecord.getId() == null) {
             throw new IllegalStateException("Record has no id");
         }
 
-        final Class<T> entityClass = synchronizationRecord.getEntityClass();
+        final Class<T> entityClass = syncRecord.getEntityClass();
 
-        BiMap<Long, EntitySynchronizationRecord> map = synchronizationRecords.get(entityClass);
-        if (map == null) {
-            map = HashBiMap.create();
-            synchronizationRecords.put(entityClass, map);
+        BiMap<Long, EntitySynchronizationRecord<T>> map = getRecordsMapForClass(entityClass);
+
+        final EntitySynchronizationRecord existingRecord =
+                map.remove(syncRecord.getInternalId());
+        map.put(syncRecord.getInternalId(), syncRecord);
+
+        if ((existingRecord != null) && (!syncRecordsEqual(syncRecord, existingRecord))) {
+            throw new IllegalStateException(
+                    "Another sync record with same internal id exist: " + existingRecord
+                            + ". New record: " + syncRecord);
+        }
+    }
+
+    private boolean syncRecordsEqual(
+            EntitySynchronizationRecord record1,
+            EntitySynchronizationRecord record2) {
+        if ((record1 == null) || (record2 == null)) {
+            return (record1 == null) && (record2 == null);
         }
 
-        map.remove(synchronizationRecord.getInternalId());
-        map.put(synchronizationRecord.getInternalId(), synchronizationRecord);
+        if (record1.equals(record2)) {
+            return true;
+        }
+
+        if (!Objects.equal(record1.getEntityClass(), record2.getEntityClass())) {
+            return false;
+        }
+
+        if (!Objects.equal(record1.getExternalId(), record2.getExternalId())) {
+            return false;
+        }
+
+        if (!Objects.equal(record1.getInternalId(), record2.getInternalId())) {
+            return false;
+        }
+
+        if (!Objects.equal(record1.getListId(), record2.getListId())) {
+            return false;
+        }
+
+        return true;
     }
 
     private <T extends Entity> void subscribeOnClientChanges(
             final EntitySynchronizer<T> entitySynchronizer) {
-        final String type = StringUtils.lowerFirstLetter(entitySynchronizer.getEntityClass().getSimpleName());
+        final String type =
+                StringUtils.lowerFirstLetter(entitySynchronizer.getEntityClass().getSimpleName());
 
         final EntityListener<T> listener = new EntityListener<T>() {
             @Override
             public void entityAdded(final T newEntity) {
                 EntityPair<Entity> foundPair = getAddInProgressPair(newEntity);
                 if (foundPair != null) {
-                    Log.i("FirebaseSynchronizer", "entityAdded: " + type + " was just created from server" +
-                            ", storing sync record" +
-                            ". externalId=" + foundPair.serverEntity.getKey());
+                    Log.i("FirebaseSynchronizer",
+                          "entityAdded: " + type + " was just created from server"
+                                  + ", storing sync record"
+                                  + ". externalId=" + foundPair.serverEntity.getKey());
                     finishAddInProgress(newEntity, foundPair, entitySynchronizer);
                     return;
                 }
@@ -521,10 +477,11 @@ public class FirebaseSynchronizer {
                 final EntitySynchronizationRecord record = getSyncRecord(
                         entitySynchronizer.getEntityClass(), newEntity.getId());
                 if (record != null) {
-                    Log.i("FirebaseSynchronizer", "entityAdded: " + type + " has synchronization record" +
-                            ", won't save to server" +
-                            ". externalId=" +
-                            ", naturalId=" + naturalId);
+                    Log.i("FirebaseSynchronizer",
+                          "entityAdded: " + type + " has synchronization record" +
+                                  ", won't save to server" +
+                                  ". externalId=" +
+                                  ", naturalId=" + naturalId);
                     return;
                 }
 
@@ -539,9 +496,10 @@ public class FirebaseSynchronizer {
             public void entityChanged(final T changedEntity) {
                 final DataSnapshot serverEntity = changingClientEntities.get(changedEntity);
                 if (serverEntity != null) {
-                    Log.i("FirebaseSynchronizer", "entityChanged: " + type + " was changed by server" +
-                            ", updating change date" +
-                            ". externalId=" + serverEntity.getKey());
+                    Log.i("FirebaseSynchronizer",
+                          "entityChanged: " + type + " was changed by server" +
+                                  ", updating change date" +
+                                  ". externalId=" + serverEntity.getKey());
                     finishChangeInProgress(changedEntity, serverEntity);
                     return;
                 }
@@ -630,7 +588,8 @@ public class FirebaseSynchronizer {
             }
 
             private void finishChangeInProgress(T changedEntity, DataSnapshot serverEntity) {
-                dao.updateSynchronizationRecords(changedEntity.getId(),
+                dao.updateSynchronizationRecords(
+                        changedEntity.getId(),
                         entitySynchronizer.getEntityClass(),
                         EntitySynchronizer.getLastChangeDate(serverEntity),
                         false);
@@ -651,7 +610,8 @@ public class FirebaseSynchronizer {
                         try {
                             creationFinishedLatch.await();
                         } catch (InterruptedException e) {
-                            Log.i("FirebaseSynchronizer", "createOrLinkServerEntity.run: interrupted");
+                            Log.i("FirebaseSynchronizer",
+                                  "createOrLinkServerEntity.run: interrupted");
                         }
                     }
                 });
@@ -662,28 +622,34 @@ public class FirebaseSynchronizer {
                         try {
 
                             if (dataSnapshot.getChildrenCount() == 0) {
-                                Log.i("FirebaseSynchronizer", "createOrLinkServerEntity.onDataChange:" +
-                                        " server " + type + " doesn't exist, creating." +
-                                        ". naturalId=" + naturalId +
-                                        ", internalId=" + newEntity.getId());
+                                Log.i("FirebaseSynchronizer",
+                                      "createOrLinkServerEntity.onDataChange:" +
+                                              " server " + type + " doesn't exist, creating." +
+                                              ". naturalId=" + naturalId +
+                                              ", internalId=" + newEntity.getId());
                                 try {
-                                    entitySynchronizer.createServerEntity(newEntity, entitiesListNode);
+                                    entitySynchronizer.createServerEntity(
+                                            newEntity,
+                                            entitiesListNode);
                                     return;
                                 } catch (Exception e) {
-                                    Log.e("FirebaseSynchronizer", "createOrLinkServerEntity.onDataChange:" +
-                                            " Couldn't create server " + type +
-                                            ". entity=" + newEntity, e);
+                                    Log.e("FirebaseSynchronizer",
+                                          "createOrLinkServerEntity.onDataChange:" +
+                                                  " Couldn't create server " + type +
+                                                  ". entity=" + newEntity,
+                                          e);
                                     failureCallback.updateServerEntityFailed(newEntity, e);
                                     throw e;
                                 }
                             }
 
                             if (dataSnapshot.getChildrenCount() > 1) {
-                                Log.w("FirebaseSynchronizer", "createOrLinkServerEntity.onDataChange:" +
-                                        " multiple server " + type + " matched by naturalId" +
-                                        ". naturalId=" + naturalId +
-                                        ", internalId=" + newEntity.getId() +
-                                        ", childrenCount=" + dataSnapshot.getChildrenCount());
+                                Log.w("FirebaseSynchronizer",
+                                      "createOrLinkServerEntity.onDataChange:" +
+                                              " multiple server " + type + " matched by naturalId" +
+                                              ". naturalId=" + naturalId +
+                                              ", internalId=" + newEntity.getId() +
+                                              ", childrenCount=" + dataSnapshot.getChildrenCount());
                             }
 
                             final DataSnapshot serverEntity =
@@ -695,7 +661,10 @@ public class FirebaseSynchronizer {
                                     ", externalId=" + serverEntity.getKey());
 
                             addSyncRecord(
-                                    newEntity.getId(), serverEntity, entitySynchronizer, new Date());
+                                    newEntity.getId(),
+                                    serverEntity,
+                                    entitySynchronizer,
+                                    new Date());
                             entitySynchronizer.updateServerEntity(
                                     newEntity, serverEntity.getRef());
                         } finally {
@@ -707,10 +676,10 @@ public class FirebaseSynchronizer {
                     public void onCancelled(DatabaseError databaseError) {
                         try {
                             Log.e("FirebaseSynchronizer", "createOrLinkServerEntity.onCancelled:" +
-                                            " couldn't get server " + type + " by naturalId" +
-                                            ". naturalId=" + naturalId +
-                                            ", internalId=" + newEntity.getId(),
-                                    databaseError.toException());
+                                          " couldn't get server " + type + " by naturalId" +
+                                          ". naturalId=" + naturalId +
+                                          ", internalId=" + newEntity.getId(),
+                                  databaseError.toException());
                             failureCallback.updateServerEntityFailed(
                                     newEntity, databaseError.toException());
                         } finally {
@@ -734,8 +703,11 @@ public class FirebaseSynchronizer {
         addDaoListener(entitySynchronizer.getEntityClass(), listener);
     }
 
-    private <T extends Entity> EntitySynchronizationRecord getSyncRecord(Class<T> entityClass, Long internalId) {
-        final BiMap<Long, EntitySynchronizationRecord> classRecords = synchronizationRecords.get(entityClass);
+    private <T extends Entity> EntitySynchronizationRecord getSyncRecord(
+            Class<T> entityClass,
+            Long internalId) {
+        final BiMap<Long, EntitySynchronizationRecord> classRecords =
+                synchronizationRecords.get(entityClass);
         if (classRecords == null) {
             return null;
         }
@@ -743,8 +715,11 @@ public class FirebaseSynchronizer {
         return classRecords.get(internalId);
     }
 
-    private <T extends Entity> EntitySynchronizationRecord getSyncRecord(Class<T> entityClass, String externalId) {
-        final BiMap<Long, EntitySynchronizationRecord<T>> classRecords = getRecordsByClass(entityClass);
+    private <T extends Entity> EntitySynchronizationRecord getSyncRecord(
+            Class<T> entityClass,
+            String externalId) {
+        final BiMap<Long, EntitySynchronizationRecord<T>> classRecords =
+                getRecordsMapForClass(entityClass);
 
         for (EntitySynchronizationRecord record : classRecords.values()) {
             if (record.getExternalId().equals(externalId)) {
@@ -756,17 +731,26 @@ public class FirebaseSynchronizer {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Entity> BiMap<Long, EntitySynchronizationRecord<T>> getRecordsByClass(Class<T> entityClass) {
-        final BiMap<Long, EntitySynchronizationRecord<T>> records = (BiMap<Long, EntitySynchronizationRecord<T>>)
-                (BiMap) synchronizationRecords.get(entityClass);
+    private <T extends Entity> BiMap<Long, EntitySynchronizationRecord<T>> getRecordsMapForClass(
+            Class<T> entityClass) {
 
-        return (records != null) ? records : HashBiMap.<Long, EntitySynchronizationRecord<T>>create();
+        BiMap<Long, EntitySynchronizationRecord> records = synchronizationRecords.get(entityClass);
+
+        if (records == null) {
+            records = Maps.synchronizedBiMap(HashBiMap.<Long, EntitySynchronizationRecord>create());
+            synchronizationRecords.put(entityClass, records);
+        }
+
+        return (BiMap<Long, EntitySynchronizationRecord<T>>) (BiMap) records;
     }
 
-    private <T extends Entity> void addDaoListener(Class<T> entityClass, EntityListener<T> listener) {
+    private <T extends Entity> void addDaoListener(
+            Class<T> entityClass,
+            EntityListener<T> listener) {
         final EntityListener oldListener = daoListeners.put(entityClass, listener);
         if (oldListener != null) {
-            Log.w("FirebaseSynchronizer", "addDaoListener: listener already exists. Unsubscribing old listener");
+            Log.w("FirebaseSynchronizer",
+                  "addDaoListener: listener already exists. Unsubscribing old listener");
             dao.removeEntityListener(entityClass, listener);
         }
 
@@ -788,9 +772,11 @@ public class FirebaseSynchronizer {
 
     private <T extends Entity> void subscribeOnServerChanges(
             final DatabaseReference userList, final EntitySynchronizer<T> entitySynchronizer) {
-        final String type = StringUtils.lowerFirstLetter(entitySynchronizer.getEntityClass().getSimpleName());
+        final String type =
+                StringUtils.lowerFirstLetter(entitySynchronizer.getEntityClass().getSimpleName());
 
-        final DatabaseReference serverListNode = userList.child(entitySynchronizer.getFirebaseListName());
+        final DatabaseReference serverListNode =
+                userList.child(entitySynchronizer.getFirebaseListName());
         addFirebaseChildListener(serverListNode, wrapInBackgroundThread(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot serverEntity, String s) {
@@ -799,18 +785,12 @@ public class FirebaseSynchronizer {
 
                 final String listId = userList.getKey();
 
-                T clientEntity = entitySynchronizer.findOnClientByExternalId(externalId, listId);
                 final EntitySynchronizationRecord record = getSyncRecord(
                         entitySynchronizer.getEntityClass(), externalId);
 
-                if (record == null) {
-                    Log.i("FirebaseSynchronizer", "onChildAdded: adding new client " + type +
-                            ". id=" + externalId +
-                            ", naturalId=" + naturalId);
+                boolean createNew = (record == null);
 
-                    createOrLinkClientEntity(serverEntity, entitySynchronizer);
-
-                } else {
+                if (record != null) {
                     if (record.isDeleted()) {
                         Log.i("FirebaseSynchronizer", "onChildAdded: " +
                                 "the " + type + " is removed on client. Removing from the server" +
@@ -819,14 +799,36 @@ public class FirebaseSynchronizer {
                         removeServerSnapshot(serverEntity.getRef(), serverEntity.getKey());
 
                     } else {
-                        Log.i("FirebaseSynchronizer", "onChildAdded: client " + type + " already exists" +
-                                ". Synchronizing object state" +
-                                ". id=" + externalId +
-                                ", naturalId=" + naturalId);
+                        Log.i("FirebaseSynchronizer",
+                              "onChildAdded: client " + type + " already exists" +
+                                      ". Synchronizing object state" +
+                                      ". id=" + externalId +
+                                      ", naturalId=" + naturalId);
 
-                        mergeEntity(serverEntity, clientEntity, record, entitySynchronizer);
+                        T clientEntity = entitySynchronizer.findOnClientByExternalId(
+                                externalId, listId);
+                        if (clientEntity != null) {
+                            mergeEntity(serverEntity, clientEntity, record, entitySynchronizer);
+                        } else {
+                            Log.w("FirebaseSynchronizer", "onChildAdded:"
+                                    + " client " + type + " not found for the record"
+                                    + ". Removing the record and creating new " + type
+                                    + ". ExternalId=" + externalId
+                                    + ", naturalId=" + naturalId);
+                            dao.removeSynchronizationRecord(record);
+                            createNew = true;
+                        }
                     }
                 }
+
+                if (createNew) {
+                    Log.i("FirebaseSynchronizer", "onChildAdded: adding new client " + type +
+                            ". id=" + externalId +
+                            ", naturalId=" + naturalId);
+
+                    createOrLinkClientEntity(serverEntity, entitySynchronizer);
+                }
+
             }
 
             @Override
@@ -841,12 +843,14 @@ public class FirebaseSynchronizer {
                     final T foundEntity = entitySynchronizer.findOnClient(record.getInternalId());
 
                     final UpdateTarget updateTarget = calcUpdateTarget(
-                            EntitySynchronizer.getLastChangeDate(dataSnapshot), record.getLastChangeDate());
+                            EntitySynchronizer.getLastChangeDate(dataSnapshot),
+                            record.getLastChangeDate());
 
                     if (foundEntity == null) {
-                        Log.w("FirebaseSynchronizer", "onChildChanged: client " + type + " not found" +
-                                ". externalId=" + externalId +
-                                ", naturalId=" + naturalId);
+                        Log.w("FirebaseSynchronizer",
+                              "onChildChanged: client " + type + " not found" +
+                                      ". externalId=" + externalId +
+                                      ", naturalId=" + naturalId);
 
                     } else if (updateTarget == UpdateTarget.CLIENT) {
                         Log.i("FirebaseSynchronizer", "onChildChanged: " +
@@ -857,11 +861,12 @@ public class FirebaseSynchronizer {
                         updateClientEntity(dataSnapshot, foundEntity, entitySynchronizer);
 
                     } else {
-                        Log.i("FirebaseSynchronizer", "onChildChanged: server " + type + " change date" +
-                                " is same or older, skipping" +
-                                ". externalId=" + externalId +
-                                ", naturalId=" + naturalId +
-                                ", updateTarget=" + updateTarget);
+                        Log.i("FirebaseSynchronizer",
+                              "onChildChanged: server " + type + " change date" +
+                                      " is same or older, skipping" +
+                                      ". externalId=" + externalId +
+                                      ", naturalId=" + naturalId +
+                                      ", updateTarget=" + updateTarget);
                     }
 
                 } else {
@@ -891,9 +896,10 @@ public class FirebaseSynchronizer {
                                     ". id=" + externalId +
                                     ", naturalId=" + naturalId);
                         } else {
-                            Log.w("FirebaseSynchronizer", "onChildRemoved: client " + type + " not found" +
-                                    ". id=" + externalId +
-                                    ", naturalId=" + naturalId);
+                            Log.w("FirebaseSynchronizer",
+                                  "onChildRemoved: client " + type + " not found" +
+                                          ". id=" + externalId +
+                                          ", naturalId=" + naturalId);
                         }
 
                     } else {
@@ -917,7 +923,7 @@ public class FirebaseSynchronizer {
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 Log.w("FirebaseSynchronizer",
-                        "onChildMoved: ignoring. key=" + dataSnapshot.getKey());
+                      "onChildMoved: ignoring. key=" + dataSnapshot.getKey());
             }
 
             @Override
@@ -927,8 +933,8 @@ public class FirebaseSynchronizer {
                     unsubscribe();
                 } else {
                     Log.e("FirebaseSynchronizer",
-                            "onCancelled: request cancelled",
-                            databaseError.toException());
+                          "onCancelled: request cancelled",
+                          databaseError.toException());
                 }
             }
         }));
@@ -977,7 +983,9 @@ public class FirebaseSynchronizer {
         }
     }
 
-    private void addFirebaseChildListener(DatabaseReference databaseReference, ChildEventListener childListener) {
+    private void addFirebaseChildListener(
+            DatabaseReference databaseReference,
+            ChildEventListener childListener) {
         databaseReference.addChildEventListener(childListener);
         childListeners.put(databaseReference, childListener);
     }
@@ -988,36 +996,43 @@ public class FirebaseSynchronizer {
 
         final SettableFuture<Boolean> resultFuture = SettableFuture.create();
 
-        final String type = StringUtils.lowerFirstLetter(entitySynchronizer.getEntityClass().getSimpleName());
+        final String type =
+                StringUtils.lowerFirstLetter(entitySynchronizer.getEntityClass().getSimpleName());
 
-        final DatabaseReference entitiesNode = userList.child(entitySynchronizer.getFirebaseListName());
+        final DatabaseReference entitiesNode =
+                userList.child(entitySynchronizer.getFirebaseListName());
         final List<T> clientEntities = entitySynchronizer.loadEntities();
         final Map<Long, EntitySynchronizationRecord<T>> syncRecordsMap =
-                getRecordsByClass(entitySynchronizer.getEntityClass());
+                getRecordsMapForClass(entitySynchronizer.getEntityClass());
+        final Collection<EntitySynchronizationRecord<T>> syncRecords = new LinkedHashSet<>(
+                syncRecordsMap.values());
 
         entitiesNode.addListenerForSingleValueEvent(wrapInBackgroundThread(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    Map<String, DataSnapshot> serverEntityIdsMap = mapToExternalIds(dataSnapshot.getChildren());
+                    Map<String, DataSnapshot> serverEntityIdsMap =
+                            mapToExternalIds(dataSnapshot.getChildren());
                     final Map<String, DataSnapshot> serverEntityNaturalIdsMap = mapToNaturalIds(
                             dataSnapshot.getChildren(), entitySynchronizer);
 
                     final Map<Long, T> entityIdsMap = ModelHelper.mapIds(clientEntities);
 
                     final BiMap<T, String> clientExternalIdsMap = HashBiMap.create();
-                    final Set<EntitySynchronizationRecord<T>> removalRecords = new LinkedHashSet<>();
-                    for (EntitySynchronizationRecord<T> record : syncRecordsMap.values()) {
+                    final Set<EntitySynchronizationRecord<T>> removalRecords =
+                            new LinkedHashSet<>();
+                    for (EntitySynchronizationRecord<T> record : syncRecords) {
                         final T entity = entityIdsMap.get(record.getInternalId());
 
                         if (record.isDeleted()) {
                             removalRecords.add(record);
                             continue;
                         } else if (entity == null) {
-                            Log.w("FirebaseSynchronizer", "bulkSynchronizeEntities: " + type + " not found" +
-                                    " for synchronization record, removing the record" +
-                                    ". internalId=" + record.getInternalId() +
-                                    ", externalId=" + record.getExternalId());
+                            Log.w("FirebaseSynchronizer",
+                                  "bulkSynchronizeEntities: " + type + " not found" +
+                                          " for synchronization record, removing the record" +
+                                          ". internalId=" + record.getInternalId() +
+                                          ", externalId=" + record.getExternalId());
                             dao.removeSynchronizationRecord(record);
                             continue;
                         }
@@ -1032,14 +1047,16 @@ public class FirebaseSynchronizer {
                             clientExternalIdsMap.values(), serverEntityIdsMap.keySet()));
                     for (String externalId : clientEntitiesToRemove) {
                         final T entity = clientExternalIdsMap.inverse().get(externalId);
-                        Log.i("FirebaseSynchronizer", "bulkSynchronizeEntities: removing client " + type + ". " +
-                                "externalId=" + externalId);
+                        Log.i("FirebaseSynchronizer",
+                              "bulkSynchronizeEntities: removing client " + type + ". " +
+                                      "externalId=" + externalId);
 
                         removingClientEntities.add(externalId);
                         entitySynchronizer.removeFromClient(entity);
                         clientExternalIdsMap.inverse().remove(externalId);
 
-                        final EntitySynchronizationRecord<T> syncRecord = syncRecordsMap.get(entity.getId());
+                        final EntitySynchronizationRecord<T> syncRecord =
+                                syncRecordsMap.get(entity.getId());
                         if (syncRecord != null) {
                             dao.removeSynchronizationRecord(syncRecord);
                         }
@@ -1049,33 +1066,40 @@ public class FirebaseSynchronizer {
                         final String externalId = removalRecord.getExternalId();
 
                         if (serverEntityIdsMap.containsKey(externalId)) {
-                            Log.i("FirebaseSynchronizer", "bulkSynchronizeEntities: removing server " + type +
-                                    ". externalId=" + externalId);
-                            final Task<Void> removalTask = removeServerSnapshot(dataSnapshot.getRef(), externalId);
+                            Log.i("FirebaseSynchronizer",
+                                  "bulkSynchronizeEntities: removing server " + type +
+                                          ". externalId=" + externalId);
+                            final Task<Void> removalTask =
+                                    removeServerSnapshot(dataSnapshot.getRef(), externalId);
 
                             removalTask.addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.i("FirebaseSynchronizer", "bulkSynchronizeEntities.onComplete:" +
-                                                " server " + type + " removed, deleting sync record" +
-                                                ". externalId=" + externalId);
+                                        Log.i("FirebaseSynchronizer",
+                                              "bulkSynchronizeEntities.onComplete:" +
+                                                      " server " + type
+                                                      + " removed, deleting sync record" +
+                                                      ". externalId=" + externalId);
                                         dao.removeSynchronizationRecord(removalRecord);
                                     } else {
-                                        Log.e("FirebaseSynchronizer", "bulkSynchronizeEntities.onComplete:" +
-                                                        " failed to remove server " + type +
-                                                        ". externalId=" + externalId,
-                                                task.getException());
-                                        failureCallback.updateServerEntityFailed(null, task.getException());
+                                        Log.e("FirebaseSynchronizer",
+                                              "bulkSynchronizeEntities.onComplete:" +
+                                                      " failed to remove server " + type +
+                                                      ". externalId=" + externalId,
+                                              task.getException());
+                                        failureCallback.updateServerEntityFailed(null,
+                                                                                 task.getException());
                                     }
                                 }
                             });
 
                             serverEntityIdsMap.remove(externalId);
                         } else {
-                            Log.w("FirebaseSynchronizer", "bulkSynchronizeEntities: server " + type + " is missing" +
-                                    " for a removal record, deleting the record" +
-                                    ". externalId=" + externalId);
+                            Log.w("FirebaseSynchronizer",
+                                  "bulkSynchronizeEntities: server " + type + " is missing" +
+                                          " for a removal record, deleting the record" +
+                                          ". externalId=" + externalId);
                             dao.removeSynchronizationRecord(removalRecord);
                         }
                     }
@@ -1086,8 +1110,9 @@ public class FirebaseSynchronizer {
                         final DataSnapshot serverEntity = serverEntityIdsMap.get(externalId);
                         final String naturalId = entitySynchronizer.getNaturalId(serverEntity);
 
-                        Log.i("FirebaseSynchronizer", "bulkSynchronizeEntities: adding new client " + type +
-                                ". externalId=" + externalId + ", naturalId=" + naturalId);
+                        Log.i("FirebaseSynchronizer",
+                              "bulkSynchronizeEntities: adding new client " + type +
+                                      ". externalId=" + externalId + ", naturalId=" + naturalId);
                         createOrLinkClientEntity(serverEntity, entitySynchronizer);
                     }
 
@@ -1096,8 +1121,9 @@ public class FirebaseSynchronizer {
 
                         final DataSnapshot serverEntity = serverEntityNaturalIdsMap.get(naturalId);
                         if (serverEntity == null) {
-                            Log.i("FirebaseSynchronizer", "bulkSynchronizeEntities: adding new " + type + " to server" +
-                                    ", naturalId=" + naturalId);
+                            Log.i("FirebaseSynchronizer",
+                                  "bulkSynchronizeEntities: adding new " + type + " to server" +
+                                          ", naturalId=" + naturalId);
                             entitySynchronizer.createServerEntity(clientEntity, entitiesNode);
 
                         } else {
@@ -1119,8 +1145,8 @@ public class FirebaseSynchronizer {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("FirebaseSynchronizer",
-                        "bulkSynchronizeEntities.onCancelled: request cancelled. type=" + type,
-                        databaseError.toException());
+                      "bulkSynchronizeEntities.onCancelled: request cancelled. type=" + type,
+                      databaseError.toException());
                 resultFuture.setException(databaseError.toException());
             }
         }));
@@ -1265,8 +1291,9 @@ public class FirebaseSynchronizer {
     }
 
     @NonNull
-    private static Map<String, DataSnapshot> mapToNaturalIds(Iterable<DataSnapshot> snapshots,
-                                                             EntitySynchronizer entitySynchronizer) {
+    private static Map<String, DataSnapshot> mapToNaturalIds(
+            Iterable<DataSnapshot> snapshots,
+            EntitySynchronizer entitySynchronizer) {
         Map<String, DataSnapshot> result = new LinkedHashMap<>();
         for (DataSnapshot snapshot : snapshots) {
             final String id = entitySynchronizer.getNaturalId(snapshot);
@@ -1296,13 +1323,15 @@ public class FirebaseSynchronizer {
             if (record != null) {
                 final String type = entitySynchronizer.getEntityClass().getSimpleName();
                 Log.w("FirebaseSynchronizer",
-                        "createOrLinkClientEntity: " +
-                                "found " + type + " with the same natural id, but existing sync record. Skipping"
-                                + ". record.externalId=" + record.getExternalId()
-                                + ", server.externalId=" + externalId);
+                      "createOrLinkClientEntity: " +
+                              "found " + type
+                              + " with the same natural id, but existing sync record. Skipping"
+                              + ". record.externalId=" + record.getExternalId()
+                              + ", server.externalId=" + externalId);
             } else {
-                Log.i("FirebaseSynchronizer", "createOrLinkClientEntity: found existing entity by natural id" +
-                        ". externalId=" + externalId);
+                Log.i("FirebaseSynchronizer",
+                      "createOrLinkClientEntity: found existing entity by natural id" +
+                              ". externalId=" + externalId);
                 addSyncRecord(
                         clientEntity.getId(),
                         serverEntity,
@@ -1320,7 +1349,8 @@ public class FirebaseSynchronizer {
             EntitySynchronizer<T> entitySynchronizer,
             Date lastChangeDate) {
 
-        final EntitySynchronizationRecord<T> syncRecord = ModelHelper.createSyncRecord(internalId,
+        final EntitySynchronizationRecord<T> syncRecord = ModelHelper.createSyncRecord(
+                internalId,
                 serverEntity.getKey(),
                 EntitySynchronizer.getListIdFromEntity(serverEntity.getRef()),
                 lastChangeDate,
@@ -1370,6 +1400,158 @@ public class FirebaseSynchronizer {
         private ValueListenerPair(DatabaseReference node, ValueEventListener valueListener) {
             this.node = node;
             this.valueListener = valueListener;
+        }
+    }
+
+    private class SyncRecordChangeListener implements EntityListener<EntitySynchronizationRecord> {
+        @Override
+        public void entityAdded(EntitySynchronizationRecord synchronizationRecord) {
+            if (!isForCurrentList(synchronizationRecord)) {
+                return;
+            }
+
+            cacheSyncRecord(synchronizationRecord);
+        }
+
+        @Override
+        public void entityChanged(EntitySynchronizationRecord changedRecord) {
+            if (!isForCurrentList(changedRecord)) {
+                return;
+            }
+
+            cacheSyncRecord(changedRecord);
+            if (!changedRecord.isDeleted()) {
+                return;
+            }
+
+            final String externalId = changedRecord.getExternalId();
+            final Class entityClass = changedRecord.getEntityClass();
+
+            final String type =
+                    StringUtils.lowerFirstLetter(entityClass.getSimpleName());
+
+            if (removingClientEntities.contains(externalId)) {
+                Log.i("FirebaseSynchronizer",
+                      "changedSynchronizationRecord: server " + type + " deleted"
+                              + ". Client " + type + " deletion is in progress"
+                              + ". externalId=" + externalId);
+                removingClientEntities.remove(externalId);
+                return;
+            }
+
+            if (stateReference.get() != State.SUBSCRIBED) {
+                Log.i("FirebaseSynchronizer",
+                      "changedSynchronizationRecord: not yet subscribed" +
+                              ", skipping " + type + " removal record" +
+                              ". externalId=" + externalId);
+                return;
+            }
+
+            Log.i("FirebaseSynchronizer",
+                  "changedSynchronizationRecord: removing server " +
+                          type +
+                          ". externalId=" + externalId);
+
+            final String listName;
+            if (Category.class.isAssignableFrom(entityClass)) {
+                listName = categoriesSynchronizer.getFirebaseListName();
+            } else if (Product.class.isAssignableFrom(entityClass)) {
+                listName = productSynchronizer.getFirebaseListName();
+            } else if (ShopItem.class.isAssignableFrom(entityClass)) {
+                listName = shopItemSynchronizer.getFirebaseListName();
+            } else {
+                throw new IllegalStateException(
+                        "Unknown entity class " + entityClass);
+            }
+
+            final DatabaseReference userList =
+                    FirebaseSynchronizer.this.activeUserList;
+            removeServerSnapshot(userList.child(listName), externalId);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void entityRemoved(EntitySynchronizationRecord removedEntity) {
+            if (!isForCurrentList(removedEntity)) {
+                return;
+            }
+
+            final String type = removedEntity.getEntityClass().getSimpleName();
+            final String externalId = removedEntity.getExternalId();
+
+            Log.d("FirebaseSynchronizer",
+                  "removedSynchronizationRecord: removed record for " + type
+                          + ". externalId=" + externalId);
+
+            final BiMap<Long, EntitySynchronizationRecord<? extends Entity>> map =
+                    getRecordsMapForClass(removedEntity.getEntityClass());
+
+            final Long internalId = removedEntity.getInternalId();
+            final EntitySynchronizationRecord<? extends Entity> existingRecord =
+                    map.remove(internalId);
+
+            if ((existingRecord != null) && (!Objects.equal(existingRecord, removedEntity))) {
+                Log.w("FirebaseSynchronizer",
+                      "entityRemoved: attempt to remove record (" + type
+                              + ") from cache with the same internal id"
+                              + ". internalId=" + internalId
+                              + ", externalId=" + externalId);
+                map.put(internalId, existingRecord);
+            }
+        }
+
+        private boolean isForCurrentList(EntitySynchronizationRecord record) {
+            final DatabaseReference userList =
+                    FirebaseSynchronizer.this.activeUserList;
+            return (userList != null) && (record.getListId().equals(userList.getKey()));
+        }
+    }
+
+    private class EmailVerificationListener implements OnCompleteListener<Void> {
+        private final FirebaseUser user;
+
+        public EmailVerificationListener(FirebaseUser user) {
+            this.user = user;
+        }
+
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if (!task.isSuccessful()) {
+                Log.e("FirebaseSynchronizer",
+                      "onComplete: failed to reload user",
+                      task.getException());
+                return;
+            }
+
+            final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) {
+                Log.i("FirebaseSynchronizer", "waitEmailVerification.run:"
+                        + "current user is null, stopping await");
+                return;
+            }
+
+            if (!currentUser.getUid().equals(user.getUid())) {
+                Log.w("FirebaseSynchronizer", "waitEmailVerification.run:"
+                        + "current user was changed, stopping await");
+                return;
+            }
+
+            if (!currentUser.isEmailVerified()) {
+                Log.d("FirebaseSynchronizer", "waitEmailVerification.run:"
+                        + "email still not verified, waiting");
+                waitEmailVerification(user);
+                return;
+            }
+
+            if (stateReference.get() != State.UNSUBSCRIBED) {
+                Log.w("FirebaseSynchronizer", "waitEmailVerification.run:"
+                        + "subscription is already in progress");
+                return;
+            }
+
+            Log.i("FirebaseSynchronizer", "waitEmailVerification.run:"
+                    + " email verified, subscribing");
+            subscribeOnFirebase();
         }
     }
 }

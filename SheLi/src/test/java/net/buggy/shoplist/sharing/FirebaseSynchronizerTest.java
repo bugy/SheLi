@@ -2535,21 +2535,93 @@ public class FirebaseSynchronizerTest {
                 originalServerShopItem);
     }
 
+    @Test
+    public void testBulkSync2ServerEntitiesWithSameNaturalId() {
+        addServerCategory("CategoryX", 100);
+        addServerCategory("CategoryX", 3);
+
+        authenticateAndWaitSynchronizer();
+
+        final List<Category> categories = dao.getCategories();
+        assertEquals(1, categories.size());
+        final Category clientCategory = categories.get(0);
+        assertEquals(clientCategory.getName(), "CategoryX");
+        assertTrue("Incorrect category color: " + clientCategory.getColor(),
+                   (clientCategory.getColor() == 3) || (clientCategory.getColor() == 100));
+
+        final List<EntitySynchronizationRecord<Category>> records = loadSyncRecords(Category.class);
+        assertEquals(1, records.size());
+
+        assertAndRemoveWarning("found Category with the same natural id", 2);
+    }
+
+    @Test
+    public void testBulkSync3ServerEntitiesWithSameNaturalId() {
+        addServerCategory("CategoryX", 100);
+        addServerCategory("CategoryX", 3);
+        addServerCategory("CategoryX", 999);
+
+        authenticateAndWaitSynchronizer();
+
+        final List<Category> categories = dao.getCategories();
+        assertEquals(1, categories.size());
+        final Category clientCategory = categories.get(0);
+        assertEquals(clientCategory.getName(), "CategoryX");
+
+        final List<EntitySynchronizationRecord<Category>> records = loadSyncRecords(Category.class);
+        assertEquals(1, records.size());
+
+        assertAndRemoveWarning("found Category with the same natural id", 4);
+    }
+
+    @Test
+    public void testBulkSync2ServerEntitiesAnd1ClientEntityWithSameNaturalId() {
+        addServerCategory("CategoryX", 100);
+        addServerCategory("CategoryX", 3);
+
+        addCategory("CategoryX", 5);
+
+        authenticateAndWaitSynchronizer();
+
+        final List<Category> categories = dao.getCategories();
+        assertEquals(1, categories.size());
+
+        final List<EntitySynchronizationRecord<Category>> records = loadSyncRecords(Category.class);
+        assertEquals(1, records.size());
+
+        assertAndRemoveWarning("found Category with the same natural id", 2);
+    }
+
     private DataSnapshot toDataSnapshot(DatabaseReference serverEntity) {
         return getEntityListSnapshot(serverEntity.getParent().getKey()).child(serverEntity.getKey());
     }
 
     private void assertAndRemoveWarning(String expectedWarningText) {
+        assertAndRemoveWarning(expectedWarningText, 1);
+    }
+
+    private void assertAndRemoveWarning(String expectedWarningText, int expectedCound) {
         assertFalse(logWarnings.isEmpty());
+
+        int foundOccurrences = 0;
 
         for (final String warning : ImmutableList.copyOf(logWarnings)) {
             if (warning.contains(expectedWarningText)) {
                 logWarnings.remove(warning);
-                return;
+
+                foundOccurrences++;
+                if (foundOccurrences >= expectedCound) {
+                    return;
+                }
             }
         }
 
-        fail("Warning not found: " + expectedWarningText);
+        if (foundOccurrences == 0) {
+            fail("Warning not found: " + expectedWarningText);
+        } else {
+            fail(String.format("Less warnings found (%d) than expected (%d): %s",
+                               foundOccurrences, expectedCound, expectedWarningText));
+        }
     }
 
     private <T extends Entity> DataSnapshot findServerEntity(T entity) {

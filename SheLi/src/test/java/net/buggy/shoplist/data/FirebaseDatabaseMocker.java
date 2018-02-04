@@ -64,6 +64,8 @@ public class FirebaseDatabaseMocker {
 
     private final List<Exception> backgroundExceptions = new CopyOnWriteArrayList<>();
 
+    private final static AtomicLong UNIQUE_ID_COUNTER = new AtomicLong();
+
     public FirebaseDatabaseMocker() {
         firebaseDatabase = MockUtils.mockStrict(FirebaseDatabase.class);
 
@@ -122,6 +124,7 @@ public class FirebaseDatabaseMocker {
         private final Node parent;
         private final DatabaseReference databaseReference;
         private final String key;
+        private final String childPrefix;
         private volatile Object value;
 
         private final AtomicInteger pushCounter = new AtomicInteger();
@@ -132,6 +135,8 @@ public class FirebaseDatabaseMocker {
         private Node(final Node parent, final String key) {
             this.parent = parent;
             this.key = key;
+
+            childPrefix = key + UNIQUE_ID_COUNTER.incrementAndGet() + "-child-";
 
             databaseReference = MockUtils.mockStrict(DatabaseReference.class);
 
@@ -169,7 +174,8 @@ public class FirebaseDatabaseMocker {
 
                     return null;
                 }
-            }).when(databaseReference).addListenerForSingleValueEvent(any(ValueEventListener.class));
+            }).when(databaseReference)
+                   .addListenerForSingleValueEvent(any(ValueEventListener.class));
 
             Mockito.doAnswer(new Answer<ChildEventListener>() {
                 @Override
@@ -232,7 +238,7 @@ public class FirebaseDatabaseMocker {
             Mockito.doAnswer(new Answer<DatabaseReference>() {
                 @Override
                 public DatabaseReference answer(InvocationOnMock invocationOnMock) throws Throwable {
-                    String childId = key + "-child-" + pushCounter.getAndIncrement();
+                    String childId = childPrefix + pushCounter.getAndIncrement();
 
                     return getOrCreateChildReference(childId);
                 }
@@ -343,7 +349,8 @@ public class FirebaseDatabaseMocker {
         }
 
         private void notifyValueChanged() {
-            final ImmutableList<ValueEventListener> listeners = ImmutableList.copyOf(valueListeners);
+            final ImmutableList<ValueEventListener> listeners =
+                    ImmutableList.copyOf(valueListeners);
             if (!listeners.isEmpty()) {
                 executeInBackground(new Runnable() {
                     @Override
@@ -424,7 +431,9 @@ public class FirebaseDatabaseMocker {
 
             Mockito.doReturn(currentValue).when(dataSnapshot).getValue(any(Class.class));
 
-            Mockito.doReturn(currentValue).when(dataSnapshot).getValue(any(GenericTypeIndicator.class));
+            Mockito.doReturn(currentValue)
+                   .when(dataSnapshot)
+                   .getValue(any(GenericTypeIndicator.class));
 
             Mockito.doAnswer(new Answer<DataSnapshot>() {
                 @Override
@@ -441,7 +450,9 @@ public class FirebaseDatabaseMocker {
                 }
             }).when(dataSnapshot).child(anyString());
 
-            Mockito.doReturn(new ArrayList<>(currentChildren.values())).when(dataSnapshot).getChildren();
+            Mockito.doReturn(new ArrayList<>(currentChildren.values()))
+                   .when(dataSnapshot)
+                   .getChildren();
 
             Mockito.doReturn((long) currentChildren.size()).when(dataSnapshot).getChildrenCount();
 
@@ -506,13 +517,17 @@ public class FirebaseDatabaseMocker {
 
             @NonNull
             @Override
-            public Task<T> addOnSuccessListener(@NonNull Executor executor, @NonNull OnSuccessListener<? super T> onSuccessListener) {
+            public Task<T> addOnSuccessListener(
+                    @NonNull Executor executor,
+                    @NonNull OnSuccessListener<? super T> onSuccessListener) {
                 throw new UnsupportedOperationException();
             }
 
             @NonNull
             @Override
-            public Task<T> addOnSuccessListener(@NonNull Activity activity, @NonNull OnSuccessListener<? super T> onSuccessListener) {
+            public Task<T> addOnSuccessListener(
+                    @NonNull Activity activity,
+                    @NonNull OnSuccessListener<? super T> onSuccessListener) {
                 throw new UnsupportedOperationException();
             }
 
@@ -524,13 +539,17 @@ public class FirebaseDatabaseMocker {
 
             @NonNull
             @Override
-            public Task<T> addOnFailureListener(@NonNull Executor executor, @NonNull OnFailureListener onFailureListener) {
+            public Task<T> addOnFailureListener(
+                    @NonNull Executor executor,
+                    @NonNull OnFailureListener onFailureListener) {
                 throw new UnsupportedOperationException();
             }
 
             @NonNull
             @Override
-            public Task<T> addOnFailureListener(@NonNull Activity activity, @NonNull OnFailureListener onFailureListener) {
+            public Task<T> addOnFailureListener(
+                    @NonNull Activity activity,
+                    @NonNull OnFailureListener onFailureListener) {
                 throw new UnsupportedOperationException();
             }
 
@@ -549,7 +568,9 @@ public class FirebaseDatabaseMocker {
 
             @NonNull
             @Override
-            public Task<T> addOnCompleteListener(@NonNull Executor executor, @NonNull final OnCompleteListener<T> onCompleteListener) {
+            public Task<T> addOnCompleteListener(
+                    @NonNull Executor executor,
+                    @NonNull final OnCompleteListener<T> onCompleteListener) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -562,7 +583,9 @@ public class FirebaseDatabaseMocker {
 
             @NonNull
             @Override
-            public Task<T> addOnCompleteListener(@NonNull Activity activity, @NonNull final OnCompleteListener<T> onCompleteListener) {
+            public Task<T> addOnCompleteListener(
+                    @NonNull Activity activity,
+                    @NonNull final OnCompleteListener<T> onCompleteListener) {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

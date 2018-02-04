@@ -59,4 +59,16 @@ public class EntitySynchronizationRecord<T extends Entity> extends Entity {
     public void setInternalId(Long internalId) {
         this.internalId = internalId;
     }
+
+    @Override
+    public String toString() {
+        return "EntitySynchronizationRecord{" +
+                "externalId='" + externalId + '\'' +
+                ", internalId=" + internalId +
+                ", deleted=" + deleted +
+                ", lastChangeDate=" + lastChangeDate +
+                ", entityClass=" + entityClass +
+                ", listId='" + listId + '\'' +
+                '}';
+    }
 }

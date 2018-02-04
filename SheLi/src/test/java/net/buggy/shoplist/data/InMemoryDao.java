@@ -585,10 +585,113 @@ public class InMemoryDao implements Dao {
             entity.setId(id);
 
             final T clonedEntity = cloneToStorage(entity);
+            checkConstraints(clonedEntity);
             rows.put(id, clonedEntity);
 
             return id;
         }
+
+        private void checkConstraints(T entity) {
+            if (entity instanceof Product) {
+                checkProductConstraints((Product) entity);
+            } else if (entity instanceof Category) {
+                checkCategoryConstraints((Category) entity);
+            } else if (entity instanceof ShopItem) {
+                checkShopItemConstraints((ShopItem) entity);
+            } else if (entity instanceof EntitySynchronizationRecord) {
+                checkSyncRecordConstraints((EntitySynchronizationRecord) entity);
+            }
+        }
+
+        private void checkProductConstraints(Product entity) {
+            final String name = entity.getName();
+
+            for (T anotherProduct : rows.values()) {
+                if (Objects.equal(entity, anotherProduct)) {
+                    continue;
+                }
+
+                final String anotherName = ((Product) anotherProduct).getName();
+                if (StringUtils.equalIgnoreCase(anotherName, name)) {
+                    throw new IllegalStateException(
+                            "Product with name " + name + " already exists");
+                }
+            }
+        }
+
+        private void checkCategoryConstraints(Category entity) {
+            final String name = entity.getName();
+
+            for (T anotherCategory : rows.values()) {
+                if (Objects.equal(entity, anotherCategory)) {
+                    continue;
+                }
+
+                final String anotherName = ((Category) anotherCategory).getName();
+                if (StringUtils.equalIgnoreCase(anotherName, name)) {
+                    throw new IllegalStateException("Category with name "
+                                                            + name + " already exists");
+                }
+            }
+        }
+
+        private void checkShopItemConstraints(ShopItem shopItem) {
+            final Product product = shopItem.getProduct();
+
+            for (T anotherShopItem : rows.values()) {
+                if (Objects.equal(shopItem, anotherShopItem)) {
+                    continue;
+                }
+
+                final Product anotherProduct = ((ShopItem) anotherShopItem).getProduct();
+                if (Objects.equal(product, anotherProduct)) {
+                    throw new IllegalStateException("ShopItem with product "
+                                                            + product + " already exists");
+                }
+            }
+        }
+
+        private void checkSyncRecordConstraints(EntitySynchronizationRecord record) {
+            if (record.getExternalId() == null) {
+                throw new IllegalStateException("ExternalId should be not null");
+            }
+            if (record.getInternalId() == null) {
+                throw new IllegalStateException("InternalId should be not null");
+            }
+            if (record.getEntityClass() == null) {
+                throw new IllegalStateException("EntityClass should be not null");
+            }
+
+            final String externalId = record.getExternalId();
+
+            for (T element : rows.values()) {
+                if (Objects.equal(record, element)) {
+                    continue;
+                }
+
+                final EntitySynchronizationRecord anotherSyncRecord =
+                        (EntitySynchronizationRecord) element;
+
+                final String anotherExternalId = anotherSyncRecord.getExternalId();
+                if (externalId.equals(anotherExternalId)) {
+                    throw new IllegalStateException("SyncRecord with externalId " + externalId
+                                                            + " already exists: "
+                                                            + anotherSyncRecord);
+                }
+
+                final String listId = anotherSyncRecord.getListId();
+                final Long internalId = anotherSyncRecord.getInternalId();
+                final Class entityClass = anotherSyncRecord.getEntityClass();
+                if (listId.equals(record.getListId())
+                        && internalId.equals(record.getInternalId())
+                        && entityClass.equals(record.getEntityClass())) {
+                    throw new IllegalStateException(
+                            "SyncRecord with listId/internalId/entityClass" +
+                                    " combination already exists: " + anotherSyncRecord);
+                }
+            }
+        }
+
 
         public Set<T> getRawEntities() {
             return new LinkedHashSet<>(rows.values());
@@ -614,6 +717,8 @@ public class InMemoryDao implements Dao {
             Preconditions.checkNotNull(entity, "Cannot store null entity");
             Preconditions.checkNotNull(entity.getId(), "Cannot store entity without id");
 
+            checkConstraints(entity);
+            
             final T clonedEntity = cloneToStorage(entity);
             final T removed = rows.put(clonedEntity.getId(), entity);
 
