@@ -1,17 +1,11 @@
-package net.buggy.shoplist.data;
+package net.buggy.shoplist;
 
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
-import com.activeandroid.Configuration;
-import com.activeandroid.Model;
-import com.activeandroid.serializer.BigDecimalSerializer;
 
-import net.buggy.shoplist.R;
-import net.buggy.shoplist.ShopListActivity;
 import net.buggy.shoplist.crashes.ShopListCrashDialog;
 
 import org.acra.ACRA;
@@ -24,21 +18,11 @@ import org.acra.config.ConfigurationBuilder;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
-public class ApplicationWithDatabase extends Application {
+public class Application extends android.app.Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        final Configuration.Builder builder = new Configuration.Builder(this);
-
-        for (Class<? extends Model> clazz : SqlliteDao.getModelClasses()) {
-            builder.addModelClass(clazz);
-        }
-        builder.addTypeSerializer(BigDecimalSerializer.class);
-
-        Configuration dbConfiguration = builder.create();
-        ActiveAndroid.initialize(dbConfiguration);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("fonts/Neucha.ttf")
@@ -70,7 +54,7 @@ public class ApplicationWithDatabase extends Application {
             ACRA.init(this, configuration);
 
         } catch (ACRAConfigurationException e) {
-            Log.e("ApplicationWithDatabase", "attachBaseContext: couldn't init ACRA", e);
+            Log.e("Application", "attachBaseContext: couldn't init ACRA", e);
         }
     }
 
